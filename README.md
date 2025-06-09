@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # pCloudy MCP Server
 
 This project implements an MCP server for managing Android and iOS devices on the pCloudy platform. It provides tools for authentication, device management, file operations, app management, and device interaction.
@@ -115,3 +116,6 @@ The server will listen on `http://localhost:8000` by default (port can be change
 ---
 
 *Updated: June 02, 2025, 03:44 PM IST*
+=======
+# New_MCP
+>>>>>>> 2d34048950637c241a4a83bfbdf97bd468753f50
