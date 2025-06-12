@@ -3948,3 +3948,16 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 2025-06-09 17:41:55,441 - pcloudy-mcp-server - INFO - PCloudyAPI initialized
 2025-06-09 17:41:55,474 - FastMCP.fastmcp.cli.claude - INFO - Added server 'pcloudy_auth3.0' to Claude config
 2025-06-09 17:41:55,481 - FastMCP.cli - INFO - Successfully installed pcloudy_auth3.0 in Claude app
+2025-06-12 18:34:42,228 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-12 18:34:42,229 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-12 18:34:42,229 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-12 18:34:42,230 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-12 18:34:42,230 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-12 18:34:42,231 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-12 18:34:42,231 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-12 18:34:42,232 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-12 18:34:43,268 - pcloudy-mcp-server - INFO - PCloudyAPI initialized
+2025-06-12 18:34:43,288 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-12 18:34:43,292 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'streamable-http' on http://0.0.0.0:8000/mcp
+2025-06-12 18:34:43,335 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager started
+2025-06-12 18:35:18,550 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager shutting down
