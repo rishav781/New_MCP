@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # pCloudy MCP Server
 
 This project implements an MCP server for managing Android and iOS devices on the pCloudy platform. It provides tools for authentication, device management, file operations, app management, and device interaction.
@@ -83,39 +82,80 @@ The server will listen on `http://localhost:8000` by default (port can be change
 
 ## Available Tools
 
+### Authentication & Device Management
 - **authorize**: Authenticate with pCloudy by opening a browser window where you can enter your `username` and `api_key`. Upon successful authentication, the token is stored for use in other tools.
 - **list_available_devices**: List available Android/iOS devices on the pCloudy platform.
-- **book_device_by_name**: Book a device by its name (e.g., "Galaxy S10").
-- **upload_file**: Upload an APK/IPA/ZIP file to the pCloudy drive.
+- **book_device_by_name**: Book a device by its name (e.g., "Galaxy S10") with optional GPS location setting and automatic service startup.
+- **release_device**: Release a booked device with automatic session data discovery.
+
+### File Operations  
+- **upload_file**: Upload an APK/IPA/ZIP file to the pCloudy drive with duplicate detection.
 - **download_from_cloud**: Download files from the pCloudy drive.
-- **download_manual_access_data**: Download files (e.g., screenshots) from a booked device session.
+- **download_manual_access_data**: Download files (e.g., screenshots, logs) from a booked device session.
 - **list_cloud_apps**: List apps/files in the pCloudy drive.
-- **resign_ipa**: Resign iOS IPA files for deployment.
-- **install_and_launch_app**: Install and launch an app on a booked device (with an optional `grant_all_permissions` parameter, defaults to `True`).
-- **capture_device_screenshot**: Capture a screenshot from a booked device (with an optional `skin` parameter to include device skin, defaults to `True`).
-- **get_device_page_url**: Retrieve the device page URL from pCloudy for a booked device.
+
+### App Management
+- **resign_ipa**: Resign iOS IPA files for deployment with duplicate detection.
+- **install_and_launch_app**: Install and launch an app on a booked device with automatic performance monitoring.
+
+### Device Control & Monitoring
+- **capture_device_screenshot**: Capture a screenshot from a booked device (with optional device skin).
+- **get_device_page_url**: Retrieve and automatically open the device page URL in browser.
+- **start_device_services**: Start device logs, performance data collection, and session recording.
+- **set_device_location**: Set GPS coordinates for a device.
+- **start_performance_data**: Start performance monitoring for a specific app package.
+
+### Advanced Operations
+- **execute_adb_command**: Execute ADB commands on Android devices (with automatic platform detection).
+- **detect_device_platform**: Auto-detect if a device is Android or iOS.
+- **list_performance_data_files**: List all performance data files for a device session.
+- **download_all_session_data**: Download all session data files to a local directory.
+- **start_wildnet**: Enable wildnet feature for enhanced network capabilities on booked devices.
+
+## Enhanced Features
+
+### Smart File Operations
+- **Duplicate Detection**: Both `upload_file` and `resign_ipa` check for existing files to prevent accidental overwrites
+- **Force Operations**: Use `force_upload=True` or `force_resign=True` to override duplicate protection
+- **Intelligent Suggestions**: Auto-suggest package names from APK filenames for performance monitoring
+
+### Automatic Service Management
+- **Auto-Start Services**: Device booking automatically starts logging, performance data, and session recording
+- **Location Setting**: Set GPS coordinates during device booking or afterward
+- **Performance Monitoring**: Automatically start performance data collection when installing apps
+
+### Session Data Management
+- **Automatic Discovery**: Device release automatically checks for available session files
+- **Bulk Download**: Download all session data with one command
+- **Smart Prompting**: Users are guided on how to retrieve their testing artifacts
 
 ## Notes
 
-- **Python Version**: Requires Python 3.13.  
+- **Python Version**: Requires Python 3.13.
   On Ubuntu, you might use:
 
   ```bash
   sudo apt install python3.13 python3.13-venv python3.13-dev
-
   ```
 
 - **Logs**: Log messages are saved in `pcloudy_mcp_server.log`. Check this file for detailed error messages if issues occur.
+
 - **Security**: Ensure you secure your credentials. The server runs a local HTTP server on `localhost` for authentication, which shuts down after use. For production, consider using HTTPS and additional security measures.
+
+- **Enhanced User Experience**:
+  - File operations include duplicate detection to prevent accidental overwrites
+  - Device booking automatically starts essential services (logs, performance data, recording)
+  - Performance monitoring starts automatically when installing apps with known package names
+  - Session data discovery helps users collect testing artifacts after device release
+
 - **Troubleshooting**:
   - Verify your network access to `https://device.pcloudy.com/api`.
   - Ensure your pCloudy `username` and `api_key` are correct when prompted during authentication.
   - If authentication fails, check `pcloudy_mcp_server.log` for the raw API response to diagnose the issue (e.g., invalid credentials or API errors).
   - If you encounter port conflicts (e.g., on port 8080 used for authentication), the server will automatically retry with the next available port.
+  - For performance data issues, ensure the package name is correct and the app is installed and running.
+  - Use `detect_device_platform` tool if unsure about device platform compatibility.
 
 ---
 
-*Updated: June 02, 2025, 03:44 PM IST*
-=======
-# New_MCP
->>>>>>> 2d34048950637c241a4a83bfbdf97bd468753f50
+*Updated: June 02, 2025, 04:30 PM IST - Enhanced with smart file operations, automatic service management, wildnet feature, and session data handling*

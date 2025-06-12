@@ -1,5 +1,9 @@
 import logging
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if present
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'env', '.env'))
 
 # Configure logging
 logging.basicConfig(
