@@ -9,7 +9,7 @@ from pcloudy_api import PCloudyAPI
 import asyncio
 
 # Initialize FastMCP server and PCloudyAPI
-mcp = FastMCP("pcloudy_auth3.0", description="MCP server for pCloudy device authentication, booking, releasing, file operations and resigning")
+mcp = FastMCP("pcloudy_auth3.0")
 api = PCloudyAPI()
 
 # Ensure a 'downloads' directory exists in the current working directory
