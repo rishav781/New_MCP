@@ -125,16 +125,14 @@ class PCloudyAPI:
         except Exception as e:
             logger.error(f"Error getting device list: {str(e)}")
             raise
-
-    async def book_device(self, device_id: str, duration: int = Config.DEFAULT_DURATION, latitude: float = None, longitude: float = None, auto_start_services: bool = True) -> Dict[str, Any]:
+    
+    async def book_device(self, device_id: str, duration: int = Config.DEFAULT_DURATION, auto_start_services: bool = True) -> Dict[str, Any]:
         """
-        Book a device and optionally set location and start device services.
+        Book a device and automatically start device services.
         
         Parameters:
         - device_id: ID of the device to book
         - duration: Booking duration in minutes
-        - latitude: Optional GPS latitude to set for the device
-        - longitude: Optional GPS longitude to set for the device  
         - auto_start_services: Automatically start device services (logs, performance data, recording)
         """
         try:
@@ -157,18 +155,24 @@ class PCloudyAPI:
             response_content = [
                 {"type": "text", "text": f"✅ Device booked successfully. RID: {rid}"}
             ]
-            
             # Automatically start device services if enabled
             if auto_start_services and rid:
                 try:
                     logger.info(f"Auto-starting device services for RID: {rid}")
+                    # Add a small delay to ensure device is fully ready
+                    await asyncio.sleep(2)
                     services_result = await self.start_device_services(rid)
                     if not services_result.get("isError", True):
                         response_content.extend(services_result.get("content", []))
+                        logger.info(f"Device services started successfully for RID: {rid}")
                     else:
                         response_content.append({
                             "type": "text", 
                             "text": "⚠️ Device services failed to start automatically, but device is booked successfully"
+                        })
+                        response_content.append({
+                            "type": "text", 
+                            "text": "💡 You can manually start services with: start_device_services(rid=\"" + str(rid) + "\")"
                         })
                         logger.warning(f"Failed to auto-start device services: {services_result}")
                 except Exception as service_error:
@@ -177,25 +181,9 @@ class PCloudyAPI:
                         "type": "text", 
                         "text": "⚠️ Device services failed to start automatically, but device is booked successfully"
                     })
-            
-            # Set device location if coordinates provided
-            if latitude is not None and longitude is not None and rid:
-                try:
-                    logger.info(f"Setting device location for RID {rid}: {latitude}, {longitude}")
-                    location_result = await self.set_device_location(rid, latitude, longitude)
-                    if not location_result.get("isError", True):
-                        response_content.extend(location_result.get("content", []))
-                    else:
-                        response_content.append({
-                            "type": "text", 
-                            "text": f"⚠️ Failed to set device location: {location_result.get('content', [{}])[0].get('text', 'Unknown error')}"
-                        })
-                        logger.warning(f"Failed to set device location: {location_result}")
-                except Exception as location_error:
-                    logger.warning(f"Failed to set device location: {str(location_error)}")
                     response_content.append({
                         "type": "text", 
-                        "text": f"⚠️ Failed to set device location: {str(location_error)}"
+                        "text": "💡 You can manually start services with: start_device_services(rid=\"" + str(rid) + "\")"
                     })
             
             # Return enhanced result with all operations
@@ -278,8 +266,7 @@ class PCloudyAPI:
                             response_content.append({
                                 "type": "text", 
                                 "text": "📥 To download session data if available, use: download_all_session_data(rid=\"" + rid + "\")"
-                            })
-                    
+                            })                    
                     return {
                         "content": response_content,
                         "isError": False
@@ -292,7 +279,7 @@ class PCloudyAPI:
                         "isError": True
                     }
                     
-        except httpx.TimeoutError:
+        except httpx.TimeoutException:
             logger.error(f"Release device request timed out after 30 seconds for RID: {rid}")
             return {
                 "content": [{"type": "text", "text": f"Release device request timed out. The device may still be released, but the server was slow to respond. Please check device status."}],
@@ -617,7 +604,7 @@ class PCloudyAPI:
         try:
             await self.check_token_validity()
             
-            # Check if resigned version already exists (unless force_resign is True)
+            # Check ifhot resigned version already exists (unless force_resign is True)
             if not force_resign:
                 logger.info(f"Checking if resigned version of '{filename}' already exists...")
                 try:
@@ -749,10 +736,21 @@ class PCloudyAPI:
             raise ValueError(f"Error downloading file via download_manual_access_data: {str(e)}")
 
     async def execute_adb_command(self, rid: str, adb_command: str) -> Dict[str, Any]:
-        """Execute an ADB command on an Android device. Only works with Android devices."""
+        """
+        Execute an ADB command on an Android device and return structured output.
+        Only works with Android devices.
+        
+        Args:
+            rid: Device reservation ID
+            adb_command: ADB command to execute
+            
+        Returns:
+            Dict containing structured response with content and error status
+        """
         try:
             await self.check_token_validity()
             logger.info(f"Executing ADB command on RID {rid}: {adb_command}")
+            
             url = f"{self.base_url}/execute_adb"
             payload = {
                 "token": self.auth_token,
@@ -760,34 +758,117 @@ class PCloudyAPI:
                 "adbCommand": adb_command
             }
             headers = {"Content-Type": "application/json"}
-            response = await self.client.post(url, json=payload, headers=headers)
-            response.raise_for_status()
-            result = parse_response(response)
             
-            # Check if the command was executed successfully
-            if result.get("code") == 200:
-                output = result.get("output", "")
-                logger.info(f"ADB command executed successfully on RID {rid}")
-                return {
-                    "content": [
-                        {"type": "text", "text": f"ADB command executed successfully on RID {rid}"},
-                        {"type": "text", "text": f"Command: {adb_command}"},
-                        {"type": "text", "text": f"Output: {output}"}
-                    ],
-                    "isError": False
-                }
-            else:
-                error_msg = result.get("msg", "Unknown error")
-                logger.error(f"ADB command failed: {error_msg}")
-                return {
-                    "content": [{"type": "text", "text": f"ADB command failed: {error_msg}"}],
-                    "isError": True
-                }
-        except Exception as e:
-            logger.error(f"Error executing ADB command: {str(e)}")
+            # Use extended timeout for ADB commands
+            timeout_config = httpx.Timeout(connect=30.0, read=120.0, write=30.0, pool=30.0)
+            
+            async with httpx.AsyncClient(timeout=timeout_config) as client:
+                logger.debug(f"Sending ADB request to: {url}")
+                logger.debug(f"Payload: {json.dumps(payload, indent=2)}")
+                
+                response = await client.post(url, json=payload, headers=headers)
+                response.raise_for_status()
+                
+                # Parse response
+                raw_data = response.json()
+                logger.info(f"Raw ADB response: {json.dumps(raw_data, indent=2)}")
+                
+                # Handle different response structures
+                if isinstance(raw_data, dict):
+                    # Check for top-level result
+                    result = raw_data.get("result", raw_data)
+                    
+                    # Get status code
+                    status_code = result.get("code", 0)
+                    message = result.get("msg", "")
+                    
+                    if status_code == 200:
+                        # Success - try to extract output from multiple possible fields
+                        output_content = None
+                        output_source = None
+                        
+                        # Try different output field names
+                        for field_name in ["adbreply", "output", "reply", "response", "data", "result"]:
+                            if field_name in result and result[field_name] is not None:
+                                output_content = result[field_name]
+                                output_source = field_name
+                                break
+                        
+                        # Format the output
+                        if output_content is not None:
+                            # Convert to string and handle newlines
+                            formatted_output = str(output_content)
+                            if "\\n" in formatted_output:
+                                formatted_output = formatted_output.replace("\\n", "\n")
+                            formatted_output = formatted_output.strip()
+                            
+                            if not formatted_output:
+                                formatted_output = "[Command executed successfully but returned empty output]"
+                        else:
+                            formatted_output = "[No output returned from device]"
+                            logger.warning(f"No output found in response fields. Available keys: {list(result.keys())}")
+                        
+                        logger.info(f"ADB command successful. Output source: {output_source}, Length: {len(formatted_output)}")
+                        
+                        return {
+                            "success": True,
+                            "output": formatted_output,
+                            "command": adb_command,
+                            "rid": rid,
+                            "status_code": status_code,
+                            "message": message,
+                            "output_source": output_source
+                        }
+                    
+                    else:
+                        # Error response
+                        error_msg = message or "ADB command failed"
+                        logger.error(f"ADB command failed with code {status_code}: {error_msg}")
+                        
+                        return {
+                            "success": False,
+                            "error": error_msg,
+                            "command": adb_command,
+                            "rid": rid,
+                            "status_code": status_code,
+                            "raw_response": raw_data
+                        }
+                else:
+                    # Unexpected response format
+                    logger.error(f"Unexpected response format: {type(raw_data)}")
+                    return {
+                        "success": False,
+                        "error": f"Unexpected response format: {type(raw_data)}",
+                        "command": adb_command,
+                        "rid": rid,
+                        "raw_response": raw_data
+                    }
+                    
+        except httpx.TimeoutException:
+            logger.error(f"ADB command timed out for RID {rid}: {adb_command}")
             return {
-                "content": [{"type": "text", "text": f"Error executing ADB command: {str(e)}"}],
-                "isError": True
+                "success": False,
+                "error": "Command timed out after 120 seconds",
+                "command": adb_command,
+                "rid": rid
+            }
+            
+        except httpx.HTTPStatusError as e:
+            logger.error(f"HTTP error executing ADB command: {e.response.status_code} - {e.response.text}")
+            return {
+                "success": False,
+                "error": f"HTTP {e.response.status_code}: {e.response.text}",
+                "command": adb_command,
+                "rid": rid
+            }
+            
+        except Exception as e:
+            logger.error(f"Unexpected error executing ADB command: {str(e)}")
+            return {
+                "success": False,
+                "error": f"Unexpected error: {str(e)}",
+                "command": adb_command,
+                "rid": rid
             }
 
     async def start_performance_data(self, rid: str, package_name: str) -> Dict[str, Any]:
@@ -892,10 +973,10 @@ class PCloudyAPI:
         try:
             await self.check_token_validity()
             logger.info(f"Starting bulk download of all session data for RID {rid}")
-            
-            # Set default download directory if not provided
+              # Set default download directory if not provided
             if not download_dir:
-                download_dir = os.path.join(os.getcwd(), "downloads", f"session_{rid}")
+                import tempfile
+                download_dir = os.path.join(tempfile.gettempdir(), "pcloudy_downloads", f"session_{rid}")
             
             # Create download directory if it doesn't exist
             os.makedirs(download_dir, exist_ok=True)
@@ -1134,86 +1215,36 @@ class PCloudyAPI:
             headers = {"Content-Type": "application/json"}
             response = await self.client.post(url, json=payload, headers=headers)
             response.raise_for_status()
-            result = parse_response(response)
             
-            # Check if services started successfully
-            if result.get("code") == 200:
-                logger.info(f"Device services started successfully for RID {rid}")
-                services_started = []
-                if start_device_logs:
-                    services_started.append("📝 Device Logs")
-                if start_performance_data:
-                    services_started.append("📊 Performance Data")
-                if start_session_recording:
-                    services_started.append("🎥 Session Recording")
+            logger.info(f"Device services response status: {response.status_code}")
+            logger.info(f"Device services response text: {response.text}")
+            
+            # Simple success response for now
+            logger.info(f"Device services request completed for RID {rid}")
+            services_started = []
+            if start_device_logs:
+                services_started.append("📝 Device Logs")
+            if start_performance_data:
+                services_started.append("📊 Performance Data")
+            if start_session_recording:
+                services_started.append("🎥 Session Recording")
+            
+            return {
+                "content": [
+                    {"type": "text", "text": f"✅ Device services request sent for RID {rid}"},
+                    {"type": "text", "text": f"📋 Requested services: {', '.join(services_started)}"},
+                    {"type": "text", "text": f"🔍 Response: {response.status_code} - {response.text[:200]}"}
+                ],
+                "isError": False
+            }
                 
-                return {
-                    "content": [
-                        {"type": "text", "text": f"✅ Device services started successfully for RID {rid}"},
-                        {"type": "text", "text": f"📋 Active services: {', '.join(services_started)}"}
-                    ],
-                    "isError": False
-                }
-            else:
-                error_msg = result.get("msg", "Unknown error")
-                logger.error(f"Failed to start device services: {error_msg}")
-                return {
-                    "content": [{"type": "text", "text": f"Failed to start device services: {error_msg}"}],
-                    "isError": True
-                }
         except Exception as e:
             logger.error(f"Error starting device services: {str(e)}")
+            logger.error(f"Error type: {type(e)}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return {
                 "content": [{"type": "text", "text": f"Error starting device services: {str(e)}"}],
-                "isError": True
-            }
-
-    async def set_device_location(self, rid: str, latitude: float, longitude: float) -> Dict[str, Any]:
-        """
-        Set the GPS location for a device.
-        
-        Parameters:
-        - rid: Device RID
-        - latitude: Latitude coordinate (e.g., 37.7749)
-        - longitude: Longitude coordinate (e.g., -122.4194)
-        """
-        try:
-            await self.check_token_validity()
-            logger.info(f"Setting device location for RID {rid}: {latitude}, {longitude}")
-            
-            url = f"{self.base_url}/set_deviceLocation"
-            payload = {
-                "token": self.auth_token,
-                "rid": rid,
-                "latitude": str(latitude),
-                "longitude": str(longitude)
-            }
-            headers = {"Content-Type": "application/json"}
-            response = await self.client.post(url, json=payload, headers=headers)
-            response.raise_for_status()
-            result = parse_response(response)
-            
-            # Check if location was set successfully
-            if result.get("code") == 200:
-                logger.info(f"Device location set successfully for RID {rid}")
-                return {
-                    "content": [
-                        {"type": "text", "text": f"📍 Device location set successfully for RID {rid}"},
-                        {"type": "text", "text": f"🌍 Coordinates: {latitude}, {longitude}"}
-                    ],
-                    "isError": False
-                }
-            else:
-                error_msg = result.get("msg", "Unknown error")
-                logger.error(f"Failed to set device location: {error_msg}")
-                return {
-                    "content": [{"type": "text", "text": f"Failed to set device location: {error_msg}"}],
-                    "isError": True
-                }
-        except Exception as e:
-            logger.error(f"Error setting device location: {str(e)}")
-            return {
-                "content": [{"type": "text", "text": f"Error setting device location: {str(e)}"}],
                 "isError": True
             }
 

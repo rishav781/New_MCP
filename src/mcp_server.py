@@ -2,6 +2,7 @@ import os
 import tempfile
 import re
 import webbrowser
+import json
 from typing import Dict, Any
 from fastmcp import FastMCP
 from config import Config, logger
@@ -12,8 +13,8 @@ import asyncio
 mcp = FastMCP("pcloudy_auth3.0", description="MCP server for pCloudy device authentication, booking, releasing, file operations and resigning")
 api = PCloudyAPI()
 
-# Ensure a 'downloads' directory exists in the current working directory
-DOWNLOAD_DIR = os.path.join(os.getcwd(), "downloads")
+# Use the system's temp directory for downloads
+DOWNLOAD_DIR = os.path.join(tempfile.gettempdir(), "pcloudy_downloads")
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 @mcp.tool()
@@ -55,19 +56,17 @@ async def list_available_devices(platform: str = Config.DEFAULT_PLATFORM) -> Dic
         }
 
 @mcp.tool()
-async def book_device_by_name(device_name: str, platform: str = Config.DEFAULT_PLATFORM, latitude: float = None, longitude: float = None, auto_start_services: bool = True) -> Dict[str, Any]:
+async def book_device_by_name(device_name: str, platform: str = Config.DEFAULT_PLATFORM, auto_start_services: bool = True) -> Dict[str, Any]:
     """
     Book a device matching the provided device name for the specified platform.
-    Automatically starts device services and optionally sets GPS location.
+    Automatically starts device services.
     
     Parameters:
     - device_name: Name or partial name of the device to book
     - platform: Platform (android or ios)
-    - latitude: Optional GPS latitude (e.g., 37.7749 for San Francisco)
-    - longitude: Optional GPS longitude (e.g., -122.4194 for San Francisco)
     - auto_start_services: Automatically start device logs, performance data, and session recording (default: True)
     """
-    logger.info(f"Tool called: book_device_by_name with device_name={device_name}, platform={platform}, latitude={latitude}, longitude={longitude}")
+    logger.info(f"Tool called: book_device_by_name with device_name={device_name}, platform={platform}")
     try:
         # Auto-authenticate if not already authorized
         if not api.auth_token:
@@ -88,9 +87,8 @@ async def book_device_by_name(device_name: str, platform: str = Config.DEFAULT_P
                 "content": [{"type": "text", "text": f"No available {platform} device found matching '{device_name}'"}],
                 "isError": True
             }
-        
-        # Book device with enhanced features
-        booking = await api.book_device(selected["id"], latitude=latitude, longitude=longitude, auto_start_services=auto_start_services)
+          # Book device with enhanced features
+        booking = await api.book_device(selected["id"], auto_start_services=auto_start_services)
         api.rid = booking.get("rid")
         if not api.rid:
             return {
@@ -480,7 +478,7 @@ async def execute_adb_command(rid: str, adb_command: str, platform: str = "auto"
                 "content": [{
                     "type": "text",
                     "text": (
-                        "Error: ADB commands are only supported on Android devices. "
+                        "❌ Error: ADB commands are only supported on Android devices. "
                         "The specified device appears to be iOS. ADB (Android Debug Bridge) "
                         "is an Android-specific tool and cannot be used with iOS devices."
                     )
@@ -491,18 +489,53 @@ async def execute_adb_command(rid: str, adb_command: str, platform: str = "auto"
         # Validate ADB command format (basic validation)
         if not adb_command.strip():
             return {
-                "content": [{"type": "text", "text": "Error: ADB command cannot be empty"}],
+                "content": [{"type": "text", "text": "❌ Error: ADB command cannot be empty"}],
                 "isError": True
             }
         
         # Execute the ADB command
         result = await api.execute_adb_command(rid, adb_command)
-        return result
+        
+        # Handle the new response format
+        if result.get("success", False):
+            # Success case
+            output = result.get("output", "[No output]")
+            command = result.get("command", adb_command)
+            status_code = result.get("status_code", 200)
+            message = result.get("message", "success")
+            output_source = result.get("output_source", "unknown")
+            
+            return {
+                "content": [
+                    {"type": "text", "text": f"✅ ADB command executed successfully"},
+                    {"type": "text", "text": f"📋 Command: {command}"},
+                    {"type": "text", "text": f"📊 Status: {message} (Code: {status_code})"},
+                    {"type": "text", "text": f"🔍 Output Source: {output_source}"},
+                    {"type": "text", "text": f"📄 Output:\n{output}"}
+                ],
+                "isError": False
+            }
+        else:
+            # Error case
+            error = result.get("error", "Unknown error")
+            command = result.get("command", adb_command)
+            status_code = result.get("status_code", "Unknown")
+            raw_response = result.get("raw_response", {})
+            
+            return {
+                "content": [
+                    {"type": "text", "text": f"❌ ADB command failed: {error}"},
+                    {"type": "text", "text": f"📋 Command: {command}"},
+                    {"type": "text", "text": f"📊 Error Code: {status_code}"},
+                    {"type": "text", "text": f"🔍 Raw Response: {json.dumps(raw_response, indent=2) if raw_response else 'None'}"}
+                ],
+                "isError": True
+            }
         
     except Exception as e:
         logger.error(f"Error executing ADB command: {str(e)}")
         return {
-            "content": [{"type": "text", "text": f"Error executing ADB command: {str(e)}"}],
+            "content": [{"type": "text", "text": f"❌ Error executing ADB command: {str(e)}"}],
             "isError": True
         }
 
@@ -542,7 +575,7 @@ async def download_all_session_data(rid: str, download_dir: str = None) -> Dict[
     """
     Download all available session data files for a device session.
     This includes logs, performance data, screenshots, and any other files generated during the session.
-    Files will be saved to a local directory (defaults to downloads/session_{rid}).
+    Files will be saved to a local directory in the system temp folder (defaults to {tempdir}/pcloudy_downloads/session_{rid}).
     """
     logger.info(f"Tool called: download_all_session_data with rid={rid}, download_dir={download_dir}")
     try:
@@ -645,9 +678,10 @@ async def start_device_services(rid: str, start_device_logs: bool = True, start_
                 "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
                 "isError": True
             }
-        
-        # Start device services
+          # Start device services
         result = await api.start_device_services(rid, start_device_logs, start_performance_data, start_session_recording)
+        logger.info(f"Device services result type: {type(result)}")
+        logger.info(f"Device services result: {result}")
         return result
         
     except Exception as e:
@@ -700,62 +734,7 @@ async def start_performance_data(rid: str, package_name: str) -> Dict[str, Any]:
         logger.error(f"Error starting performance data: {str(e)}")
         return {
             "content": [{"type": "text", "text": f"Error starting performance data: {str(e)}"}],
-            "isError": True
-        }
-
-@mcp.tool()
-async def set_device_location(rid: str, latitude: float, longitude: float) -> Dict[str, Any]:
-    """
-    Set GPS location for a booked device.
-    
-    Parameters:
-    - rid: Device RID
-    - latitude: Latitude coordinate (e.g., 37.7749 for San Francisco)
-    - longitude: Longitude coordinate (e.g., -122.4194 for San Francisco)
-    
-    Examples:
-    - San Francisco: 37.7749, -122.4194
-    - New York: 40.7128, -74.0060
-    - London: 51.5074, -0.1278
-    - Tokyo: 35.6762, 139.6503
-    """
-    logger.info(f"Tool called: set_device_location with rid={rid}, latitude={latitude}, longitude={longitude}")
-    try:
-        # Auto-authenticate if not already authorized
-        if not api.auth_token:
-            logger.info("No auth token found, attempting auto-authentication...")
-            await api.authenticate()
-        
-        # Validate RID format (basic validation)
-        if not rid.strip():
-            return {
-                "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
-                "isError": True
-            }
-        
-        # Validate coordinates (basic range check)
-        if not (-90 <= latitude <= 90):
-            return {
-                "content": [{"type": "text", "text": "Error: Latitude must be between -90 and 90 degrees"}],
-                "isError": True
-            }
-        
-        if not (-180 <= longitude <= 180):
-            return {
-                "content": [{"type": "text", "text": "Error: Longitude must be between -180 and 180 degrees"}],
-                "isError": True
-            }
-        
-        # Set device location
-        result = await api.set_device_location(rid, latitude, longitude)
-        return result
-        
-    except Exception as e:
-        logger.error(f"Error setting device location: {str(e)}")
-        return {
-            "content": [{"type": "text", "text": f"Error setting device location: {str(e)}"}],
-            "isError": True
-        }
+            "isError": True        }
 
 @mcp.tool()
 async def start_wildnet(rid: str) -> Dict[str, Any]:
