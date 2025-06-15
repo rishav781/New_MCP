@@ -124,7 +124,7 @@ async def release_device(rid: str) -> Dict[str, Any]:
     Release a booked device. This operation may take 10-20 seconds to complete.
     
     After release, the user will be prompted about available session data files and given
-    the option to download them manually using the 'download_all_session_data' tool.
+    the option to download them manually using the 'download_session_data' tool.
     """
     logger.info(f"Tool called: release_device with rid={rid}")
     try:
@@ -190,6 +190,54 @@ async def capture_device_screenshot(rid: str, skin: bool = True) -> Dict[str, An
         }
 
 @mcp.tool()
+async def set_device_location(rid: str, latitude: float, longitude: float) -> Dict[str, Any]:
+    """
+    Set GPS coordinates for a device.
+    
+    Parameters:
+    - rid: Device RID
+    - latitude: Latitude coordinate (e.g., 48.8566 for Paris)
+    - longitude: Longitude coordinate (e.g., 2.3522 for Paris)
+    """
+    logger.info(f"Tool called: set_device_location with rid={rid}, lat={latitude}, lon={longitude}")
+    try:
+        # Auto-authenticate if not already authorized
+        if not api.auth_token:
+            logger.info("No auth token found, attempting auto-authentication...")
+            await api.authenticate()
+        
+        # Validate RID format (basic validation)
+        if not rid.strip():
+            return {
+                "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                "isError": True
+            }
+        
+        # Validate latitude range
+        if not (-90 <= latitude <= 90):
+            return {
+                "content": [{"type": "text", "text": "Error: Latitude must be between -90 and 90 degrees"}],
+                "isError": True
+            }
+        
+        # Validate longitude range  
+        if not (-180 <= longitude <= 180):
+            return {
+                "content": [{"type": "text", "text": "Error: Longitude must be between -180 and 180 degrees"}],
+                "isError": True
+            }
+        
+        result = await api.set_device_location(rid, latitude, longitude)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error setting device location: {str(e)}")
+        return {
+            "content": [{"type": "text", "text": f"Error setting device location: {str(e)}"}],
+            "isError": True
+        }
+
+@mcp.tool()
 async def download_from_cloud(filename: str) -> Dict[str, Any]:
     """Download a file from the pCloudy cloud drive and save it in the system temp folder."""
     logger.info(f"Tool called: download_from_cloud with filename={filename}")
@@ -215,27 +263,56 @@ async def download_from_cloud(filename: str) -> Dict[str, Any]:
         }
 
 @mcp.tool()
-async def download_manual_access_data(rid: str, filename: str) -> Dict[str, Any]:
-    """Download a file using the download_manual_access_data API and save it in the system temp folder."""
-    logger.info(f"Tool called: download_manual_access_data with rid={rid}, filename={filename}")
+async def download_session_data(rid: str, filename: str = None, download_dir: str = None) -> Dict[str, Any]:
+    """
+    Download session data files. Can download a specific file or all available files.
+    
+    Parameters:
+    - rid: Device RID (required)
+    - filename: Specific file to download (optional). If not provided, downloads all files
+    - download_dir: Directory to save files (optional). If not provided, uses temp directory
+    
+    This tool replaces both download_manual_access_data and download_all_session_data.
+    """
+    logger.info(f"Tool called: download_session_data with rid={rid}, filename={filename}, download_dir={download_dir}")
     try:
         # Auto-authenticate if not already authorized
         if not api.auth_token:
             logger.info("No auth token found, attempting auto-authentication...")
             await api.authenticate()
-        file_content = await api.download_manual_access_data(rid, filename)
-        temp_dir = tempfile.gettempdir()
-        local_path = os.path.join(temp_dir, filename)
-        with open(local_path, 'wb') as f:
-            f.write(file_content)
-        return {
-            "content": [{"type": "text", "text": f"File downloaded to {local_path}"}],
-            "isError": False
-        }
+        
+        # Validate RID format (basic validation)
+        if not rid.strip():
+            return {
+                "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                "isError": True
+            }
+        
+        # Validate download directory path if provided
+        if download_dir:
+            try:
+                download_dir = os.path.abspath(download_dir)
+                # Ensure we're not writing outside the project directory for security
+                project_root = os.path.abspath(os.getcwd())
+                if not download_dir.startswith(project_root):
+                    return {
+                        "content": [{"type": "text", "text": "Error: Download directory must be within the project directory for security"}],
+                        "isError": True
+                    }
+            except Exception as path_error:
+                return {
+                    "content": [{"type": "text", "text": f"Error: Invalid download directory path: {str(path_error)}"}],
+                    "isError": True
+                }
+        
+        # Call the merged API function
+        result = await api.download_session_data(rid, filename, download_dir)
+        return result
+        
     except Exception as e:
-        logger.error(f"Error downloading manual access data: {str(e)}")
+        logger.error(f"Error downloading session data: {str(e)}")
         return {
-            "content": [{"type": "text", "text": f"Error downloading manual access data: {str(e)}"}],
+            "content": [{"type": "text", "text": f"Error downloading session data: {str(e)}"}],
             "isError": True
         }
 
@@ -567,60 +644,7 @@ async def list_performance_data_files(rid: str) -> Dict[str, Any]:
         logger.error(f"Error listing performance data files: {str(e)}")
         return {
             "content": [{"type": "text", "text": f"Error listing performance data files: {str(e)}"}],
-            "isError": True
-        }
-
-@mcp.tool()
-async def download_all_session_data(rid: str, download_dir: str = None) -> Dict[str, Any]:
-    """
-    Download all available session data files for a device session.
-    This includes logs, performance data, screenshots, and any other files generated during the session.
-    Files will be saved to a local directory in the system temp folder (defaults to {tempdir}/pcloudy_downloads/session_{rid}).
-    """
-    logger.info(f"Tool called: download_all_session_data with rid={rid}, download_dir={download_dir}")
-    try:
-        # Auto-authenticate if not already authorized
-        if not api.auth_token:
-            logger.info("No auth token found, attempting auto-authentication...")
-            await api.authenticate()
-        
-        # Validate RID format (basic validation)
-        if not rid.strip():
-            return {
-                "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
-                "isError": True
-            }
-        
-        # If no download directory specified, use default
-        if not download_dir:
-            download_dir = os.path.join(os.getcwd(), "downloads", f"session_{rid}")
-        
-        # Validate download directory path
-        try:
-            download_dir = os.path.abspath(download_dir)
-            # Ensure we're not writing outside the project directory for security
-            project_root = os.path.abspath(os.getcwd())
-            if not download_dir.startswith(project_root):
-                return {
-                    "content": [{"type": "text", "text": "Error: Download directory must be within the project directory for security"}],
-                    "isError": True
-                }
-        except Exception as path_error:
-            return {
-                "content": [{"type": "text", "text": f"Error: Invalid download directory path: {str(path_error)}"}],
-                "isError": True
-            }
-        
-        # Download all session data
-        result = await api.download_all_session_data(rid, download_dir)
-        return result
-        
-    except Exception as e:
-        logger.error(f"Error downloading all session data: {str(e)}")
-        return {
-            "content": [{"type": "text", "text": f"Error downloading all session data: {str(e)}"}],
-            "isError": True
-        }
+            "isError": True        }
 
 @mcp.tool()
 async def detect_device_platform(rid: str) -> Dict[str, Any]:
@@ -657,12 +681,14 @@ async def detect_device_platform(rid: str) -> Dict[str, Any]:
 async def start_device_services(rid: str, start_device_logs: bool = True, start_performance_data: bool = True, start_session_recording: bool = True) -> Dict[str, Any]:
     """
     Start device services for logging, performance monitoring, and session recording.
-    This is useful when you want to manually control device services after booking.
+    This is automatically called when booking a device, but can be used manually if needed.
+    
+    Note: Performance data is collected for all apps running on the device automatically.
     
     Parameters:
     - rid: Device RID
     - start_device_logs: Enable device logs collection (default: True)  
-    - start_performance_data: Enable performance data collection (default: True)
+    - start_performance_data: Enable performance data collection for all apps (default: True)
     - start_session_recording: Enable session recording (default: True)
     """
     logger.info(f"Tool called: start_device_services with rid={rid}")
@@ -690,51 +716,6 @@ async def start_device_services(rid: str, start_device_logs: bool = True, start_
             "content": [{"type": "text", "text": f"Error starting device services: {str(e)}"}],
             "isError": True
         }
-
-@mcp.tool()
-async def start_performance_data(rid: str, package_name: str) -> Dict[str, Any]:
-    """
-    Start performance data collection for a specific app on a device.
-    This monitors CPU usage, memory consumption, and other metrics for the specified app.
-    
-    Parameters:
-    - rid: Device RID
-    - package_name: Package name of the app (e.g., 'com.example.app', 'com.android.chrome')
-    
-    Tips:
-    - For Android APKs, you can use ADB to find package names: 'adb shell pm list packages | grep <app_name>'
-    - Package names typically follow reverse domain notation (com.company.appname)
-    """
-    logger.info(f"Tool called: start_performance_data with rid={rid}, package_name={package_name}")
-    try:
-        # Auto-authenticate if not already authorized
-        if not api.auth_token:
-            logger.info("No auth token found, attempting auto-authentication...")
-            await api.authenticate()
-        
-        # Validate RID format (basic validation)
-        if not rid.strip():
-            return {
-                "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
-                "isError": True
-            }
-        
-        # Validate package name
-        if not package_name.strip():
-            return {
-                "content": [{"type": "text", "text": "Error: Package name cannot be empty"}],
-                "isError": True
-            }
-        
-        # Start performance data collection
-        result = await api.start_performance_data(rid, package_name)
-        return result
-        
-    except Exception as e:
-        logger.error(f"Error starting performance data: {str(e)}")
-        return {
-            "content": [{"type": "text", "text": f"Error starting performance data: {str(e)}"}],
-            "isError": True        }
 
 @mcp.tool()
 async def start_wildnet(rid: str) -> Dict[str, Any]:
@@ -771,7 +752,7 @@ async def start_wildnet(rid: str) -> Dict[str, Any]:
         }
 
 # IMPORTANT:
-# - To download any file from a device (e.g., logs, screenshots, app data), always use the download_manual_access_data tool.
+# - To download any file from a device (e.g., logs, screenshots, app data), always use the download_session_data tool.
 # - To download any file from the pCloudy cloud drive, always use the download_from_cloud tool.
 # - Do NOT use other tools or methods for downloading files from devices or cloud storage.
 

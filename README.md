@@ -83,50 +83,58 @@ The server will listen on `http://localhost:8000` by default (port can be change
 ## Available Tools
 
 ### Authentication & Device Management
+
 - **authorize**: Authenticate with pCloudy by opening a browser window where you can enter your `username` and `api_key`. Upon successful authentication, the token is stored for use in other tools.
 - **list_available_devices**: List available Android/iOS devices on the pCloudy platform.
 - **book_device_by_name**: Book a device by its name (e.g., "Galaxy S10") with optional GPS location setting and automatic service startup.
 - **release_device**: Release a booked device with automatic session data discovery.
 
 ### File Operations  
+
 - **upload_file**: Upload an APK/IPA/ZIP file to the pCloudy drive with duplicate detection.
 - **download_from_cloud**: Download files from the pCloudy drive.
 - **download_manual_access_data**: Download files (e.g., screenshots, logs) from a booked device session.
 - **list_cloud_apps**: List apps/files in the pCloudy drive.
 
 ### App Management
+
 - **resign_ipa**: Resign iOS IPA files for deployment with duplicate detection.
-- **install_and_launch_app**: Install and launch an app on a booked device with automatic performance monitoring.
+- **install_and_launch_app**: Install and launch an app on a booked device with automatic performance monitoring and browser opening.
 
 ### Device Control & Monitoring
+
 - **capture_device_screenshot**: Capture a screenshot from a booked device (with optional device skin).
 - **get_device_page_url**: Retrieve and automatically open the device page URL in browser.
 - **start_device_services**: Start device logs, performance data collection, and session recording.
-- **set_device_location**: Set GPS coordinates for a device.
-- **start_performance_data**: Start performance monitoring for a specific app package.
+- **set_device_location**: Set GPS coordinates (latitude, longitude) for a device to simulate location-based testing.
 
 ### Advanced Operations
+
 - **execute_adb_command**: Execute ADB commands on Android devices (with automatic platform detection).
 - **detect_device_platform**: Auto-detect if a device is Android or iOS.
 - **list_performance_data_files**: List all performance data files for a device session.
-- **download_all_session_data**: Download all session data files to a local directory.
+- **download_session_data**: Download session data files (single file or all files) to a local directory.
 - **start_wildnet**: Enable wildnet feature for enhanced network capabilities on booked devices.
 
 ## Enhanced Features
 
 ### Smart File Operations
+
 - **Duplicate Detection**: Both `upload_file` and `resign_ipa` check for existing files to prevent accidental overwrites
 - **Force Operations**: Use `force_upload=True` or `force_resign=True` to override duplicate protection
 - **Intelligent Suggestions**: Auto-suggest package names from APK filenames for performance monitoring
 
 ### Automatic Service Management
+
 - **Auto-Start Services**: Device booking automatically starts logging, performance data, and session recording
-- **Location Setting**: Set GPS coordinates during device booking or afterward
+- **Browser Integration**: App installation automatically opens device page in browser for immediate testing
+- **Location Setting**: Set GPS coordinates to simulate location-based testing (e.g., Paris: 48.8566, 2.3522)
 - **Performance Monitoring**: Automatically start performance data collection when installing apps
 
 ### Session Data Management
+
 - **Automatic Discovery**: Device release automatically checks for available session files
-- **Bulk Download**: Download all session data with one command
+- **Unified Download**: Single function handles both individual file and bulk downloads
 - **Smart Prompting**: Users are guided on how to retrieve their testing artifacts
 
 ## Notes
@@ -145,7 +153,9 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **Enhanced User Experience**:
   - File operations include duplicate detection to prevent accidental overwrites
   - Device booking automatically starts essential services (logs, performance data, recording)
-  - Performance monitoring starts automatically when installing apps with known package names
+  - App installation automatically opens device page in browser for immediate testing
+  - GPS location setting enables location-based testing scenarios
+  - Unified download function handles both single files and bulk session data
   - Session data discovery helps users collect testing artifacts after device release
 
 - **Troubleshooting**:

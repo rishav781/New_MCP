@@ -3,6 +3,7 @@ import time
 import os
 import asyncio
 import json
+import webbrowser
 from typing import Dict, Any
 from config import Config, logger  # Import logger and Config
 from utils import encode_auth, parse_response
@@ -22,7 +23,7 @@ def extract_package_name_hint(filename: str) -> str:
     """
     Attempt to extract a likely package name from APK filename.
     This is a fallback method when the API doesn't provide package information.
-    Returns a suggested package name that users can try with start_performance_data.
+    Returns a suggested package name for reference.
     """
     if not filename:
         return ""
@@ -223,52 +224,8 @@ class PCloudyAPI:
                 result = parse_response(response)
                 if result.get("code") == 200 and result.get("msg") == "success":
                     logger.info(f"Device {rid} released successfully")
-                    
-                    response_content = [
-                        {"type": "text", "text": f"✅ Device {rid} released successfully"}
-                    ]
-                    
-                    # ALWAYS check for session data files and prompt user (unless auto_download is explicitly True)
-                    if not auto_download:
-                        try:
-                            # Check if there are any session files available
-                            files_result = await self.list_performance_data_files(rid)
-                            if not files_result.get("isError", True):
-                                files_content = files_result.get("content", [])
-                                if files_content and "No performance data files found" not in str(files_content[0].get("text", "")):
-                                    response_content.append({
-                                        "type": "text", 
-                                        "text": "📁 Session data files are available for this device session."
-                                    })
-                                    response_content.append({
-                                        "type": "text", 
-                                        "text": "💡 To download all session data, use: download_all_session_data(rid=\"" + rid + "\")"
-                                    })
-                                    response_content.append({
-                                        "type": "text", 
-                                        "text": "📋 To see what files are available first, use: list_performance_data_files(rid=\"" + rid + "\")"
-                                    })
-                                    response_content.append({
-                                        "type": "text", 
-                                        "text": "ℹ️ Session data includes logs, performance metrics, screenshots, and other testing artifacts."
-                                    })
-                                else:
-                                    response_content.append({
-                                        "type": "text", 
-                                        "text": "ℹ️ No session data files found for this device."
-                                    })
-                        except Exception as check_error:
-                            logger.warning(f"Could not check for session files: {str(check_error)}")
-                            response_content.append({
-                                "type": "text", 
-                                "text": "ℹ️ To check for session data files, use: list_performance_data_files(rid=\"" + rid + "\")"
-                            })
-                            response_content.append({
-                                "type": "text", 
-                                "text": "📥 To download session data if available, use: download_all_session_data(rid=\"" + rid + "\")"
-                            })                    
                     return {
-                        "content": response_content,
+                        "content": [{"type": "text", "text": f"✅ Device {rid} released successfully"}],
                         "isError": False
                     }
                 else:
@@ -483,6 +440,55 @@ class PCloudyAPI:
                 "isError": True
             }
 
+    async def set_device_location(self, rid: str, latitude: float, longitude: float) -> Dict[str, Any]:
+        """
+        Set GPS coordinates for a device.
+        
+        Parameters:
+        - rid: Device RID
+        - latitude: Latitude coordinate (e.g., 48.8566 for Paris)
+        - longitude: Longitude coordinate (e.g., 2.3522 for Paris)
+        """
+        try:
+            await self.check_token_validity()
+            logger.info(f"Setting device location for RID {rid}: lat={latitude}, lon={longitude}")
+            url = f"{self.base_url}/set_deviceLocation"
+            payload = {
+                "token": self.auth_token,
+                "rid": rid,
+                "latitude": latitude,
+                "longitude": longitude
+            }
+            headers = {"Content-Type": "application/json"}
+            response = await self.client.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            result = parse_response(response)
+            
+            # Check if location was set successfully
+            if result.get("code") == 200 or result.get("statuscode") == 200:
+                logger.info(f"Device location set successfully for RID {rid}")
+                return {
+                    "content": [
+                        {"type": "text", "text": f"✅ GPS location set successfully for device {rid}"},
+                        {"type": "text", "text": f"📍 Coordinates: {latitude}, {longitude}"}
+                    ],
+                    "isError": False
+                }
+            else:
+                error_msg = result.get("msg", result.get("message", "Unknown error"))
+                logger.error(f"Failed to set device location: {error_msg}")
+                return {
+                    "content": [{"type": "text", "text": f"Failed to set device location: {error_msg}"}],
+                    "isError": True
+                }
+                
+        except Exception as e:
+            logger.error(f"Error setting device location: {str(e)}")
+            return {
+                "content": [{"type": "text", "text": f"Error setting device location: {str(e)}"}],
+                "isError": True
+            }
+
     async def install_and_launch_app(self, rid: str, filename: str, grant_all_permissions: bool = True, app_package_name: str = None) -> Dict[str, Any]:
         try:
             await self.check_token_validity()
@@ -504,77 +510,30 @@ class PCloudyAPI:
                 # Prepare success response content
                 response_content = [
                     {"type": "text", "text": f"✅ App '{filename}' installed and launched successfully on RID: {rid}"}
-                ]
-                
+                ]                
                 if package:
                     response_content.append({"type": "text", "text": f"📱 Package: {package}"})
                 
-                # Start performance data collection if package name is available
-                if package:
-                    try:
-                        logger.info(f"Starting performance data collection for package '{package}' on RID {rid}")
-                        perf_result = await self.start_performance_data(rid, package)
-                        if not perf_result.get("isError", True):
-                            response_content.append({
-                                "type": "text", 
-                                "text": "📊 Performance data collection started automatically. Use 'list_performance_data_files' tool to view collected metrics later."
-                            })
-                            logger.info(f"Performance monitoring started successfully for {package}")
+                # Automatically get device URL and open in browser
+                try:
+                    logger.info(f"Getting device page URL for RID: {rid}")
+                    url_result = await self.get_device_page_url(rid)
+                    
+                    if not url_result.get("isError", True):
+                        device_url = url_result.get("content", [{}])[0].get("text", "")
+                        if device_url:
+                            # Open URL in browser
+                            webbrowser.open(device_url)
+                            response_content.append({"type": "text", "text": f"🌐 Device page opened in browser: {device_url}"})
+                            logger.info(f"Device page opened in browser: {device_url}")
                         else:
-                            error_text = perf_result.get('content', [{}])[0].get('text', 'Unknown error')
-                            response_content.append({
-                                "type": "text", 
-                                "text": f"⚠️ Performance data collection failed: {error_text}"
-                            })
-                            logger.warning(f"Performance monitoring failed for {package}: {error_text}")
-                    except Exception as perf_error:
-                        logger.warning(f"Failed to start performance data collection: {str(perf_error)}")
-                        response_content.append({
-                            "type": "text", 
-                            "text": f"⚠️ Performance data collection failed: {str(perf_error)}"
-                        })
-                else:
-                    # Try to use the provided app_package_name as fallback
-                    fallback_package = app_package_name or extract_package_name_hint(filename)
-                    
-                    if fallback_package:
-                        try:
-                            logger.info(f"Using provided/suggested package name '{fallback_package}' for performance data collection on RID {rid}")
-                            perf_result = await self.start_performance_data(rid, fallback_package)
-                            if not perf_result.get("isError", True):
-                                response_content.append({
-                                    "type": "text", 
-                                    "text": f"📊 Performance data collection started using {'provided' if app_package_name else 'suggested'} package name: {fallback_package}"
-                                })
-                                logger.info(f"Performance monitoring started successfully with fallback package {fallback_package}")
-                            else:
-                                error_text = perf_result.get('content', [{}])[0].get('text', 'Unknown error')
-                                response_content.append({
-                                    "type": "text", 
-                                    "text": f"⚠️ Performance data collection failed with {'provided' if app_package_name else 'suggested'} package '{fallback_package}': {error_text}"
-                                })
-                                logger.warning(f"Performance monitoring failed with fallback package {fallback_package}: {error_text}")
-                        except Exception as perf_error:
-                            logger.warning(f"Failed to start performance data collection with fallback package {fallback_package}: {str(perf_error)}")
-                            response_content.append({
-                                "type": "text", 
-                                "text": f"⚠️ Performance data collection failed with {'provided' if app_package_name else 'suggested'} package '{fallback_package}': {str(perf_error)}"
-                            })
+                            response_content.append({"type": "text", "text": "⚠️ Could not retrieve device page URL"})
                     else:
-                        response_content.append({
-                            "type": "text", 
-                            "text": "ℹ️ Performance data collection not started (package name not available from API response)"
-                        })
-                        response_content.append({
-                            "type": "text", 
-                            "text": "💡 Tip: Provide 'app_package_name' parameter when calling install_and_launch_app, or use 'start_performance_data' tool manually"
-                        })
-                        response_content.append({
-                            "type": "text", 
-                            "text": "📱 For Android APKs, you can also use ADB to find the package: adb shell pm list packages | grep <app_name>"
-                        })
-                    
-                    logger.debug(f"Package name not found in API response for {filename}. Full response: {result}")
+                        response_content.append({"type": "text", "text": "⚠️ Could not retrieve device page URL"})
+                        
+                except Exception as url_error:
+                    logger.warning(f"Failed to open device page URL: {str(url_error)}")
+                    response_content.append({"type": "text", "text": f"⚠️ Could not open device page: {str(url_error)}"})
                 
                 return {
                     "content": response_content,
@@ -699,13 +658,49 @@ class PCloudyAPI:
                 "isError": True
             }
 
-    async def download_manual_access_data(self, rid: str, filename: str) -> bytes:
-        """Download a file using the download_manual_access_data endpoint and return it as bytes for streaming."""
+    async def download_session_data(self, rid: str, filename: str = None, download_dir: str = None) -> Dict[str, Any]:
+        """
+        Download session data files. Can download a specific file or all available files.
+        
+        Parameters:
+        - rid: Device RID
+        - filename: Specific file to download (optional). If None, downloads all files
+        - download_dir: Directory to save files (optional). If None, uses temp directory
+        
+        Returns:
+        - Dictionary with content and error status
+        """
         try:
             await self.check_token_validity()
+            
+            if filename:
+                # Download specific file
+                return await self._download_single_file(rid, filename, download_dir)
+            else:
+                # Download all files
+                return await self._download_all_files(rid, download_dir)
+                
+        except Exception as e:
+            logger.error(f"Error downloading session data: {str(e)}")
+            return {
+                "content": [{"type": "text", "text": f"Error downloading session data: {str(e)}"}],
+                "isError": True
+            }
+    
+    async def _download_single_file(self, rid: str, filename: str, download_dir: str = None) -> Dict[str, Any]:
+        """Download a single session file."""
+        try:
             if not validate_filename(filename):
                 logger.error(f"Invalid filename for download: {filename}")
                 raise ValueError(f"Invalid filename: {filename}")
+            
+            # Set default download directory if not provided
+            if not download_dir:
+                import tempfile
+                download_dir = os.path.join(tempfile.gettempdir(), "pcloudy_downloads", f"session_{rid}")
+            
+            # Create download directory if it doesn't exist
+            os.makedirs(download_dir, exist_ok=True)
             
             url = f"{self.base_url}/download_manual_access_data"
             payload = {
@@ -721,19 +716,192 @@ class PCloudyAPI:
             if "application/json" in content_type:
                 # If the response is JSON, it's likely an error or info message
                 result = parse_response(response)
-                logger.info(f"download_manual_access_data returned JSON: {result}")
-                # Convert the JSON to a string and then to bytes to maintain consistency in return type
-                return json.dumps(result).encode('utf-8')
+                logger.info(f"download_session_data returned JSON: {result}")
+                return {
+                    "content": [{"type": "text", "text": f"Download response: {result}"}],
+                    "isError": True
+                }
             else:
-                # If it's binary data, return it directly
-                logger.info(f"File '{filename}' downloaded successfully via download_manual_access_data")
-                return response.content
+                # Save file to local filesystem
+                local_path = os.path.join(download_dir, filename)
+                
+                # Handle potential filename conflicts
+                counter = 1
+                original_path = local_path
+                while os.path.exists(local_path):
+                    name, ext = os.path.splitext(original_path)
+                    local_path = f"{name}_{counter}{ext}"
+                    counter += 1
+                
+                with open(local_path, 'wb') as f:
+                    f.write(response.content)
+                
+                logger.info(f"File '{filename}' downloaded successfully to {local_path}")
+                return {
+                    "content": [{"type": "text", "text": f"📥 Successfully downloaded '{filename}' to: {local_path}"}],
+                    "isError": False
+                }
+                
         except httpx.TimeoutException as te:
             logger.error("Download request timed out. Please try again or increase the timeout.")
-            raise ValueError("Request timed out. Please try again or increase the timeout value.")
+            return {
+                "content": [{"type": "text", "text": "Request timed out. Please try again or increase the timeout value."}],
+                "isError": True
+            }
         except Exception as e:
-            logger.error(f"Error downloading file via download_manual_access_data: {str(e)}")
-            raise ValueError(f"Error downloading file via download_manual_access_data: {str(e)}")
+            logger.error(f"Error downloading file: {str(e)}")
+            return {
+                "content": [{"type": "text", "text": f"Error downloading file: {str(e)}"}],
+                "isError": True
+            }
+    
+    async def _download_all_files(self, rid: str, download_dir: str = None) -> Dict[str, Any]:
+        """Download all available session files."""
+        try:
+            logger.info(f"Starting bulk download of all session data for RID {rid}")
+            
+            # Set default download directory if not provided
+            if not download_dir:
+                import tempfile
+                download_dir = os.path.join(tempfile.gettempdir(), "pcloudy_downloads", f"session_{rid}")
+            
+            # Create download directory if it doesn't exist
+            os.makedirs(download_dir, exist_ok=True)
+              # First, get the list of all available files
+            url = f"{self.base_url}/manual_access_files_list"
+            payload = {
+                "token": self.auth_token,
+                "rid": rid
+            }
+            headers = {"Content-Type": "application/json"}
+            response = await self.client.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            result = parse_response(response)
+            
+            if result.get("code") != 200:
+                error_msg = result.get("msg", "Unknown error")
+                logger.error(f"Failed to list session files: {error_msg}")
+                return {
+                    "content": [{"type": "text", "text": f"Failed to list session files: {error_msg}"}],
+                    "isError": True
+                }
+            
+            files = result.get("files", [])
+            if not files:
+                logger.info(f"No session data files found for RID {rid}")
+                return {
+                    "content": [{"type": "text", "text": f"No session data files found for device {rid}"}],
+                    "isError": False
+                }
+            
+            # Download each file
+            downloaded_files = []
+            failed_files = []
+            total_files = len(files)
+            
+            logger.info(f"Found {total_files} files to download for RID {rid}")
+            
+            for i, file_info in enumerate(files, 1):
+                filename = file_info.get("file")
+                if not filename:
+                    logger.warning(f"Skipping file {i}/{total_files}: no filename provided")
+                    continue
+                
+                try:
+                    logger.info(f"Downloading file {i}/{total_files}: {filename}")
+                    
+                    # Download the file using the same endpoint
+                    url = f"{self.base_url}/download_manual_access_data"
+                    payload = {
+                        "token": self.auth_token,
+                        "rid": rid,
+                        "filename": filename
+                    }
+                    headers = {"Content-Type": "application/json"}
+                    response = await self.client.post(url, json=payload, headers=headers)
+                    response.raise_for_status()
+                    
+                    # Save to local filesystem
+                    local_path = os.path.join(download_dir, filename)
+                    
+                    # Handle potential filename conflicts
+                    counter = 1
+                    original_path = local_path
+                    while os.path.exists(local_path):
+                        name, ext = os.path.splitext(original_path)
+                        local_path = f"{name}_{counter}{ext}"
+                        counter += 1
+                    
+                    with open(local_path, 'wb') as f:
+                        f.write(response.content)
+                    
+                    downloaded_files.append({
+                        "filename": filename,
+                        "local_path": local_path,
+                        "size": file_info.get("size", "Unknown"),
+                        "type": file_info.get("type", "Unknown")
+                    })
+                    
+                    logger.info(f"Successfully downloaded {filename} to {local_path}")
+                    
+                except Exception as file_error:
+                    logger.error(f"Failed to download {filename}: {str(file_error)}")
+                    failed_files.append({
+                        "filename": filename,
+                        "error": str(file_error)
+                    })
+            
+            # Prepare summary response
+            success_count = len(downloaded_files)
+            failure_count = len(failed_files)
+            
+            response_content = []
+            
+            if success_count > 0:
+                response_content.append({
+                    "type": "text",
+                    "text": f"📥 Successfully downloaded {success_count}/{total_files} files to: {download_dir}"
+                })
+                
+                # List successfully downloaded files
+                success_list = []
+                for file_info in downloaded_files:
+                    success_list.append(f"✅ {file_info['filename']} ({file_info['size']}, {file_info['type']})")
+                
+                response_content.append({
+                    "type": "text",
+                    "text": f"Downloaded Files:\n" + "\n".join(success_list)
+                })
+            
+            if failure_count > 0:
+                response_content.append({
+                    "type": "text",
+                    "text": f"⚠️ Failed to download {failure_count} files:"
+                })
+                
+                # List failed files
+                failure_list = []
+                for file_info in failed_files:
+                    failure_list.append(f"❌ {file_info['filename']}: {file_info['error']}")
+                
+                response_content.append({
+                    "type": "text",
+                    "text": "\n".join(failure_list)
+                })
+            
+            logger.info(f"Bulk download completed: {success_count} success, {failure_count} failures")
+            
+            return {
+                "content": response_content,
+                "isError": failure_count > 0 and success_count == 0  # Only error if all downloads failed
+            }
+            
+        except Exception as e:
+            logger.error(f"Error during bulk download: {str(e)}")
+            return {
+                "content": [{"type": "text", "text": f"Error during bulk download: {str(e)}"}],
+                "isError": True
+            }
 
     async def execute_adb_command(self, rid: str, adb_command: str) -> Dict[str, Any]:
         """
@@ -749,6 +917,14 @@ class PCloudyAPI:
         """
         try:
             await self.check_token_validity()
+            
+            # Validate and sanitize the ADB command
+            if not adb_command.strip():
+                raise ValueError("ADB command cannot be empty")
+                
+            # Remove any leading/trailing quotes that might cause issues
+            adb_command = adb_command.strip().strip('"').strip("'")
+            
             logger.info(f"Executing ADB command on RID {rid}: {adb_command}")
             
             url = f"{self.base_url}/execute_adb"
@@ -782,34 +958,36 @@ class PCloudyAPI:
                     status_code = result.get("code", 0)
                     message = result.get("msg", "")
                     
-                    if status_code == 200:
-                        # Success - try to extract output from multiple possible fields
-                        output_content = None
-                        output_source = None
+                    # Always return the adbreply content regardless of the API's success indication
+                    output_content = None
+                    output_source = None
+                    
+                    # Try different output field names
+                    for field_name in ["adbreply", "output", "reply", "response", "data", "result"]:
+                        if field_name in result and result[field_name] is not None:
+                            output_content = result[field_name]
+                            output_source = field_name
+                            break
+                    
+                    # Format the output
+                    if output_content is not None:
+                        # Convert to string and handle newlines
+                        formatted_output = str(output_content)
+                        if "\\n" in formatted_output:
+                            formatted_output = formatted_output.replace("\\n", "\n")
+                        formatted_output = formatted_output.strip()
                         
-                        # Try different output field names
-                        for field_name in ["adbreply", "output", "reply", "response", "data", "result"]:
-                            if field_name in result and result[field_name] is not None:
-                                output_content = result[field_name]
-                                output_source = field_name
-                                break
-                        
-                        # Format the output
-                        if output_content is not None:
-                            # Convert to string and handle newlines
-                            formatted_output = str(output_content)
-                            if "\\n" in formatted_output:
-                                formatted_output = formatted_output.replace("\\n", "\n")
-                            formatted_output = formatted_output.strip()
-                            
-                            if not formatted_output:
-                                formatted_output = "[Command executed successfully but returned empty output]"
-                        else:
-                            formatted_output = "[No output returned from device]"
-                            logger.warning(f"No output found in response fields. Available keys: {list(result.keys())}")
-                        
+                        if not formatted_output:
+                            formatted_output = "[Command executed successfully but returned empty output]"
+                    else:
+                        formatted_output = "[No output returned from device]"
+                        logger.warning(f"No output found in response fields. Available keys: {list(result.keys())}")
+                    
+                    # Determine success based on actual command output
+                    is_success = status_code == 200 and "Invalid Command" not in formatted_output
+                    
+                    if is_success:
                         logger.info(f"ADB command successful. Output source: {output_source}, Length: {len(formatted_output)}")
-                        
                         return {
                             "success": True,
                             "output": formatted_output,
@@ -819,12 +997,9 @@ class PCloudyAPI:
                             "message": message,
                             "output_source": output_source
                         }
-                    
                     else:
-                        # Error response
-                        error_msg = message or "ADB command failed"
-                        logger.error(f"ADB command failed with code {status_code}: {error_msg}")
-                        
+                        error_msg = f"ADB command failed: {formatted_output}"
+                        logger.error(error_msg)
                         return {
                             "success": False,
                             "error": error_msg,
@@ -840,10 +1015,8 @@ class PCloudyAPI:
                         "success": False,
                         "error": f"Unexpected response format: {type(raw_data)}",
                         "command": adb_command,
-                        "rid": rid,
-                        "raw_response": raw_data
+                        "rid": rid
                     }
-                    
         except httpx.TimeoutException:
             logger.error(f"ADB command timed out for RID {rid}: {adb_command}")
             return {
@@ -852,7 +1025,6 @@ class PCloudyAPI:
                 "command": adb_command,
                 "rid": rid
             }
-            
         except httpx.HTTPStatusError as e:
             logger.error(f"HTTP error executing ADB command: {e.response.status_code} - {e.response.text}")
             return {
@@ -861,7 +1033,6 @@ class PCloudyAPI:
                 "command": adb_command,
                 "rid": rid
             }
-            
         except Exception as e:
             logger.error(f"Unexpected error executing ADB command: {str(e)}")
             return {
@@ -871,51 +1042,12 @@ class PCloudyAPI:
                 "rid": rid
             }
 
-    async def start_performance_data(self, rid: str, package_name: str) -> Dict[str, Any]:
-        """Start performance data collection for an app on a device."""
-        try:
-            await self.check_token_validity()
-            logger.info(f"Starting performance data collection for package '{package_name}' on RID {rid}")
-            url = f"{self.base_url}/start_performance_data"
-            payload = {
-                "token": self.auth_token,
-                "rid": rid,
-                "pkg": package_name
-            }
-            headers = {"Content-Type": "application/json"}
-            response = await self.client.post(url, json=payload, headers=headers)
-            response.raise_for_status()
-            result = parse_response(response)
-            
-            # Check if the performance data collection started successfully
-            if result.get("code") == 200:
-                logger.info(f"Performance data collection started successfully for package '{package_name}' on RID {rid}")
-                return {
-                    "content": [
-                        {"type": "text", "text": f"Performance data collection started successfully for package '{package_name}' on RID {rid}"}
-                    ],
-                    "isError": False
-                }
-            else:
-                error_msg = result.get("msg", "Unknown error")
-                logger.error(f"Failed to start performance data collection: {error_msg}")
-                return {
-                    "content": [{"type": "text", "text": f"Failed to start performance data collection: {error_msg}"}],
-                    "isError": True
-                }
-        except Exception as e:
-            logger.error(f"Error starting performance data collection: {str(e)}")
-            return {
-                "content": [{"type": "text", "text": f"Error starting performance data collection: {str(e)}"}],
-                "isError": True
-            }
-
     async def list_performance_data_files(self, rid: str) -> Dict[str, Any]:
         """List all performance data files for a device."""
         try:
             await self.check_token_validity()
             logger.info(f"Listing performance data files for RID {rid}")
-            url = "https://device.pcloudy.com/api/manual_access_files_list"
+            url = f"{self.base_url}/manual_access_files_list"
             payload = {
                 "token": self.auth_token,
                 "rid": rid
@@ -962,151 +1094,7 @@ class PCloudyAPI:
             logger.error(f"Error listing performance data files: {str(e)}")
             return {
                 "content": [{"type": "text", "text": f"Error listing performance data files: {str(e)}"}],
-                "isError": True
-            }
-
-    async def download_all_session_data(self, rid: str, download_dir: str = None) -> Dict[str, Any]:
-        """
-        Download all available session data files for a device session.
-        Uses the manual_access_files_list endpoint to get all files, then downloads each one.
-        """
-        try:
-            await self.check_token_validity()
-            logger.info(f"Starting bulk download of all session data for RID {rid}")
-              # Set default download directory if not provided
-            if not download_dir:
-                import tempfile
-                download_dir = os.path.join(tempfile.gettempdir(), "pcloudy_downloads", f"session_{rid}")
-            
-            # Create download directory if it doesn't exist
-            os.makedirs(download_dir, exist_ok=True)
-            
-            # First, get the list of all available files
-            url = "https://device.pcloudy.com/api/manual_access_files_list"
-            payload = {
-                "token": self.auth_token,
-                "rid": rid
-            }
-            headers = {"Content-Type": "application/json"}
-            response = await self.client.post(url, json=payload, headers=headers)
-            response.raise_for_status()
-            result = parse_response(response)
-            
-            if result.get("code") != 200:
-                error_msg = result.get("msg", "Unknown error")
-                logger.error(f"Failed to list session files: {error_msg}")
-                return {
-                    "content": [{"type": "text", "text": f"Failed to list session files: {error_msg}"}],
-                    "isError": True
-                }
-            
-            files = result.get("files", [])
-            if not files:
-                logger.info(f"No session data files found for RID {rid}")
-                return {
-                    "content": [{"type": "text", "text": f"No session data files found for device {rid}"}],
-                    "isError": False
-                }
-            
-            # Download each file
-            downloaded_files = []
-            failed_files = []
-            total_files = len(files)
-            
-            logger.info(f"Found {total_files} files to download for RID {rid}")
-            
-            for i, file_info in enumerate(files, 1):
-                filename = file_info.get("file")
-                if not filename:
-                    logger.warning(f"Skipping file {i}/{total_files}: no filename provided")
-                    continue
-                
-                try:
-                    logger.info(f"Downloading file {i}/{total_files}: {filename}")
-                    
-                    # Download the file using download_manual_access_data
-                    file_content = await self.download_manual_access_data(rid, filename)
-                    
-                    # Save to local filesystem
-                    local_path = os.path.join(download_dir, filename)
-                    
-                    # Handle potential filename conflicts
-                    counter = 1
-                    original_path = local_path
-                    while os.path.exists(local_path):
-                        name, ext = os.path.splitext(original_path)
-                        local_path = f"{name}_{counter}{ext}"
-                        counter += 1
-                    
-                    with open(local_path, 'wb') as f:
-                        f.write(file_content)
-                    
-                    downloaded_files.append({
-                        "filename": filename,
-                        "local_path": local_path,
-                        "size": file_info.get("size", "Unknown"),
-                        "type": file_info.get("type", "Unknown")
-                    })
-                    
-                    logger.info(f"Successfully downloaded {filename} to {local_path}")
-                    
-                except Exception as file_error:
-                    logger.error(f"Failed to download {filename}: {str(file_error)}")
-                    failed_files.append({
-                        "filename": filename,
-                        "error": str(file_error)
-                    })
-            
-            # Prepare summary response
-            success_count = len(downloaded_files)
-            failure_count = len(failed_files)
-            
-            response_content = []
-            
-            if success_count > 0:
-                response_content.append({
-                    "type": "text",
-                    "text": f"📥 Successfully downloaded {success_count}/{total_files} files to: {download_dir}"
-                })
-                
-                # List successfully downloaded files
-                success_list = []
-                for file_info in downloaded_files:
-                    success_list.append(f"✅ {file_info['filename']} ({file_info['size']}, {file_info['type']})")
-                
-                response_content.append({
-                    "type": "text",
-                    "text": f"Downloaded Files:\n" + "\n".join(success_list)
-                })
-            if failure_count > 0:
-                response_content.append({
-                    "type": "text",
-                    "text": f"⚠️ Failed to download {failure_count} files:"
-                })
-                
-                # List failed files
-                failure_list = []
-                for file_info in failed_files:
-                    failure_list.append(f"❌ {file_info['filename']}: {file_info['error']}")
-                
-                response_content.append({
-                    "type": "text",
-                    "text": "\n".join(failure_list)
-                })
-            
-            logger.info(f"Bulk download completed: {success_count} success, {failure_count} failures")
-            
-            return {
-                "content": response_content,
-                "isError": failure_count > 0 and success_count == 0  # Only error if all downloads failed
-            }
-            
-        except Exception as e:
-            logger.error(f"Error during bulk download: {str(e)}")
-            return {
-                "content": [{"type": "text", "text": f"Error during bulk download: {str(e)}"}],
-                "isError": True
-            }
+                "isError": True            }
 
     async def detect_device_platform(self, rid: str) -> Dict[str, Any]:
         """
@@ -1192,12 +1180,15 @@ class PCloudyAPI:
     async def start_device_services(self, rid: str, start_device_logs: bool = True, start_performance_data: bool = True, start_session_recording: bool = True) -> Dict[str, Any]:
         """
         Start device services including logs, performance data, and session recording.
-        This is automatically called when booking a device.
+        This is automatically called when booking a device with auto_start_services=True.
+        
+        Note: Performance data collection is automatically enabled for all apps running on the device.
+        No separate function is needed to start performance monitoring for specific apps.
         
         Parameters:
         - rid: Device RID
         - start_device_logs: Enable device logs collection (default: True)
-        - start_performance_data: Enable performance data collection (default: True)
+        - start_performance_data: Enable performance data collection for all apps (default: True)
         - start_session_recording: Enable session recording (default: True)
         """
         try:
