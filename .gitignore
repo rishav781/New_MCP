@@ -12,3 +12,4 @@ env/
 
 # Log files
 *.log
+pcloudy_mcp_server.log
