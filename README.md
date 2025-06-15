@@ -7,7 +7,9 @@ This project implements a streamlined MCP server for managing Android and iOS de
 ## 🎯 Category-Based Tool Architecture (4 Meta-Tools)
 
 ### 📱 Device Management (`device_management`)
+
 **Actions**: `list`, `book`, `release`, `detect_platform`, `set_location`
+
 - **list**: List available devices (platform="android"/"ios")
 - **book**: Book device (device_name="GalaxyS10", platform="android", auto_start_services=True)
 - **release**: Release device (rid="device_id")
@@ -15,7 +17,9 @@ This project implements a streamlined MCP server for managing Android and iOS de
 - **set_location**: Set GPS coordinates (rid="device_id", latitude=48.8566, longitude=2.3522)
 
 ### 📸 Device Control & Monitoring (`device_control`)
+
 **Actions**: `screenshot`, `get_url`, `start_services`, `adb`, `wildnet`
+
 - **screenshot**: Capture device screenshot (rid="device_id", skin=True)
 - **get_url**: Get device page URL and open in browser (rid="device_id")
 - **start_services**: Start device services (rid="device_id", start_device_logs=True, start_performance_data=True, start_session_recording=True)
@@ -23,7 +27,9 @@ This project implements a streamlined MCP server for managing Android and iOS de
 - **wildnet**: Start wildnet features (rid="device_id")
 
 ### 📦 File & App Management (`file_app_management`)
+
 **Actions**: `upload`, `list_apps`, `install`, `resign`, `download_cloud`
+
 - **upload**: Upload APK/IPA file (file_path="/path/to/app.apk", force_upload=False)
 - **list_apps**: List cloud apps (limit=10, filter_type="all")
 - **install**: Install and launch app (rid="device_id", filename="app.apk", grant_all_permissions=True, platform="android", app_package_name="com.example.app")
@@ -31,13 +37,16 @@ This project implements a streamlined MCP server for managing Android and iOS de
 - **download_cloud**: Download file from cloud (filename="app.apk")
 
 ### 📊 Session Data & Analytics (`session_analytics`)
+
 **Actions**: `download_session`, `list_performance`
+
 - **download_session**: Download session data (rid="device_id", filename="optional_specific_file", download_dir="optional_directory")
 - **list_performance**: List performance data files (rid="device_id")
 
 ## 📋 Usage Examples
 
-### 🔄 Complete Testing Workflow:
+### 🔄 Complete Testing Workflow
+
 ```python
 # 1. List available devices
 device_management(action="list", platform="android")
@@ -61,7 +70,8 @@ session_analytics(action="download_session", rid="123")
 device_management(action="release", rid="123")
 ```
 
-### 📱 iOS App Testing:
+### 📱 iOS App Testing
+
 ```python
 # 1. Upload iOS app
 file_app_management(action="upload", file_path="MyApp.ipa")
@@ -76,7 +86,8 @@ device_management(action="book", device_name="iPhone", platform="ios")
 file_app_management(action="install", rid="123", filename="MyApp_resign.ipa")
 ```
 
-### 🐛 Android Debugging:
+### 🐛 Android Debugging
+
 ```python
 # 1. Book Android device
 device_management(action="book", device_name="Pixel")
@@ -166,6 +177,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 ## ✅ Enhanced Features
 
 ### 🎯 Category-Based Architecture Benefits
+
 - **Simplified Interface**: 4 meta-tools instead of 17 individual tools
 - **Logical Grouping**: Related operations organized under single tools
 - **Intelligent Routing**: System automatically selects correct method based on action
@@ -173,6 +185,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **Better User Experience**: Less tool discovery, more focused workflows
 
 ### 🚀 Smart Automation
+
 - **Auto-Authentication**: Seamless authentication across all operations
 - **Auto-Service Startup**: Device booking automatically starts logs, performance data, and session recording
 - **Auto-Browser Opening**: App installation and device URL requests automatically open in browser
@@ -180,6 +193,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **Auto-Session Discovery**: Device release automatically prompts for session data download
 
 ### 🔧 Advanced Capabilities
+
 - **GPS Location Setting**: Simulate location-based testing with precise coordinates
 - **Unified Download System**: Single function handles both individual files and bulk session downloads
 - **iOS App Resigning**: Automatic IPA resigning for iOS deployment
@@ -188,6 +202,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **Wildnet Integration**: Enhanced network testing capabilities
 
 ### 🛡️ Security & Validation
+
 - **Input Validation**: Comprehensive validation for all parameters
 - **Path Security**: Download directory validation prevents security issues
 - **Platform Compatibility**: Automatic platform detection prevents incompatible operations
@@ -219,6 +234,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 If upgrading from the previous 17-tool architecture:
 
 **Old Approach:**
+
 ```python
 list_available_devices(platform="android")
 book_device_by_name(device_name="GalaxyS10")
@@ -226,6 +242,7 @@ capture_device_screenshot(rid="123")
 ```
 
 **New Category-Based Approach:**
+
 ```python
 device_management(action="list", platform="android")
 device_management(action="book", device_name="GalaxyS10")
@@ -236,4 +253,6 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
-*Updated: June 15, 2025 - Streamlined with category-based architecture, intelligent routing, and enhanced automation*
+## Updated: June 15, 2025
+
+Streamlined with category-based architecture, intelligent routing, and enhanced automation.
