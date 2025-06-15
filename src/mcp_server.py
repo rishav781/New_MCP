@@ -18,11 +18,75 @@ DOWNLOAD_DIR = os.path.join(tempfile.gettempdir(), "pcloudy_downloads")
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 # =============================================================================
-# CATEGORY-BASED META-TOOLS
+# IMPORTANT: ADB COMMAND FORMAT CONTEXT FOR LLM UNDERSTANDING
+# =============================================================================
+"""
+CRITICAL ADB COMMAND FORMAT REQUIREMENTS:
+
+⚠️  IMPORTANT: When executing ADB commands through pCloudy, you MUST use the complete 
+    ADB command format including the 'adb shell' prefix.
+
+❌ INCORRECT FORMAT (will return "Invalid Command"):
+   - "shell getprop ro.build.version.release"
+   - "getprop ro.build.version.release"  
+   - "dumpsys battery"
+   - "pm list packages"
+   - "ls"
+   - "ps"
+
+✅ CORRECT FORMAT (will work successfully):
+   - "adb shell getprop ro.build.version.release"
+   - "adb shell dumpsys battery"
+   - "adb shell pm list packages"
+   - "adb shell ls"
+   - "adb shell ps"
+   - "adb shell date"
+   - "adb shell cat /proc/cpuinfo"
+   - "adb shell ifconfig"
+
+PROVEN WORKING EXAMPLES FROM TESTING:
+1. adb shell dumpsys battery → Returns detailed battery information
+2. adb shell getprop ro.build.version.release → Returns Android version (e.g., "12")
+3. adb shell getprop ro.product.model → Returns device model (e.g., "SM-G973F")
+4. adb shell pm list packages | head -10 → Lists installed packages
+5. adb shell cat /proc/cpuinfo | head -20 → Shows CPU information
+6. adb shell cat /proc/meminfo | head -10 → Shows memory usage
+7. adb shell ps | head -15 → Lists running processes
+8. adb shell date → Shows current date/time
+9. adb shell ifconfig → Shows network interfaces
+
+EXAMPLE SUCCESSFUL RESPONSE FORMAT:
+{
+    "token": "qffs927k5xqhsgqr78p4w378",
+    "rid": "3593636", 
+    "adbCommand": "adb shell dumpsys battery"
+}
+{
+    "result": {
+        "token": "qffs927k5xqhsgqr78p4w378",
+        "code": 200,
+        "msg": "success", 
+        "adbreply": "Current Battery Service state:\n  AC powered: false\n  USB powered: true..."
+    }
+}
+
+Remember: Always include 'adb shell' prefix for shell commands!
+"""
+
+# =============================================================================
+# CATEGORY-BASED META-TOOLS - FASTMCP COMPATIBLE
 # =============================================================================
 
 @mcp.tool()
-async def device_management(action: str, **kwargs) -> Dict[str, Any]:
+async def device_management(
+    action: str, 
+    platform: str = "android", 
+    device_name: str = "", 
+    rid: str = "", 
+    latitude: float = 0.0, 
+    longitude: float = 0.0,
+    auto_start_services: bool = True
+) -> Dict[str, Any]:
     """
     Device Management Operations: list, book, release, detect_platform, set_location
     
@@ -33,7 +97,7 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
     - detect_platform: Auto-detect device platform (rid="device_id")
     - set_location: Set device GPS coordinates (rid="device_id", latitude=48.8566, longitude=2.3522)
     """
-    logger.info(f"Tool called: device_management with action={action}, kwargs={kwargs}")
+    logger.info(f"Tool called: device_management with action={action}, platform={platform}, device_name={device_name}, rid={rid}")
     try:
         # Auto-authenticate if not already authorized
         if not api.auth_token:
@@ -41,7 +105,6 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
             await api.authenticate()
             
         if action == "list":
-            platform = kwargs.get("platform", Config.DEFAULT_PLATFORM)
             platform = platform.lower().strip()
             if platform not in Config.VALID_PLATFORMS:
                 logger.error(f"Invalid platform: {platform}")
@@ -66,12 +129,9 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
             }
             
         elif action == "book":
-            device_name = kwargs.get("device_name")
-            platform = kwargs.get("platform", Config.DEFAULT_PLATFORM)
-            auto_start_services = kwargs.get("auto_start_services", True)
             if not device_name:
                 return {
-                    "content": [{"type": "text", "text": "Error: device_name is required for booking"}],
+                    "content": [{"type": "text", "text": "Please specify a device_name parameter for booking"}],
                     "isError": True
                 }
             platform = platform.lower().strip()
@@ -82,8 +142,8 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
                 }
             devices_response = await api.get_devices_list(platform=platform)
             devices = devices_response.get("models", [])
-            device_name = device_name.lower().strip()
-            selected = next((d for d in devices if d["available"] and device_name in d["model"].lower()), None)
+            device_name_lower = device_name.lower().strip()
+            selected = next((d for d in devices if d["available"] and device_name_lower in d["model"].lower()), None)
             if not selected:
                 return {
                     "content": [{"type": "text", "text": f"No available {platform} device found matching '{device_name}'"}],
@@ -96,7 +156,6 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
                     "content": [{"type": "text", "text": "Failed to get booking ID"}],
                     "isError": True
                 }
-            
             enhanced_content = booking.get("enhanced_content")
             if enhanced_content:
                 logger.info(f"Device '{selected['model']}' booked successfully with enhanced features. RID: {api.rid}")
@@ -112,10 +171,9 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
                 }
                 
         elif action == "release":
-            rid = kwargs.get("rid")
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for release"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter for device release"}],
                     "isError": True
                 }
             logger.info("Releasing device... This may take 10-20 seconds.")
@@ -123,10 +181,9 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
             return result
             
         elif action == "detect_platform":
-            rid = kwargs.get("rid")
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for platform detection"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter for platform detection"}],
                     "isError": True
                 }
             if not rid.strip():
@@ -138,17 +195,19 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
             return result
             
         elif action == "set_location":
-            rid = kwargs.get("rid")
-            latitude = kwargs.get("latitude")
-            longitude = kwargs.get("longitude")
-            if not all([rid, latitude is not None, longitude is not None]):
+            if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid, latitude, and longitude are required for set_location"}],
+                    "content": [{"type": "text", "text": "Please specify rid, latitude, and longitude parameters"}],
                     "isError": True
                 }
             if not rid.strip():
                 return {
                     "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                    "isError": True
+                }
+            if latitude == 0.0 and longitude == 0.0:
+                return {
+                    "content": [{"type": "text", "text": "Please specify non-zero latitude and longitude values"}],
                     "isError": True
                 }
             if not (-90 <= latitude <= 90):
@@ -163,31 +222,43 @@ async def device_management(action: str, **kwargs) -> Dict[str, Any]:
                 }
             result = await api.set_device_location(rid, latitude, longitude)
             return result
+            
         else:
             return {
-                "content": [{"type": "text", "text": f"Error: Unknown action '{action}'. Available: list, book, release, detect_platform, set_location"}],
+                "content": [{"type": "text", "text": f"Unknown action: '{action}'. Available actions: list, book, release, detect_platform, set_location"}],
                 "isError": True
             }
+            
     except Exception as e:
         logger.error(f"Error in device_management: {str(e)}")
         return {
-            "content": [{"type": "text", "text": f"Error in device_management: {str(e)}"}],
+            "content": [{"type": "text", "text": f"Error in device management: {str(e)}"}],
             "isError": True
         }
 
 @mcp.tool()
-async def device_control(action: str, **kwargs) -> Dict[str, Any]:
+async def device_control(
+    action: str,
+    rid: str = "",
+    skin: bool = True,
+    adb_command: str = "",
+    platform: str = "auto",
+    start_device_logs: bool = True,
+    start_performance_data: bool = True,
+    start_session_recording: bool = True
+) -> Dict[str, Any]:
     """
     Device Control & Monitoring Operations: screenshot, get_url, start_services, adb, wildnet
     
     Actions:
     - screenshot: Capture device screenshot (rid="device_id", skin=True)
     - get_url: Get device page URL and open in browser (rid="device_id")
-    - start_services: Start device services (rid="device_id", start_device_logs=True, start_performance_data=True, start_session_recording=True)
-    - adb: Execute ADB command on Android (rid="device_id", adb_command="logcat", platform="auto")
+    - start_services: Start device services (rid="device_id")
+    - adb: Execute ADB command on Android (rid="device_id", adb_command="adb shell dumpsys battery")
+           ⚠️  CRITICAL: Use FULL command format with 'adb shell' prefix!
     - wildnet: Start wildnet features (rid="device_id")
     """
-    logger.info(f"Tool called: device_control with action={action}, kwargs={kwargs}")
+    logger.info(f"Tool called: device_control with action={action}, rid={rid}")
     try:
         # Auto-authenticate if not already authorized
         if not api.auth_token:
@@ -195,24 +266,22 @@ async def device_control(action: str, **kwargs) -> Dict[str, Any]:
             await api.authenticate()
             
         if action == "screenshot":
-            rid = kwargs.get("rid")
-            skin = kwargs.get("skin", True)
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for screenshot"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter for screenshot"}],
                     "isError": True
                 }
             return await api.capture_screenshot(rid, skin)
             
         elif action == "get_url":
-            rid = kwargs.get("rid")
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for get_url"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter to get device URL"}],
                     "isError": True
                 }
             url_response = await api.get_device_page_url(rid)
             
+            # Extract URL and open browser
             device_url = None
             if isinstance(url_response, dict) and "content" in url_response:
                 for content_item in url_response["content"]:
@@ -236,37 +305,24 @@ async def device_control(action: str, **kwargs) -> Dict[str, Any]:
                     "isError": False
                 }
             else:
-                logger.error(f"Invalid URL received: {device_url}")
                 return {
                     "content": [{"type": "text", "text": f"Error: Invalid URL received: {device_url}"}],
                     "isError": True
                 }
                 
         elif action == "start_services":
-            rid = kwargs.get("rid")
-            start_device_logs = kwargs.get("start_device_logs", True)
-            start_performance_data = kwargs.get("start_performance_data", True)
-            start_session_recording = kwargs.get("start_session_recording", True)
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for start_services"}],
-                    "isError": True
-                }
-            if not rid.strip():
-                return {
-                    "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter to start services"}],
                     "isError": True
                 }
             result = await api.start_device_services(rid, start_device_logs, start_performance_data, start_session_recording)
             return result
             
         elif action == "adb":
-            rid = kwargs.get("rid")
-            adb_command = kwargs.get("adb_command")
-            platform = kwargs.get("platform", "auto")
-            if not all([rid, adb_command]):
+            if not rid or not adb_command:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid and adb_command are required for adb"}],
+                    "content": [{"type": "text", "text": "Please specify both rid and adb_command parameters"}],
                     "isError": True
                 }
             
@@ -295,21 +351,44 @@ async def device_control(action: str, **kwargs) -> Dict[str, Any]:
                             "is an Android-specific tool and cannot be used with iOS devices."
                         )
                     }],
-                    "isError": True
-                }
+                    "isError": True                }
             
-            # Validate ADB command format
+            # Validate ADB command format (basic validation)
             if not adb_command.strip():
                 return {
                     "content": [{"type": "text", "text": "❌ Error: ADB command cannot be empty"}],
                     "isError": True
                 }
             
+            # IMPORTANT: Check for correct ADB command format
+            if not adb_command.startswith("adb "):
+                logger.warning(f"ADB command may be missing 'adb' prefix: {adb_command}")
+                return {
+                    "content": [{
+                        "type": "text", 
+                        "text": (
+                            f"⚠️  Warning: ADB command should start with 'adb shell' or 'adb '.\n"
+                            f"Received: '{adb_command}'\n\n"
+                            f"✅ Correct format examples:\n"
+                            f"  - 'adb shell dumpsys battery'\n"
+                            f"  - 'adb shell getprop ro.build.version.release'\n"
+                            f"  - 'adb shell pm list packages'\n\n"
+                            f"❌ Incorrect format (will fail):\n"
+                            f"  - 'shell dumpsys battery'\n"
+                            f"  - 'dumpsys battery'\n"
+                            f"  - 'getprop ro.build.version.release'\n\n"
+                            f"Please use the complete ADB command format."
+                        )
+                    }],
+                    "isError": True
+                }
+            
             # Execute the ADB command
             result = await api.execute_adb_command(rid, adb_command)
             
-            # Handle the response format
+            # Handle the response format with detailed output
             if result.get("success", False):
+                # Success case
                 output = result.get("output", "[No output]")
                 command = result.get("command", adb_command)
                 status_code = result.get("status_code", 200)
@@ -327,6 +406,7 @@ async def device_control(action: str, **kwargs) -> Dict[str, Any]:
                     "isError": False
                 }
             else:
+                # Error case
                 error = result.get("error", "Unknown error")
                 command = result.get("command", adb_command)
                 status_code = result.get("status_code", "Unknown")
@@ -343,44 +423,52 @@ async def device_control(action: str, **kwargs) -> Dict[str, Any]:
                 }
                 
         elif action == "wildnet":
-            rid = kwargs.get("rid")
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for wildnet"}],
-                    "isError": True
-                }
-            if not rid.strip():
-                return {
-                    "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter to start wildnet"}],
                     "isError": True
                 }
             result = await api.start_wildnet(rid)
             return result
+            
         else:
             return {
-                "content": [{"type": "text", "text": f"Error: Unknown action '{action}'. Available: screenshot, get_url, start_services, adb, wildnet"}],
+                "content": [{"type": "text", "text": f"Unknown action: '{action}'. Available actions: screenshot, get_url, start_services, adb, wildnet"}],
                 "isError": True
             }
+            
     except Exception as e:
         logger.error(f"Error in device_control: {str(e)}")
         return {
-            "content": [{"type": "text", "text": f"Error in device_control: {str(e)}"}],
+            "content": [{"type": "text", "text": f"Error in device control: {str(e)}"}],
             "isError": True
         }
 
 @mcp.tool()
-async def file_app_management(action: str, **kwargs) -> Dict[str, Any]:
+async def file_app_management(
+    action: str,
+    file_path: str = "",
+    filename: str = "",
+    rid: str = "",
+    force_upload: bool = False,
+    limit: int = 10,
+    filter_type: str = "all",
+    grant_all_permissions: bool = True,
+    platform: str = "",
+    app_package_name: str = "",
+    force_resign: bool = False
+) -> Dict[str, Any]:
     """
     File & App Management Operations: upload, list_apps, install, resign, download_cloud
     
     Actions:
     - upload: Upload APK/IPA file (file_path="/path/to/app.apk", force_upload=False)
     - list_apps: List cloud apps (limit=10, filter_type="all")
-    - install: Install and launch app (rid="device_id", filename="app.apk", grant_all_permissions=True, platform="android", app_package_name="com.example.app")
+    - install: Install and launch app (rid="device_id", filename="app.apk")
     - resign: Resign iOS IPA file (filename="app.ipa", force_resign=False)
     - download_cloud: Download file from cloud (filename="app.apk")
     """
-    logger.info(f"Tool called: file_app_management with action={action}, kwargs={kwargs}")
+    logger.info(f"Tool called: file_app_management with action={action}, file_path={file_path}, filename={filename}, rid={rid}")
     try:
         # Auto-authenticate if not already authorized
         if not api.auth_token:
@@ -388,56 +476,36 @@ async def file_app_management(action: str, **kwargs) -> Dict[str, Any]:
             await api.authenticate()
             
         if action == "upload":
-            file_path = kwargs.get("file_path")
-            force_upload = kwargs.get("force_upload", False)
             if not file_path:
                 return {
-                    "content": [{"type": "text", "text": "Error: file_path is required for upload"}],
+                    "content": [{"type": "text", "text": "Please specify a file_path parameter for upload"}],
                     "isError": True
                 }
             return await api.upload_file(file_path, force_upload=force_upload)
             
         elif action == "list_apps":
-            limit = kwargs.get("limit", 10)
-            filter_type = kwargs.get("filter_type", "all")
             return await api.list_cloud_apps(limit, filter_type)
             
         elif action == "install":
-            rid = kwargs.get("rid")
-            filename = kwargs.get("filename")
-            grant_all_permissions = kwargs.get("grant_all_permissions", True)
-            platform = kwargs.get("platform")
-            app_package_name = kwargs.get("app_package_name")
-            if not all([rid, filename]):
+            if not rid or not filename:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid and filename are required for install"}],
+                    "content": [{"type": "text", "text": "Please specify both rid and filename parameters for installation"}],
                     "isError": True
                 }
             
-            # If platform is provided and is ios, check if the app is resigned
-            if platform and platform.lower() == "ios":
-                if "resign" not in filename.lower():
-                    return {
-                        "content": [{
-                            "type": "text",
-                            "text": (
-                                "For iOS apps, please resign the IPA before installing. "
-                                "Use the resign_ipa tool first. The resigned file will contain 'resign' in its name."
-                            )
-                        }],
-                        "isError": True
-                    }
+            # Check if iOS app needs resigning
+            if platform and platform.lower() == "ios" and "resign" not in filename.lower():
+                return {
+                    "content": [{"type": "text", "text": "For iOS apps, please resign the IPA before installing. Use the resign action first."}],
+                    "isError": True
+                }
             
-            # Install and launch the app
             install_result = await api.install_and_launch_app(rid, filename, grant_all_permissions, app_package_name)
             
-            # If installation was successful, automatically open the device screen
+            # Auto-open device screen if successful
             if not install_result.get("isError", True):
                 try:
-                    # Get the device page URL
                     url_response = await api.get_device_page_url(rid)
-                    
-                    # Extract URL from response
                     device_url = None
                     if isinstance(url_response, dict) and "content" in url_response:
                         for content_item in url_response["content"]:
@@ -447,67 +515,34 @@ async def file_app_management(action: str, **kwargs) -> Dict[str, Any]:
                                     url_match = re.search(r'https?://[^\s]+', url_text)
                                     if url_match:
                                         device_url = url_match.group(0)
-                                    else:
-                                        device_url = url_text.strip()
                                     break
                     
                     if device_url and device_url.startswith('http'):
-                        # Open the URL in the default browser
                         webbrowser.open(device_url)
-                        logger.info(f"Opened device screen in browser: {device_url}")
-                        
-                        # Update the response to include browser opening info
                         original_content = install_result.get("content", [])
                         original_content.append({
                             "type": "text", 
                             "text": f"Device screen automatically opened in browser: {device_url}"
                         })
                         install_result["content"] = original_content
-                    else:
-                        logger.warning(f"Could not extract valid URL from response: {url_response}")
-                        
-                except Exception as url_error:
-                    logger.warning(f"Failed to auto-open device screen: {str(url_error)}")
-                    # Don't fail the entire operation if URL opening fails
-                    original_content = install_result.get("content", [])
-                    original_content.append({
-                        "type": "text", 
-                        "text": f"Note: Could not auto-open device screen (use get_device_page_url tool manually)"
-                    })
-                    install_result["content"] = original_content
+                except Exception:
+                    pass  # Don't fail installation if browser opening fails
             
             return install_result
             
         elif action == "resign":
-            filename = kwargs.get("filename")
-            force_resign = kwargs.get("force_resign", False)
             if not filename:
                 return {
-                    "content": [{"type": "text", "text": "Error: filename is required for resign"}],
+                    "content": [{"type": "text", "text": "Please specify a filename parameter for IPA resigning"}],
                     "isError": True
                 }
-            
             result = await api.resign_ipa(filename, force_resign=force_resign)
+            return result
             
-            # Check if duplicate was detected
-            if result.get("duplicate_detected"):
-                return result
-            
-            # If successful resignation
-            if not result.get("isError", True):
-                resigned_file_reference = result.get("resigned_file")
-                return {
-                    "content": [{"type": "text", "text": f"IPA file '{filename}' has been resigned successfully. Use the download tool to retrieve the file if needed.", "file_reference": resigned_file_reference}],
-                    "isError": False
-                }
-            else:
-                return result
-                
         elif action == "download_cloud":
-            filename = kwargs.get("filename")
             if not filename:
                 return {
-                    "content": [{"type": "text", "text": "Error: filename is required for download_cloud"}],
+                    "content": [{"type": "text", "text": "Please specify a filename parameter for cloud download"}],
                     "isError": True
                 }
             file_content = await api.download_from_cloud(filename)
@@ -519,20 +554,27 @@ async def file_app_management(action: str, **kwargs) -> Dict[str, Any]:
                 "content": [{"type": "text", "text": f"File downloaded to {local_path}"}],
                 "isError": False
             }
+            
         else:
             return {
-                "content": [{"type": "text", "text": f"Error: Unknown action '{action}'. Available: upload, list_apps, install, resign, download_cloud"}],
+                "content": [{"type": "text", "text": f"Unknown action: '{action}'. Available actions: upload, list_apps, install, resign, download_cloud"}],
                 "isError": True
             }
+            
     except Exception as e:
         logger.error(f"Error in file_app_management: {str(e)}")
         return {
-            "content": [{"type": "text", "text": f"Error in file_app_management: {str(e)}"}],
+            "content": [{"type": "text", "text": f"Error in file and app management: {str(e)}"}],
             "isError": True
         }
 
 @mcp.tool()
-async def session_analytics(action: str, **kwargs) -> Dict[str, Any]:
+async def session_analytics(
+    action: str,
+    rid: str = "",
+    filename: str = "",
+    download_dir: str = ""
+) -> Dict[str, Any]:
     """
     Session Data & Analytics Operations: download_session, list_performance
     
@@ -540,7 +582,7 @@ async def session_analytics(action: str, **kwargs) -> Dict[str, Any]:
     - download_session: Download session data (rid="device_id", filename="optional_specific_file", download_dir="optional_directory")
     - list_performance: List performance data files (rid="device_id")
     """
-    logger.info(f"Tool called: session_analytics with action={action}, kwargs={kwargs}")
+    logger.info(f"Tool called: session_analytics with action={action}, rid={rid}, filename={filename}")
     try:
         # Auto-authenticate if not already authorized
         if not api.auth_token:
@@ -548,106 +590,95 @@ async def session_analytics(action: str, **kwargs) -> Dict[str, Any]:
             await api.authenticate()
             
         if action == "download_session":
-            rid = kwargs.get("rid")
-            filename = kwargs.get("filename")
-            download_dir = kwargs.get("download_dir")
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for download_session"}],
-                    "isError": True
-                }
-            if not rid.strip():
-                return {
-                    "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter for session data download"}],
                     "isError": True
                 }
             
-            # Validate download directory path if provided
+            # Validate download directory if provided
             if download_dir:
                 try:
                     download_dir = os.path.abspath(download_dir)
-                    # Ensure we're not writing outside the project directory for security
                     project_root = os.path.abspath(os.getcwd())
                     if not download_dir.startswith(project_root):
                         return {
                             "content": [{"type": "text", "text": "Error: Download directory must be within the project directory for security"}],
                             "isError": True
                         }
-                except Exception as path_error:
+                except Exception:
                     return {
-                        "content": [{"type": "text", "text": f"Error: Invalid download directory path: {str(path_error)}"}],
+                        "content": [{"type": "text", "text": "Error: Invalid download directory path"}],
                         "isError": True
                     }
             
-            # Call the merged API function
-            result = await api.download_session_data(rid, filename, download_dir)
+            result = await api.download_session_data(rid, filename if filename else None, download_dir if download_dir else None)
             return result
             
         elif action == "list_performance":
-            rid = kwargs.get("rid")
             if not rid:
                 return {
-                    "content": [{"type": "text", "text": "Error: rid is required for list_performance"}],
-                    "isError": True
-                }
-            if not rid.strip():
-                return {
-                    "content": [{"type": "text", "text": "Error: Device RID cannot be empty"}],
+                    "content": [{"type": "text", "text": "Please specify a rid parameter to list performance data"}],
                     "isError": True
                 }
             result = await api.list_performance_data_files(rid)
             return result
+            
         else:
             return {
-                "content": [{"type": "text", "text": f"Error: Unknown action '{action}'. Available: download_session, list_performance"}],
+                "content": [{"type": "text", "text": f"Unknown action: '{action}'. Available actions: download_session, list_performance"}],
                 "isError": True
             }
+            
     except Exception as e:
         logger.error(f"Error in session_analytics: {str(e)}")
         return {
-            "content": [{"type": "text", "text": f"Error in session_analytics: {str(e)}"}],
+            "content": [{"type": "text", "text": f"Error in session analytics: {str(e)}"}],
             "isError": True
         }
 
 # =============================================================================
-# CATEGORY-BASED MCP TOOLS DOCUMENTATION
+# PCLOUDY MCP TOOLS - CATEGORY-BASED ARCHITECTURE
 # =============================================================================
 # 
-# 🎯 STREAMLINED TOOL ARCHITECTURE (4 META-TOOLS)
-# ├── device_management       - Device lifecycle: list, book, release, detect, locate
-# ├── device_control          - Device interaction: screenshot, URL, services, ADB, wildnet
-# ├── file_app_management     - App lifecycle: upload, list, install, resign, download
-# └── session_analytics       - Data collection: download sessions, performance metrics
+# 🎯 4 SMART META-TOOLS (FastMCP Compatible)
+# ├── device_management          - Device operations (list, book, release, detect_platform, set_location)
+# ├── device_control             - Control & monitoring (screenshot, get_url, start_services, adb, wildnet)
+# ├── file_app_management        - File/app operations (upload, list_apps, install, resign, download_cloud)
+# └── session_analytics          - Session data & analytics (download_session, list_performance)
 #
-# 📋 USAGE EXAMPLES:
-#
-# 🔄 Complete Testing Workflow:
+# 🔄 USAGE EXAMPLES:
+# 
 # 1. device_management(action="list", platform="android")
-# 2. device_management(action="book", device_name="GalaxyS10") 
+# 2. device_management(action="book", device_name="GalaxyS10", platform="android")
 # 3. device_management(action="set_location", rid="123", latitude=48.8566, longitude=2.3522)
-# 4. file_app_management(action="install", rid="123", filename="MyApp.apk")
-# 5. device_control(action="screenshot", rid="123")
-# 6. session_analytics(action="download_session", rid="123")
-# 7. device_management(action="release", rid="123")
+# 4. device_control(action="screenshot", rid="123")
+# 5. device_control(action="adb", rid="123", adb_command="adb shell dumpsys battery", platform="auto")
+# 6. file_app_management(action="upload", file_path="/path/to/app.apk")
+# 7. file_app_management(action="install", rid="123", filename="app.apk")
+# 8. session_analytics(action="download_session", rid="123")
 #
-# 📱 iOS App Testing:
-# 1. file_app_management(action="upload", file_path="MyApp.ipa")
-# 2. file_app_management(action="resign", filename="MyApp.ipa") 
-# 3. device_management(action="book", device_name="iPhone", platform="ios")
-# 4. file_app_management(action="install", rid="123", filename="MyApp_resign.ipa")
+# 🔧 ENHANCED ADB FEATURES:
+# - Auto-platform detection (platform="auto")
+# - iOS device protection (prevents ADB on iOS)
+# - Enhanced error reporting with raw response data
+# - Structured output with detailed troubleshooting info
+# - Extended timeout (120s) for long-running commands
+# - Command sanitization and validation
 #
-# 🐛 Android Debugging:
-# 1. device_management(action="book", device_name="Pixel")
-# 2. device_control(action="adb", rid="123", adb_command="logcat")
-# 3. session_analytics(action="list_performance", rid="123")
-# 4. session_analytics(action="download_session", rid="123", filename="specific_log.txt")
+# 📱 PROVEN ADB COMMAND EXAMPLES (MUST include 'adb shell' prefix):
+# - device_control(action="adb", rid="123", adb_command="adb shell dumpsys battery")
+# - device_control(action="adb", rid="123", adb_command="adb shell getprop ro.build.version.release")
+# - device_control(action="adb", rid="123", adb_command="adb shell getprop ro.product.model")
+# - device_control(action="adb", rid="123", adb_command="adb shell pm list packages | head -10")
+# - device_control(action="adb", rid="123", adb_command="adb shell cat /proc/meminfo | head -10")
+# - device_control(action="adb", rid="123", adb_command="adb shell ps | head -15")
+# - device_control(action="adb", rid="123", adb_command="adb shell date")
+# - device_control(action="adb", rid="123", adb_command="adb shell ifconfig")
 #
-# ✅ BENEFITS OF CATEGORY-BASED APPROACH:
-# - Simplified interface: 4 tools instead of 17
-# - Logical grouping: Related operations under single tool
-# - Intelligent routing: System selects correct method based on action
-# - Cleaner documentation: Easier to understand and maintain
-# - Better user experience: Less tool discovery, more focused workflows
+# ✅ All tools include auto-authentication and enhanced error handling
+# ✅ Compatible with FastMCP framework (no **kwargs)
+# ✅ Clean, intuitive category-based interface
 # =============================================================================
 
 # Run the server

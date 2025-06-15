@@ -764,10 +764,10 @@ class PCloudyAPI:
             if not download_dir:
                 import tempfile
                 download_dir = os.path.join(tempfile.gettempdir(), "pcloudy_downloads", f"session_{rid}")
-            
-            # Create download directory if it doesn't exist
+              # Create download directory if it doesn't exist
             os.makedirs(download_dir, exist_ok=True)
-              # First, get the list of all available files
+            
+            # First, get the list of all available files
             url = f"{self.base_url}/manual_access_files_list"
             payload = {
                 "token": self.auth_token,
