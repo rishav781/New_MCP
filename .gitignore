@@ -8,7 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
-env/
+
+# Environment files (keep template and README, ignore actual .env)
+env/.env
 
 # Log files
 *.log

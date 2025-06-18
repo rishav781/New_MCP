@@ -4,7 +4,16 @@ This project implements a streamlined MCP server for managing Android and iOS de
 
 **Author**: Rishav Raj
 
-## 🎯 Category-Based Tool Architecture (4 Meta-Tools)
+## �️ Architecture Overview
+
+The project is organized into a modular structure:
+
+- **`src/mcp_server/`** - FastMCP server implementation with category-based tools
+- **`src/pcloudy_api/`** - Clean API wrapper for pCloudy platform operations  
+- **`env/`** - Environment configuration with template for easy setup
+- **Modern tooling** - Uses `uv` for dependency management and `pyproject.toml` for project configuration
+
+## �🎯 Category-Based Tool Architecture (4 Meta-Tools)
 
 ### 📱 Device Management (`device_management`)
 
@@ -102,77 +111,102 @@ session_analytics(action="list_performance", rid="123")
 session_analytics(action="download_session", rid="123", filename="specific_log.txt")
 ```
 
-## Setup
+## 🚀 Setup
+
+### 📁 Project Structure
+
+```text
+pcloudy-mcp-server/
+├── .venv/                    # Virtual environment
+├── env/                      # Environment configuration
+│   ├── .env                  # Your credentials (gitignored)
+│   └── .env.template         # Template with setup instructions
+├── src/                      # Source code
+│   ├── mcp_server/          # MCP server implementation
+│   │   ├── server.py        # Main server file
+│   │   ├── device_control_tool.py
+│   │   ├── device_management_tool.py
+│   │   ├── file_app_management_tool.py
+│   │   └── session_analytics_tool.py
+│   ├── pcloudy_api/         # pCloudy API wrapper
+│   │   ├── core.py          # Core API functionality
+│   │   ├── device_control.py
+│   │   ├── device_management.py
+│   │   ├── file_management.py
+│   │   └── session_management.py
+│   ├── config.py            # Configuration settings
+│   └── utils.py             # Utility functions
+├── pyproject.toml           # Project dependencies
+└── uv.lock                  # Dependency lock file
+```
+
+### 🛠️ Installation
 
 1. **Clone the repository:**
 
    ```bash
    git clone <repository_url>
-   cd <repository_directory>
+   cd pcloudy-mcp-server
    ```
 
-2. **Create a virtual environment:**
+2. **Install dependencies using uv (recommended):**
 
    ```bash
-   python3.13 -m venv .venv
+   uv sync
    ```
 
-3. **Activate the virtual environment:**
-   - **Linux/macOS:**
-
-     ```bash
-     source .venv/bin/activate
-     ```
-
-   - **Windows:**
-
-     ```bash
-     .venv\Scripts\activate
-     ```
-
-4. **Install dependencies:**
-   The project requires the following Python packages:
-   - `httpx`
-   - `fastmcp`
-
-   Install them using pip:
+   **Or using pip:**
 
    ```bash
-   pip install httpx fastmcp
+   python -m venv .venv
+   # Activate virtual environment
+   # Windows:
+   .venv\Scripts\activate
+   # Linux/macOS:
+   source .venv/bin/activate
+   
+   pip install -r requirements.txt
    ```
 
-   Alternatively, if you use Poetry, create a `pyproject.toml` file with these dependencies and run:
+3. **Configure environment:**
 
    ```bash
-   poetry install
+   # Copy the template
+   cp env/.env.template env/.env
+   
+   # Edit with your pCloudy credentials
+   # Replace placeholders with:
+   # - PCLOUDY_USERNAME: your-email@domain.com
+   # - PCLOUDY_API_KEY: your-api-key-here
    ```
 
-5. **pCloudy API Credentials:**
-   - The server uses a browser-based authentication flow. You'll be prompted to enter your pCloudy `username` and `api_key` when running any tool. No pre-configuration of credentials is required.
+4. **Dependencies included:**
+   - `fastmcp>=2.5.1` - MCP server framework
+   - `fastapi>=0.115.12` - Web framework
+   - `aiofiles>=24.1.0` - Async file operations
 
-## Running the MCP Server
+## 🎯 Running the Server
 
-You can start the MCP server in two ways:
-
-- **Using FastMCP (development mode):**
-
-  ```bash
-  fastmcp dev mcp_server.py
-  ```
-
-- **Directly with Python:**
-
-  ```bash  
-  python mcp_server.py
-  ```
-
-For installation with Claude Desktop, run:
+### Method 1: Direct Python execution
 
 ```bash
-fastmcp install mcp_server.py
+cd src
+python mcp_server/server.py
 ```
 
-The server will listen on `http://localhost:8000` by default (port can be changed via the `PORT` environment variable).
+### Method 2: Using FastMCP (development)
+
+```bash
+fastmcp dev src/mcp_server/server.py
+```
+
+### Method 3: Install for Claude Desktop
+
+```bash
+fastmcp install src/mcp_server/server.py
+```
+
+The server will start on `http://0.0.0.0:8000/mcp` by default.
 
 ## ✅ Enhanced Features
 
@@ -207,6 +241,37 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **Path Security**: Download directory validation prevents security issues
 - **Platform Compatibility**: Automatic platform detection prevents incompatible operations
 - **Error Handling**: Detailed error messages and graceful failure handling
+
+## 🛠️ Quick Troubleshooting
+
+### Server Won't Start
+
+```bash
+# Check if running from correct directory
+cd src && python mcp_server/server.py
+
+# Verify environment file exists
+ls ../env/.env
+
+# Check dependencies
+uv sync
+```
+
+### Import Errors
+
+```bash
+# Ensure all modules are in the correct structure:
+src/
+├── mcp_server/server.py
+├── pcloudy_api/
+└── config.py
+```
+
+### Authentication Issues
+
+- Check credentials in `env/.env`
+- Verify pCloudy account access
+- Check `pcloudy_mcp_server.log` for detailed errors
 
 ## Notes
 
@@ -253,6 +318,6 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
-## Updated: June 15, 2025
+## Updated: June 18, 2025
 
-Streamlined with category-based architecture, intelligent routing, and enhanced automation.
+Streamlined with category-based architecture, intelligent routing, enhanced automation, and updated project structure.

@@ -14500,3 +14500,15 @@ RuntimeError: Task group is not initialized. Make sure to use run().
 2025-06-18 13:48:39,565 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
 2025-06-18 13:48:39,566 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListPromptsRequest
 2025-06-18 13:48:39,567 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-18 18:33:15,027 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-18 18:33:15,029 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-18 18:33:15,030 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-18 18:33:15,031 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-18 18:33:15,031 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-18 18:33:15,032 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-18 18:33:15,033 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-18 18:33:15,033 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-18 18:33:16,261 - pcloudy-mcp-server - INFO - PCloudyAPI initialized
+2025-06-18 18:33:16,274 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-18 18:33:16,280 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'streamable-http' on http://0.0.0.0:8000/mcp
+2025-06-18 18:33:16,349 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager started
