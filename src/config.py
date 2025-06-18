@@ -5,12 +5,15 @@ from dotenv import load_dotenv
 # Load environment variables from .env file if present
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'env', '.env'))
 
-# Configure logging
+# Configure logging with absolute path to project root
+project_root = os.path.dirname(os.path.dirname(__file__))
+log_file_path = os.path.join(project_root, "pcloudy_mcp_server.log")
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("pcloudy_mcp_server.log", mode='a', encoding='utf-8'),
+        logging.FileHandler(log_file_path, mode='a', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
