@@ -126,7 +126,7 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
 
    - **Windows:**
 
-     ```bash
+     ```powershell
      .venv\Scripts\activate
      ```
 
@@ -135,17 +135,20 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
    - `aiofiles`
    - `fastapi`
    - `fastmcp`
+   - `python-dotenv`
 
    Install them using pip:
 
    ```bash
-   pip install aiofiles fastapi fastmcp
+   pip install aiofiles fastapi fastmcp python-dotenv
    ```
 
-   Or, if you use Poetry:
+   Or, if you use Poetry or uv:
 
    ```bash
    poetry install
+   # OR
+   uv sync
    ```
 
 5. **pCloudy API Credentials:**
@@ -154,7 +157,7 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
 
 ## Running the MCP Server
 
-You can start the MCP server in two ways:
+You can start the MCP server in multiple ways:
 
 - **Using FastMCP (development mode):**
 
@@ -165,6 +168,13 @@ You can start the MCP server in two ways:
 - **Directly with Python:**
 
   ```bash
+  python src/mcp_server/server_main.py
+  ```
+
+- **On Windows (PowerShell):**
+
+  ```powershell
+  cd "C:\path\to\Pcloudy"
   python src/mcp_server/server_main.py
   ```
 
@@ -208,7 +218,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 
 The project is organized as follows:
 
-```
+```text
 Pcloudy/
 ├── env/                  # Environment variables and templates
 │   ├── .env              # Your pCloudy credentials (not committed)
@@ -216,20 +226,33 @@ Pcloudy/
 ├── pcloudy_mcp_server.log # Log file for server activity
 ├── pyproject.toml        # Project metadata and dependencies
 ├── README.md             # Project documentation
+├── uv.lock               # UV lock file for dependency management
 ├── src/                  # All source code
+│   ├── __init__.py       # Package initialization
 │   ├── config.py         # Configuration and logging setup
 │   ├── security.py       # Security utilities
 │   ├── utils.py          # General utility functions
 │   ├── api/              # API mixins for pCloudy endpoints
-│   │   ├── *.py          # Device, auth, file, session, etc. logic
+│   │   ├── __init__.py   # API package initialization
+│   │   ├── auth.py       # Authentication logic
+│   │   ├── device.py     # Device management
+│   │   ├── adb.py        # ADB command handling
+│   │   ├── app_management.py # App installation and management
+│   │   ├── device_control.py # Device control operations
+│   │   ├── file_management.py # File upload/download
+│   │   ├── platform.py   # Platform detection
+│   │   ├── services.py   # Device services management
+│   │   ├── session.py    # Session data handling
+│   │   └── wildnet.py    # Wildnet network features
 │   └── mcp_server/       # Main server and tool definitions
+│       ├── __init__.py   # MCP server package initialization
 │       ├── server_main.py    # Main entry point for FastMCP server
+│       ├── shared_mcp.py     # Shared FastMCP instance
 │       └── tools/            # Category-based tool implementations
-│           ├── device_management_tool.py
-│           ├── device_control_tool.py
-│           ├── file_app_management_tool.py
-│           └── session_analytics_tool.py
-└── uv.lock               # Poetry/uv lock file (if used)
+│           ├── device_management_tool.py     # Device management operations
+│           ├── device_control_tool.py        # Device control and monitoring
+│           ├── file_app_management_tool.py   # File and app management
+│           └── session_analytics_tool.py     # Session data and analytics
 ```
 
 - **env/**: Store your environment variables here. Use `.env.template` as a starting point.
@@ -256,12 +279,15 @@ This structure keeps configuration, API logic, and tool implementations modular 
 - **Security**: Ensure you secure your credentials. The server runs a local HTTP server on `localhost` for authentication, which shuts down after use. For production, consider using HTTPS and additional security measures.
 
 - **Troubleshooting**:
+  - **Import Errors**: If you encounter "ModuleNotFoundError", ensure you're running the server from the project root directory.
+  - **Python Path Issues**: The project includes automatic path resolution for module imports.
   - Verify your network access to `https://device.pcloudy.com/api`.
   - Ensure your pCloudy `username` and `api_key` are correct when prompted during authentication.
   - If authentication fails, check `pcloudy_mcp_server.log` for the raw API response to diagnose the issue (e.g., invalid credentials or API errors).
   - If you encounter port conflicts (e.g., on port 8080 used for authentication), the server will automatically retry with the next available port.
   - For performance data issues, ensure the package name is correct and the app is installed and running.
   - Use `device_management(action="detect_platform", rid="device_id")` if unsure about device platform compatibility.
+  - **Windows Users**: Use PowerShell commands as shown in the setup instructions.
 
 ## Migration from Previous Version
 
@@ -287,6 +313,24 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
+## 🔄 Recent Updates (June 19, 2025)
+
+### ✅ Bug Fixes & Improvements
+
+- **Fixed Import Issues**: Resolved ModuleNotFoundError for config and api modules
+- **Enhanced Error Handling**: Improved server shutdown and cleanup processes
+- **Cross-Platform Support**: Better Windows PowerShell compatibility
+- **Path Resolution**: Automatic module path resolution for all tool components
+- **Dependencies**: Added python-dotenv for better environment variable handling
+
+### 🏗️ Architecture Enhancements
+
+- **Modular Design**: Clean separation between API logic and MCP tools
+- **Robust Import System**: Automatic path management for nested module structure
+- **Improved Logging**: Better error tracking and debugging capabilities
+
+---
+
 ## Updated: June 19, 2025
 
-Streamlined with category-based architecture, intelligent routing, and enhanced automation.
+Streamlined with category-based architecture, intelligent routing, enhanced automation, and resolved import issues for seamless deployment.

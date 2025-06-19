@@ -8,7 +8,7 @@ Security utilities for the pCloudy MCP server.
 
 import re
 import os
-from src.config import logger
+from config import Config, logger
 
 def validate_filename(filename: str) -> bool:
     """

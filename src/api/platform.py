@@ -7,8 +7,8 @@ Provides platform detection for the PCloudyAPI class:
 Intended to be used as a mixin in the modular API architecture.
 """
 
-from src.config import logger
-from src.utils import parse_response
+from config import Config, logger
+from utils import encode_auth, parse_response
 
 class PlatformMixin:
     async def detect_device_platform(self, rid: str):

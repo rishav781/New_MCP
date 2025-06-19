@@ -8,11 +8,9 @@ Utility functions for the pCloudy MCP server.
 
 import base64
 import json
-import logging
-from typing import Dict, Any
 import httpx
-
-logger = logging.getLogger("pcloudy-mcp-server")
+from typing import Dict, Any
+from config import Config, logger
 
 def encode_auth(username: str, api_key: str) -> str:
     """

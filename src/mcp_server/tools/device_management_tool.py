@@ -11,16 +11,22 @@ Provides device management operations as a FastMCP tool, including:
 This tool is registered with FastMCP and can be called via the MCP server.
 """
 
-from src.config import Config, logger
-from src.api import PCloudyAPI
+import os
+import sys
+
+# Add the parent directory to the path to find the config module
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+from config import Config, logger
+from api import PCloudyAPI
 import asyncio
 
 def get_api():
     """Helper to get a new PCloudyAPI instance."""
     return PCloudyAPI()
 
-from fastmcp import FastMCP
-mcp = FastMCP("pcloudy_auth3.0")
+# Import the shared FastMCP instance
+from shared_mcp import mcp
 
 @mcp.tool()
 async def device_management(

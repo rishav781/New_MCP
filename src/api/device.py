@@ -9,8 +9,8 @@ Provides device management operations for the PCloudyAPI class:
 Intended to be used as a mixin in the modular API architecture.
 """
 
-from src.config import Config, logger
-from src.utils import parse_response
+from config import Config, logger
+from utils import encode_auth, parse_response
 import httpx
 import asyncio
 

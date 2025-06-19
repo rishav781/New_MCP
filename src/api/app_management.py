@@ -1,5 +1,5 @@
-from src.config import logger
-from src.utils import parse_response
+from config import Config, logger
+from utils import encode_auth, parse_response
 import httpx
 import webbrowser
 

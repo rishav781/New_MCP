@@ -9,8 +9,8 @@ Intended to be used as a mixin in the modular API architecture.
 """
 
 import time
-from src.utils import encode_auth, parse_response
-from src.config import Config, logger
+from utils import encode_auth, parse_response
+from config import Config, logger
 import httpx
 
 class AuthMixin:

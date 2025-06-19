@@ -10,7 +10,7 @@ from .wildnet import WildnetMixin
 from .device_control import DeviceControlMixin
 import os
 import httpx
-from src.config import Config, logger
+from config import Config, logger
 
 class PCloudyAPI(
     AuthMixin,
