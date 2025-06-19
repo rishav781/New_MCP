@@ -131,24 +131,26 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
      ```
 
 4. **Install dependencies:**
-   The project requires the following Python packages:
-   - `httpx`
+   The project requires the following Python packages (see `pyproject.toml`):
+   - `aiofiles`
+   - `fastapi`
    - `fastmcp`
 
    Install them using pip:
 
    ```bash
-   pip install httpx fastmcp
+   pip install aiofiles fastapi fastmcp
    ```
 
-   Alternatively, if you use Poetry, create a `pyproject.toml` file with these dependencies and run:
+   Or, if you use Poetry:
 
    ```bash
    poetry install
    ```
 
 5. **pCloudy API Credentials:**
-   - The server uses a browser-based authentication flow. You'll be prompted to enter your pCloudy `username` and `api_key` when running any tool. No pre-configuration of credentials is required.
+   - Copy `env/.env.template` to `env/.env` and fill in your credentials.
+   - The server uses a browser-based authentication flow. You'll be prompted to enter your pCloudy `username` and `api_key` when running any tool if not set in `.env`.
 
 ## Running the MCP Server
 
@@ -157,20 +159,14 @@ You can start the MCP server in two ways:
 - **Using FastMCP (development mode):**
 
   ```bash
-  fastmcp dev mcp_server.py
+  fastmcp dev src/mcp_server/server_main.py
   ```
 
 - **Directly with Python:**
 
-  ```bash  
-  python mcp_server.py
+  ```bash
+  python src/mcp_server/server_main.py
   ```
-
-For installation with Claude Desktop, run:
-
-```bash
-fastmcp install mcp_server.py
-```
 
 The server will listen on `http://localhost:8000` by default (port can be changed via the `PORT` environment variable).
 
@@ -208,6 +204,43 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **Platform Compatibility**: Automatic platform detection prevents incompatible operations
 - **Error Handling**: Detailed error messages and graceful failure handling
 
+## 📁 Project File Structure
+
+The project is organized as follows:
+
+```
+Pcloudy/
+├── env/                  # Environment variables and templates
+│   ├── .env              # Your pCloudy credentials (not committed)
+│   └── .env.template     # Example template for .env
+├── pcloudy_mcp_server.log # Log file for server activity
+├── pyproject.toml        # Project metadata and dependencies
+├── README.md             # Project documentation
+├── src/                  # All source code
+│   ├── config.py         # Configuration and logging setup
+│   ├── security.py       # Security utilities
+│   ├── utils.py          # General utility functions
+│   ├── api/              # API mixins for pCloudy endpoints
+│   │   ├── *.py          # Device, auth, file, session, etc. logic
+│   └── mcp_server/       # Main server and tool definitions
+│       ├── server_main.py    # Main entry point for FastMCP server
+│       └── tools/            # Category-based tool implementations
+│           ├── device_management_tool.py
+│           ├── device_control_tool.py
+│           ├── file_app_management_tool.py
+│           └── session_analytics_tool.py
+└── uv.lock               # Poetry/uv lock file (if used)
+```
+
+- **env/**: Store your environment variables here. Use `.env.template` as a starting point.
+- **src/api/**: Contains modular mixins for each pCloudy API area (auth, device, file, etc.).
+- **src/mcp_server/tools/**: Each meta-tool (device management, control, etc.) is implemented here.
+- **src/mcp_server/server_main.py**: The main entry point that registers all tools and starts the FastMCP server.
+- **config.py, utils.py, security.py**: Shared configuration, utility, and security logic.
+- **pcloudy_mcp_server.log**: All logs are written here for debugging and audit.
+
+This structure keeps configuration, API logic, and tool implementations modular and easy to maintain.
+
 ## Notes
 
 - **Python Version**: Requires Python 3.13.
@@ -218,6 +251,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
   ```
 
 - **Logs**: Log messages are saved in `pcloudy_mcp_server.log`. Check this file for detailed error messages if issues occur.
+- **Environment**: Place your `.env` file in the `env/` directory. Use `env/.env.template` as a starting point.
 
 - **Security**: Ensure you secure your credentials. The server runs a local HTTP server on `localhost` for authentication, which shuts down after use. For production, consider using HTTPS and additional security measures.
 
@@ -253,6 +287,6 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
-## Updated: June 15, 2025
+## Updated: June 19, 2025
 
 Streamlined with category-based architecture, intelligent routing, and enhanced automation.
