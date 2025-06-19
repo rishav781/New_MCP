@@ -15615,3 +15615,453 @@ device_filter
 2025-06-18 20:29:13,032 - httpcore.connection - DEBUG - close.started
 2025-06-18 20:29:13,033 - httpcore.connection - DEBUG - close.complete
 2025-06-18 20:29:13,033 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 10:44:02,266 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 10:44:02,267 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 10:44:02,268 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 10:44:02,269 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 10:44:02,269 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 10:44:02,270 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 10:44:02,270 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 10:44:02,271 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 10:44:03,804 - pcloudy-mcp-server - INFO - PCloudyAPI initialized
+2025-06-19 10:44:03,903 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-19 10:44:03,914 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'streamable-http' on http://0.0.0.0:8000/mcp
+2025-06-19 10:44:04,177 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager started
+2025-06-19 10:44:10,090 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager shutting down
+2025-06-19 11:20:03,943 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:20:03,947 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:20:03,947 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:20:03,948 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:20:03,949 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:20:03,949 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:20:03,949 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:20:03,950 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:20:04,857 - pcloudy-mcp-server - INFO - PCloudyAPI initialized (modular)
+2025-06-19 11:20:04,881 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-19 11:20:04,886 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'streamable-http' on http://0.0.0.0:8000/mcp
+2025-06-19 11:20:04,955 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager started
+2025-06-19 11:20:13,203 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager shutting down
+2025-06-19 11:20:40,022 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:20:40,023 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:20:40,023 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:20:40,024 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:20:40,024 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:20:40,024 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:20:40,025 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:20:40,025 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:20:41,503 - pcloudy-mcp-server - INFO - PCloudyAPI initialized (modular)
+2025-06-19 11:20:41,534 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-19 11:20:41,537 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'stdio'
+2025-06-19 11:20:41,565 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2025-06-19 11:20:41,566 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CB9E490>
+2025-06-19 11:20:41,567 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-06-19 11:20:41,567 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2025-06-19 11:20:41,568 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:20:41,570 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CB9EE90>
+2025-06-19 11:20:41,570 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-06-19 11:20:41,571 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListPromptsRequest
+2025-06-19 11:20:41,572 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CB842B0>
+2025-06-19 11:20:41,573 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:20:41,573 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:20:41,574 - pcloudy-mcp-server - INFO - Tool called: device_management with action=list, platform=android, device_name=, rid=
+2025-06-19 11:20:41,574 - pcloudy-mcp-server - INFO - No auth token found, attempting auto-authentication...
+2025-06-19 11:20:41,574 - pcloudy-mcp-server - INFO - Authenticating with pCloudy
+2025-06-19 11:20:41,575 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=60 socket_options=None
+2025-06-19 11:20:41,580 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:20:42,034 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CBF9E80>
+2025-06-19 11:20:42,034 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB65490> server_hostname='device.pcloudy.com' timeout=60
+2025-06-19 11:20:42,125 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CB9E350>
+2025-06-19 11:20:42,126 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-06-19 11:20:42,126 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:20:42,127 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-06-19 11:20:42,127 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:20:42,128 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-06-19 11:20:42,219 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:50:43 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:20:42,220 - httpx - INFO - HTTP Request: GET https://device.pcloudy.com/api/access "HTTP/1.1 200 OK"
+2025-06-19 11:20:42,220 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-06-19 11:20:42,220 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:20:42,221 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:20:42,222 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:20:42,223 - pcloudy-mcp-server - INFO - Authentication successful
+2025-06-19 11:20:42,224 - pcloudy-mcp-server - INFO - Getting device list for platform android
+2025-06-19 11:20:42,224 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:20:42,225 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:20:42,225 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:20:42,226 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:20:42,226 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:20:42,685 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:50:44 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:20:42,685 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/devices "HTTP/1.1 200 OK"
+2025-06-19 11:20:42,686 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:20:42,686 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:20:42,687 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:20:42,687 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:20:42,688 - pcloudy-mcp-server - INFO - Retrieved 13 devices for android
+2025-06-19 11:20:42,688 - pcloudy-mcp-server - INFO - Found 13 available android devices
+2025-06-19 11:20:42,689 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:21:04,106 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CB84770>
+2025-06-19 11:21:04,108 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:21:04,108 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:21:04,109 - pcloudy-mcp-server - INFO - Tool called: device_management with action=book, platform=android, device_name=GalaxyS10, rid=
+2025-06-19 11:21:04,109 - pcloudy-mcp-server - INFO - Getting device list for platform android
+2025-06-19 11:21:04,111 - httpcore.connection - DEBUG - close.started
+2025-06-19 11:21:04,112 - httpcore.connection - DEBUG - close.complete
+2025-06-19 11:21:04,112 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=60 socket_options=None
+2025-06-19 11:21:04,185 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CC216D0>
+2025-06-19 11:21:04,186 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB65490> server_hostname='device.pcloudy.com' timeout=60
+2025-06-19 11:21:04,256 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CB86190>
+2025-06-19 11:21:04,257 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:04,258 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:21:04,258 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:21:04,259 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:21:04,259 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:04,738 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:51:06 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:21:04,739 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/devices "HTTP/1.1 200 OK"
+2025-06-19 11:21:04,739 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:21:04,739 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:21:04,740 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:21:04,740 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:21:04,741 - pcloudy-mcp-server - INFO - Retrieved 14 devices for android
+2025-06-19 11:21:04,741 - pcloudy-mcp-server - INFO - Booking device with ID 721
+2025-06-19 11:21:04,742 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:04,744 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:21:04,744 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:21:04,745 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:21:04,745 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:06,842 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:51:08 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:21:06,843 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/book_device "HTTP/1.1 200 OK"
+2025-06-19 11:21:06,843 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:21:06,844 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:21:06,844 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:21:06,845 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:21:06,845 - pcloudy-mcp-server - INFO - Device booked successfully. RID: 3594606
+2025-06-19 11:21:06,845 - pcloudy-mcp-server - INFO - Auto-starting device services for RID: 3594606
+2025-06-19 11:21:08,854 - pcloudy-mcp-server - INFO - Starting device services for RID: 3594606
+2025-06-19 11:21:08,855 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:08,856 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:21:08,856 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:21:08,856 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:21:08,857 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:08,953 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:51:10 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Set-Cookie', b'PYPCLOUDY=wAx1q5FgGpNZHamR5pgdz%2C30LZ; path=/; domain=.PCLOUDY.COM; secure; SameSite=None'), (b'Expires', b'Thu, 19 Nov 1981 08:52:00 GMT'), (b'Cache-Control', b'no-store, no-cache, must-revalidate'), (b'Pragma', b'no-cache'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:21:08,954 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/startdeviceservices "HTTP/1.1 200 OK"
+2025-06-19 11:21:08,954 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:21:08,955 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:21:08,955 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:21:08,955 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:21:08,956 - pcloudy-mcp-server - INFO - Device services response status: 200
+2025-06-19 11:21:08,956 - pcloudy-mcp-server - INFO - Device services response text: {"statuscode":200,"result":"Manual session is not initiated for this identifier."}
+2025-06-19 11:21:08,957 - pcloudy-mcp-server - INFO - Device services started successfully for RID: 3594606
+2025-06-19 11:21:08,957 - pcloudy-mcp-server - INFO - Device 'GalaxyS10' booked successfully with enhanced features. RID: 3594606
+2025-06-19 11:21:08,958 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:21:12,760 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CBCE450>
+2025-06-19 11:21:12,760 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:21:12,760 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:21:12,761 - pcloudy-mcp-server - INFO - Tool called: device_control with action=adb, rid=3594606
+2025-06-19 11:21:12,761 - pcloudy-mcp-server - INFO - Executing ADB command on RID 3594606: adb shell getprop ro.build.version.release
+2025-06-19 11:21:13,421 - pcloudy-mcp-server - DEBUG - Sending ADB request to: https://device.pcloudy.com/api/execute_adb
+2025-06-19 11:21:13,421 - pcloudy-mcp-server - DEBUG - Payload: {
+  "token": "pzm5vxnnymhcqphdvd6f83j9",
+  "rid": "3594606",
+  "adbCommand": "adb shell getprop ro.build.version.release"
+}
+2025-06-19 11:21:13,422 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=30.0 socket_options=None
+2025-06-19 11:21:13,658 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CB86520>
+2025-06-19 11:21:13,659 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB66210> server_hostname='device.pcloudy.com' timeout=30.0
+2025-06-19 11:21:13,864 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CBCE9F0>
+2025-06-19 11:21:13,864 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:13,865 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:21:13,865 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:21:13,866 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:21:13,866 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:21:14,061 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:51:15 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:21:14,062 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/execute_adb "HTTP/1.1 200 OK"
+2025-06-19 11:21:14,062 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:21:14,062 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:21:14,063 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:21:14,063 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:21:14,063 - pcloudy-mcp-server - INFO - Raw ADB response: {
+  "result": {
+    "token": "pzm5vxnnymhcqphdvd6f83j9",
+    "code": 200,
+    "msg": "success",
+    "adbreply": "12\n"
+  }
+}
+2025-06-19 11:21:14,063 - pcloudy-mcp-server - INFO - ADB command successful. Output source: adbreply, Length: 2
+2025-06-19 11:21:14,064 - httpcore.connection - DEBUG - close.started
+2025-06-19 11:21:14,064 - httpcore.connection - DEBUG - close.complete
+2025-06-19 11:21:14,065 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:22:01,944 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CA939B0>
+2025-06-19 11:22:01,945 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:22:01,945 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:22:01,946 - pcloudy-mcp-server - INFO - Tool called: device_control with action=adb, rid=3594606
+2025-06-19 11:22:01,946 - pcloudy-mcp-server - INFO - Executing ADB command on RID 3594606: adb shell pm list packages
+2025-06-19 11:22:02,635 - pcloudy-mcp-server - DEBUG - Sending ADB request to: https://device.pcloudy.com/api/execute_adb
+2025-06-19 11:22:02,636 - pcloudy-mcp-server - DEBUG - Payload: {
+  "token": "pzm5vxnnymhcqphdvd6f83j9",
+  "rid": "3594606",
+  "adbCommand": "adb shell pm list packages"
+}
+2025-06-19 11:22:02,637 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=30.0 socket_options=None
+2025-06-19 11:22:03,019 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CBBE030>
+2025-06-19 11:22:03,020 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB67890> server_hostname='device.pcloudy.com' timeout=30.0
+2025-06-19 11:22:03,084 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CBBE140>
+2025-06-19 11:22:03,084 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:22:03,085 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:22:03,085 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:22:03,086 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:22:03,086 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:22:03,347 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:52:04 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:22:03,348 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/execute_adb "HTTP/1.1 200 OK"
+2025-06-19 11:22:03,348 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:22:03,349 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:22:03,349 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:22:03,350 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:22:03,350 - pcloudy-mcp-server - INFO - Raw ADB response: {
+  "result": {
+    "token": "pzm5vxnnymhcqphdvd6f83j9",
+    "code": 200,
+    "msg": "success",
+    "adbreply": "package:com.samsung.android.provider.filterprovider\npackage:com.sec.android.app.DataCreate\npackage:com.android.cts.priv.ctsshim\npackage:com.samsung.android.smartswitchassistant\npackage:com.sec.vsim.ericssonnsds.webapp\npackage:com.sec.android.app.setupwizardlegalprovider\npackage:com.google.android.youtube\npackage:com.samsung.android.app.galaxyfinder\npackage:com.sec.location.nsflp2\npackage:com.samsung.android.themestore\npackage:com.sec.android.app.chromecustomizations\npackage:com.samsung.android.app.aodservice\npackage:com.samsung.android.app.cocktailbarservice\npackage:com.android.internal.display.cutout.emulation.corner\npackage:com.google.android.ext.services\npackage:com.android.internal.display.cutout.emulation.double\npackage:com.microsoft.appmanager\npackage:com.samsung.android.beyond.p00.wallpapermulti\npackage:com.android.providers.telephony\npackage:com.sec.android.app.ve.vebgm\npackage:com.sec.android.app.parser\npackage:com.android.dynsystem\npackage:com.afwsamples.testdpc\npackage:com.samsung.android.app.kfa\npackage:com.samsung.android.networkstack\npackage:com.google.android.googlequicksearchbox\npackage:com.samsung.android.calendar\npackage:com.samsung.android.timezone.updater\npackage:com.android.providers.calendar\npackage:com.osp.app.signin\npackage:com.samsung.android.aremoji\npackage:com.samsung.clipboardsaveservice\npackage:com.sec.automation\npackage:com.android.providers.media\npackage:com.google.android.onetimeinitializer\npackage:com.google.android.ext.shared\npackage:com.android.internal.systemui.navbar.gestural_wide_back\npackage:com.android.wallpapercropper\npackage:com.samsung.android.wallpaper.res\npackage:com.samsung.android.smartmirroring\npackage:com.skms.android.agent\npackage:com.samsung.android.mapsagent\npackage:com.sec.android.app.safetyassurance\npackage:com.samsung.android.incallui\npackage:com.samsung.android.knox.containercore\npackage:com.samsung.android.service.livedrawing\npackage:com.samsung.android.kidsinstaller\npackage:com.sec.factory.camera\npackage:com.samsung.phone.overlay.common\npackage:com.sec.usbsettings\npackage:com.samsung.android.easysetup\npackage:com.android.externalstorage\npackage:com.samsung.android.aware.service\npackage:com.sec.android.easyonehand\npackage:com.sec.factory\npackage:com.android.htmlviewer\npackage:com.samsung.android.vtcamerasettings\npackage:com.android.companiondevicemanager\npackage:com.android.mms.service\npackage:com.samsung.android.rubin.app\npackage:com.android.providers.downloads\npackage:com.diotek.sec.lookup.dictionary\npackage:com.sec.android.cover.ledcover\npackage:com.sec.android.easyMover.Agent\npackage:com.samsung.android.mdx.quickboard\npackage:com.android.internal.systemui.onehanded.gestural\npackage:com.wsomacp\npackage:com.samsung.faceservice\npackage:com.samsung.gpuwatchapp\npackage:com.pcloudy.vpn\npackage:com.pdevice.handler\npackage:com.monotype.android.font.foundation\npackage:com.sec.android.widgetapp.easymodecontactswidget\npackage:com.samsung.android.knox.kpecore\npackage:com.samsung.android.knox.pushmanager\npackage:com.sec.android.app.factorykeystring\npackage:com.sec.android.app.samsungapps\npackage:com.sec.android.emergencymode.service\npackage:com.google.android.configupdater\npackage:com.sec.android.app.wlantest\npackage:com.samsung.android.accessibility.talkback\npackage:com.sec.android.smartfpsadjuster\npackage:com.google.android.overlay.modules.permissioncontroller\npackage:com.samsung.android.app.settings.bixby\npackage:com.sec.android.app.billing\npackage:com.sec.epdgtestapp\npackage:com.samsung.android.timezone.data_R\npackage:com.samsung.android.game.gamehome\npackage:com.sec.android.app.desktoplauncher\npackage:com.samsung.android.wifi.p2paware.resources\npackage:com.samsung.android.app.smartwidget\npackage:com.sec.android.daemonapp\npackage:com.google.ar.core\npackage:com.sec.sve\npackage:com.android.providers.downloads.ui\npackage:com.android.vending\npackage:com.android.pacprocessor\npackage:com.android.simappdialog\npackage:com.samsung.android.knox.attestation\npackage:com.samsung.systemui.bixby2\npackage:com.samsung.android.secsoundpicker\npackage:com.samsung.android.incall.contentprovider\npackage:com.dsi.ant.service.socket\npackage:com.samsung.internal.systemui.navbar.sec_gestural\npackage:com.microsoft.skydrive\npackage:com.android.connectivity.resources\npackage:com.samsung.android.sume.nn.service\npackage:com.android.internal.display.cutout.emulation.hole\npackage:com.android.internal.display.cutout.emulation.tall\npackage:com.sec.android.app.soundalive\npackage:net.openvpn.openvpn\npackage:com.samsung.android.privateshare\npackage:com.sec.android.provider.badge\npackage:com.android.certinstaller\npackage:com.android.carrierconfig\npackage:com.samsung.android.knox.containeragent\npackage:com.android.internal.systemui.navbar.threebutton\npackage:com.samsung.SMT\npackage:com.samsung.cmh\npackage:com.samsung.mlp\npackage:com.samsung.rcs\npackage:android\npackage:com.android.hotwordenrollment.xgoogle\npackage:com.samsung.android.wcmurlsnetworkstack\npackage:com.sec.android.app.itracker\npackage:com.samsung.android.sm.devicesecurity\npackage:com.google.android.overlay.modules.cellbroadcastreceiver\npackage:com.samsung.android.peripheral.framework\npackage:com.samsung.internal.systemui.navbar.sec_gestural_no_hint\npackage:com.dsi.ant.sample.acquirechannels\npackage:com.samsung.android.aircommandmanager\npackage:com.samsung.android.net.wifi.wifiguider\npackage:com.samsung.android.bixby.service\npackage:com.samsung.android.service.stplatform\npackage:com.samsung.android.smartface\npackage:com.android.egg\npackage:com.android.mtp\npackage:com.android.nfc\npackage:com.android.ons\npackage:com.android.stk\npackage:com.samsung.android.messaging\npackage:com.samsung.android.camerasdkservice\npackage:com.android.backupconfirm\npackage:com.samsung.klmsagent\npackage:com.pdevice.services\npackage:com.sec.android.app.SecSetupWizard\npackage:com.samsung.android.app.telephonyui\npackage:com.samsung.android.wifi.softap.resources\npackage:com.samsung.android.samsungpositioning\npackage:com.google.android.as\npackage:com.google.android.gm\npackage:com.samsung.android.bixby.agent\npackage:com.google.android.apps.tachyon\npackage:com.google.android.overlay.gmsconfig.common\npackage:com.sec.android.app.hwmoduletest\npackage:com.android.settings.intelligence\npackage:com.sec.bcservice\npackage:com.sec.modem.settings\npackage:com.samsung.gamedriver.ex9820\npackage:com.monotype.android.font.samsungone\npackage:com.android.internal.systemui.navbar.gestural_extra_wide_back\npackage:com.samsung.android.privacydashboard\npackage:com.google.android.permissioncontroller\npackage:com.sec.android.app.servicemodeapp\npackage:com.google.android.setupwizard\npackage:com.samsung.android.tadownloader\npackage:com.sec.android.gallery3d\npackage:com.android.providers.settings\npackage:com.samsung.accessibility\npackage:com.sec.imsservice\npackage:com.android.sharedstoragebackup\npackage:com.facebook.services\npackage:com.samsung.android.mobileservice\npackage:com.android.printspooler\npackage:com.android.hotwordenrollment.okgoogle\npackage:com.samsung.android.hmt.vrsvc\npackage:com.samsung.android.mdx.kit\npackage:com.samsung.storyservice\npackage:com.android.dreams.basic\npackage:com.google.android.as.oss\npackage:com.android.se\npackage:com.android.inputdevices\npackage:com.samsung.android.wifi.resources\npackage:com.google.android.overlay.gmsconfig.photos\npackage:com.samsung.android.kgclient\npackage:com.samsung.knox.securefolder\npackage:com.android.bips\npackage:com.android.stk2\npackage:com.samsung.android.game.gametools\npackage:com.samsung.desktopsystemui\npackage:com.samsung.android.app.simplesharing\npackage:com.samsung.android.app.contacts\npackage:com.samsung.android.cmfa.framework\npackage:com.samsung.android.service.peoplestripe\npackage:com.samsung.android.da.daagent\npackage:com.google.android.captiveportallogin\npackage:com.pcloudy.smsread\npackage:com.samsung.android.brightnessbackupservice\npackage:com.samsung.android.app.reminder\npackage:com.google.android.overlay.gmsconfig.geotz\npackage:com.samsung.android.networkstack.tethering.inprocess.overlay\npackage:com.samsung.android.smartcallprovider\npackage:com.samsung.android.app.smartcapture\npackage:com.sec.android.desktopmode.uiservice\npackage:com.google.android.apps.maps\npackage:com.google.android.modulemetadata\npackage:com.dsi.ant.plugins.antplus\npackage:com.samsung.android.app.taskedge\npackage:com.samsung.android.dynamiclock\npackage:com.samsung.advp.imssettings\npackage:com.samsung.android.location\npackage:com.android.cellbroadcastreceiver\npackage:com.sec.android.app.clockpackage\npackage:com.sec.android.RilServiceModeApp\npackage:com.google.android.webview\npackage:com.samsung.android.mdecservice\npackage:com.google.android.overlay.modules.documentsui\npackage:com.google.android.networkstack\npackage:com.android.server.telecom\npackage:com.google.android.syncadapters.contacts\npackage:com.samsung.crane\npackage:com.android.cellbroadcastservice\npackage:com.sec.imslogger\npackage:com.android.keychain\npackage:com.samsung.android.ardrawing\npackage:com.android.chrome\npackage:com.samsung.android.ipsgeofence\npackage:com.samsung.android.themecenter\npackage:com.samsung.android.server.wifi.mobilewips\npackage:com.google.android.packageinstaller\npackage:com.google.android.gms\npackage:com.google.android.gsf\npackage:com.google.android.tts\npackage:android.autoinstalls.config.samsung\npackage:com.android.wifi.resources\npackage:com.samsung.android.container\npackage:com.android.calllogbackup\npackage:com.google.android.partnersetup\npackage:com.android.cameraextensions\npackage:com.sec.android.diagmonagent\npackage:com.android.localtransport\npackage:com.samsung.android.app.ledbackcover\npackage:com.google.android.overlay.gmsconfig.gsa\npackage:com.samsung.android.biometrics.app.setting\npackage:com.sec.spp.push\npackage:com.android.carrierdefaultapp\npackage:com.dsi.ant.server\npackage:com.android.theme.font.notoserifsource\npackage:com.sec.android.app.myfiles\npackage:com.android.proxyhandler\npackage:com.android.internal.display.cutout.emulation.waterfall\npackage:com.samsung.android.allshare.service.fileshare\npackage:com.samsung.android.app.routines\npackage:com.sec.android.app.dexonpc\npackage:com.sec.android.mimage.photoretouching\npackage:com.sec.android.app.launcher\npackage:com.google.android.overlay.modules.permissioncontroller.forframework\npackage:com.sec.android.app.apex\npackage:com.mygalaxy\npackage:com.google.android.feedback\npackage:com.google.android.printservice.recommendation\npackage:com.samsung.sec.android.teegris.tui_service\npackage:com.google.android.syncadapters.calendar\npackage:com.android.managedprovisioning\npackage:com.fortinet.forticlient\npackage:com.samsung.android.setting.multisound\npackage:com.samsung.android.arzone\npackage:com.samsung.android.authfw\npackage:com.google.android.documentsui\npackage:com.samsung.android.ConnectivityUxOverlay\npackage:com.android.dreams.phototable\npackage:com.google.mainline.telemetry\npackage:com.sec.android.service.health\npackage:com.samsung.safetyinformation\npackage:com.samsung.android.dialer\npackage:com.facebook.katana\npackage:com.samsung.android.dqagent\npackage:com.samsung.android.game.gos\npackage:com.samsung.android.forest\npackage:com.sec.android.app.vepreload\npackage:com.android.providers.partnerbookmarks\npackage:com.samsung.android.hdmapp\npackage:com.sem.factoryapp\npackage:com.samsung.android.app.camera.sticker.facearavatar.preload\npackage:com.android.wallpaper.livepicker\npackage:com.samsung.android.beaconmanager\npackage:com.samsung.internal.systemui.navbar.gestural_no_hint\npackage:com.sec.enterprise.mdm.services.simpin\npackage:com.android.apps.tag\npackage:com.samsung.android.ConnectivityOverlay\npackage:com.samsung.android.stickercenter\npackage:com.facebook.system\npackage:com.samsung.android.providers.media\npackage:com.sec.android.soagent\npackage:org.mozilla.firefox\npackage:com.sec.android.app.quicktool\npackage:com.samsung.android.fmm\npackage:com.samsung.android.gru\npackage:com.samsung.android.mdm\npackage:com.samsung.android.mdx\npackage:com.samsung.android.mtp\npackage:com.samsung.android.scs\npackage:com.sec.unifiedwfc\npackage:com.sec.phone\npackage:com.samsung.android.appseparation\npackage:com.samsung.android.bixby.wakeup\npackage:com.samsung.android.app.updatecenter\npackage:com.samsung.android.honeyboard\npackage:com.samsung.android.samsungpass\npackage:com.google.android.networkstack.permissionconfig\npackage:com.android.storagemanager\npackage:com.samsung.android.scloud\npackage:com.samsung.android.app.soundpicker\npackage:com.samsung.android.app.sharelive\npackage:com.sec.app.RilErrorNotifier\npackage:com.samsung.android.spayfw\npackage:com.android.bookmarkprovider\npackage:com.android.settings\npackage:com.samsung.app.newtrim\npackage:com.samsung.android.dsms\npackage:com.samsung.android.lool\npackage:com.sec.android.app.bluetoothtest\npackage:com.sec.android.sdhms\npackage:com.samsung.android.app.spage\npackage:com.samsung.android.knox.analytics.uploader\npackage:com.samsung.android.sm.policy\npackage:com.android.networkstack.tethering.inprocess\npackage:com.sec.android.emergencylauncher\npackage:com.samsung.android.localeoverlaymanager\npackage:com.google.android.projection.gearhead\npackage:com.sec.hearingadjust\npackage:com.google.android.apps.turbo\npackage:com.samsung.android.bluelightfilter\npackage:com.samsung.android.bbc.bbcagent\npackage:com.samsung.android.visionintelligence\npackage:com.samsung.android.singletake.service\npackage:com.samsung.android.callbgprovider\npackage:com.knox.vpn.proxyhandler\npackage:com.android.cts.ctsshim\npackage:com.samsung.android.livestickers\npackage:com.samsung.android.app.watchmanagerstub\npackage:com.samsung.android.svcagent\npackage:com.google.android.overlay.modules.modulemetadata.forframework\npackage:com.sec.mhs.smarttethering\npackage:com.samsung.android.svoiceime\npackage:com.samsung.android.mateagent\npackage:com.samsung.android.networkdiagnostic\npackage:com.samsung.android.shortcutbackupservice\npackage:com.samsung.android.mcfserver\npackage:com.android.vpndialogs\npackage:com.samsung.ucs.agent.ese\npackage:com.samsung.android.networkstack.tethering.overlay\npackage:com.samsung.android.providers.contacts\npackage:com.android.phone\npackage:com.android.shell\npackage:com.samsung.cmfa.AuthTouch\npackage:com.android.wallpaperbackup\npackage:com.android.providers.blockednumber\npackage:com.samsung.android.app.omcagent\npackage:com.hiya.star\npackage:com.google.android.overlay.modules.cellbroadcastservice\npackage:com.android.providers.userdictionary\npackage:com.android.providers.media.module\npackage:com.sec.enterprise.knox.cloudmdm.smdms\npackage:com.google.android.apps.carrier.carrierwifi\npackage:com.wssyncmldm\npackage:com.android.hotspot2.osulogin\npackage:com.samsung.ims.smk\npackage:com.google.android.gms.location.history\npackage:com.android.internal.systemui.navbar.gestural\npackage:com.android.location.fused\npackage:com.samsung.android.app.appsedge\npackage:com.samsung.android.samsungpassautofill\npackage:com.sec.epdg\npackage:com.android.systemui\npackage:com.sec.android.app.personalization\npackage:com.sec.factory.cameralyzer\npackage:com.android.bluetoothmidiservice\npackage:com.samsung.android.sdk.handwriting\npackage:com.facebook.appmanager\npackage:com.samsung.aasaservice\npackage:com.samsung.android.smartsuggestions\npackage:com.android.traceur\npackage:com.samsung.android.allshare.service.mediashare\npackage:com.samsung.android.providers.factory\npackage:com.samsung.pregpudriver.ex9820\npackage:com.sec.android.provider.emergencymode\npackage:com.samsung.android.cameraxservice\npackage:com.sec.android.app.applinker\npackage:io.appium.unlock\npackage:com.samsung.android.cidmanager\npackage:com.sec.android.app.camera\npackage:com.android.bluetooth\npackage:com.samsung.android.app.clipboardedge\npackage:com.samsung.ipservice\npackage:com.sec.android.app.magnifier\npackage:com.sec.android.widgetapp.webmanual\npackage:com.samsung.sec.android.application.csc\npackage:com.samsung.android.sdm.config\npackage:com.samsung.android.app.dressroom\npackage:com.android.internal.systemui.navbar.gestural_narrow_back\npackage:com.samsung.android.app.dofviewer\npackage:com.samsung.android.tapack.authfw\npackage:com.samsung.android.bio.face.service\npackage:com.samsung.android.mcfds\npackage:com.samsung.android.video\npackage:android.auto_generated_rro_vendor__\npackage:com.google.android.apps.restore\n"
+  }
+}
+2025-06-19 11:22:03,351 - pcloudy-mcp-server - INFO - ADB command successful. Output source: adbreply, Length: 16256
+2025-06-19 11:22:03,352 - httpcore.connection - DEBUG - close.started
+2025-06-19 11:22:03,352 - httpcore.connection - DEBUG - close.complete
+2025-06-19 11:22:03,354 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:22:03,439 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CBBCAF0>
+2025-06-19 11:22:03,440 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:22:03,440 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:22:03,440 - pcloudy-mcp-server - INFO - Tool called: device_control with action=adb, rid=3594606
+2025-06-19 11:22:03,440 - pcloudy-mcp-server - INFO - Executing ADB command on RID 3594606: adb shell dumpsys battery
+2025-06-19 11:22:04,097 - pcloudy-mcp-server - DEBUG - Sending ADB request to: https://device.pcloudy.com/api/execute_adb
+2025-06-19 11:22:04,097 - pcloudy-mcp-server - DEBUG - Payload: {
+  "token": "pzm5vxnnymhcqphdvd6f83j9",
+  "rid": "3594606",
+  "adbCommand": "adb shell dumpsys battery"
+}
+2025-06-19 11:22:04,098 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=30.0 socket_options=None
+2025-06-19 11:22:04,148 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CB6A250>
+2025-06-19 11:22:04,148 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB65880> server_hostname='device.pcloudy.com' timeout=30.0
+2025-06-19 11:22:04,213 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CBCA050>
+2025-06-19 11:22:04,213 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:22:04,214 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:22:04,214 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:22:04,214 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:22:04,214 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:22:04,384 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:52:05 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:22:04,384 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/execute_adb "HTTP/1.1 200 OK"
+2025-06-19 11:22:04,384 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:22:04,385 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:22:04,385 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:22:04,385 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:22:04,386 - pcloudy-mcp-server - INFO - Raw ADB response: {
+  "result": {
+    "token": "pzm5vxnnymhcqphdvd6f83j9",
+    "code": 200,
+    "msg": "success",
+    "adbreply": "Current Battery Service state:\n  AC powered: false\n  USB powered: true\n  Wireless powered: false\n  Max charging current: 0\n  Max charging voltage: 0\n  Charge counter: 3273000\n  status: 5\n  health: 2\n  present: true\n  level: 100\n  scale: 100\n  voltage: 4310\n  temperature: 297\n  technology: Li-ion\n  batteryMiscEvent: 65536\n  batteryCurrentEvent: 0\n  mSecPlugTypeSummary: 2\n  LED Charging: true\n  LED Low Battery: true\n  current now: 0\n  charge counter: 3273000\n  Adaptive Fast Charging Settings: true\n  Super Fast Charging Settings: false\nUSE_FAKE_BATTERY: false\nFEATURE_WIRELESS_FAST_CHARGER_CONTROL: true\n  mWasUsedWirelessFastChargerPreviously: false\n  mWirelessFastChargingSettingsEnable: true\nLLB CAL: 20190303\nLLB MAN: \nLLB CURRENT: YEAR2025M6D18\nLLB DIFF: 327\n  mSavedBatteryBeginningDate: 0\nSEC_FEATURE_BATTERY_FULL_CAPACITY: true\n  mFullCapacityEnable: false\nFEATURE_HICCUP_CONTROL: true\nFEATURE_SUPPORTED_DAILY_BOARD: false\nSEC_FEATURE_BATTERY_LIFE_EXTENDER: false\nSEC_FEATURE_USE_WIRELESS_POWER_SHARING: true\nhealth: vendor.samsung.hardware.health@2.0::ISehHealth@Proxy\nBatteryInfoBackUp\n  mSavedBatteryAsoc: 82\n  mSavedBatteryMaxTemp: 524\n  mSavedBatteryMaxCurrent: 2430\n  mSavedBatteryUsage: 321\n  FEATURE_SAVE_BATTERY_CYCLE: true\n  SEC_FEATURE_PREVENT_SWELLING: false\n"
+  }
+}
+2025-06-19 11:22:04,386 - pcloudy-mcp-server - INFO - ADB command successful. Output source: adbreply, Length: 1281
+2025-06-19 11:22:04,386 - httpcore.connection - DEBUG - close.started
+2025-06-19 11:22:04,387 - httpcore.connection - DEBUG - close.complete
+2025-06-19 11:22:04,387 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:22:04,469 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CBC9D50>
+2025-06-19 11:22:04,470 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:22:04,470 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:22:04,470 - pcloudy-mcp-server - INFO - Tool called: device_control with action=adb, rid=3594606
+2025-06-19 11:22:04,470 - pcloudy-mcp-server - INFO - Executing ADB command on RID 3594606: adb shell wm size
+2025-06-19 11:22:05,127 - pcloudy-mcp-server - DEBUG - Sending ADB request to: https://device.pcloudy.com/api/execute_adb
+2025-06-19 11:22:05,127 - pcloudy-mcp-server - DEBUG - Payload: {
+  "token": "pzm5vxnnymhcqphdvd6f83j9",
+  "rid": "3594606",
+  "adbCommand": "adb shell wm size"
+}
+2025-06-19 11:22:05,128 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=30.0 socket_options=None
+2025-06-19 11:22:05,180 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CC14E60>
+2025-06-19 11:22:05,180 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB67DA0> server_hostname='device.pcloudy.com' timeout=30.0
+2025-06-19 11:22:05,243 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CC165D0>
+2025-06-19 11:22:05,244 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:22:05,244 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:22:05,244 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:22:05,245 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:22:05,245 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:22:05,426 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:52:06 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:22:05,427 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/execute_adb "HTTP/1.1 200 OK"
+2025-06-19 11:22:05,428 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:22:05,428 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:22:05,428 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:22:05,429 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:22:05,429 - pcloudy-mcp-server - INFO - Raw ADB response: {
+  "result": {
+    "token": "pzm5vxnnymhcqphdvd6f83j9",
+    "code": 200,
+    "msg": "success",
+    "adbreply": "Physical size: 1440x3040\n"
+  }
+}
+2025-06-19 11:22:05,429 - pcloudy-mcp-server - INFO - ADB command successful. Output source: adbreply, Length: 24
+2025-06-19 11:22:05,430 - httpcore.connection - DEBUG - close.started
+2025-06-19 11:22:05,430 - httpcore.connection - DEBUG - close.complete
+2025-06-19 11:22:05,431 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:04,146 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CBCA250>
+2025-06-19 11:23:04,147 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:04,147 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:04,147 - pcloudy-mcp-server - INFO - Tool called: device_management with action=list, platform=android, device_name=, rid=
+2025-06-19 11:23:04,147 - pcloudy-mcp-server - INFO - Getting device list for platform android
+2025-06-19 11:23:04,148 - httpcore.connection - DEBUG - close.started
+2025-06-19 11:23:04,149 - httpcore.connection - DEBUG - close.complete
+2025-06-19 11:23:04,149 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=60 socket_options=None
+2025-06-19 11:23:04,630 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CC059B0>
+2025-06-19 11:23:04,630 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x0000023D0CB65490> server_hostname='device.pcloudy.com' timeout=60
+2025-06-19 11:23:04,695 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000023D0CC058D0>
+2025-06-19 11:23:04,695 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:04,696 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:04,696 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:04,697 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:04,697 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:05,183 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:06 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:05,183 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/devices "HTTP/1.1 200 OK"
+2025-06-19 11:23:05,184 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:05,184 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:05,184 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:05,184 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:05,185 - pcloudy-mcp-server - INFO - Retrieved 13 devices for android
+2025-06-19 11:23:05,185 - pcloudy-mcp-server - INFO - Found 13 available android devices
+2025-06-19 11:23:05,185 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:05,257 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CB8ED50>
+2025-06-19 11:23:05,257 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:05,257 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:05,258 - pcloudy-mcp-server - INFO - Tool called: device_management with action=detect_platform, platform=android, device_name=, rid=3594606
+2025-06-19 11:23:05,258 - pcloudy-mcp-server - INFO - Detecting platform for device RID: 3594606
+2025-06-19 11:23:05,259 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:05,260 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:05,260 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:05,261 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:05,261 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:05,387 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:06 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:05,388 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/get_device_url "HTTP/1.1 200 OK"
+2025-06-19 11:23:05,388 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:05,388 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:05,389 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:05,389 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:05,389 - pcloudy-mcp-server - INFO - Listing performance data files for RID 3594606
+2025-06-19 11:23:05,391 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:05,392 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:05,392 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:05,393 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:05,393 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:06,685 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:08 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:06,686 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/manual_access_files_list "HTTP/1.1 200 OK"
+2025-06-19 11:23:06,686 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:06,686 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:06,686 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:06,687 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:06,687 - pcloudy-mcp-server - INFO - No performance data files found for RID 3594606
+2025-06-19 11:23:06,687 - pcloudy-mcp-server - INFO - Platform detection for RID 3594606: unknown
+2025-06-19 11:23:06,688 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:06,759 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CB8FD40>
+2025-06-19 11:23:06,759 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:06,759 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:06,760 - pcloudy-mcp-server - INFO - Tool called: device_control with action=screenshot, rid=3594606
+2025-06-19 11:23:06,760 - pcloudy-mcp-server - INFO - Capturing screenshot for RID: 3594606
+2025-06-19 11:23:06,761 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:06,762 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:06,762 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:06,762 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:06,763 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:10,712 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:12 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:10,712 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/capture_device_screenshot "HTTP/1.1 200 OK"
+2025-06-19 11:23:10,712 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:10,713 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:10,713 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:10,713 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:10,714 - pcloudy-mcp-server - INFO - Screenshot captured: Screen_GalaxyS10_2025_June_19_5_51_am__577_01e83-17503123884-F.jpg
+2025-06-19 11:23:10,714 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:10,793 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CC05A90>
+2025-06-19 11:23:10,793 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:10,793 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:10,794 - pcloudy-mcp-server - INFO - Tool called: device_control with action=get_url, rid=3594606
+2025-06-19 11:23:10,794 - pcloudy-mcp-server - INFO - Getting device page URL for RID: 3594606
+2025-06-19 11:23:10,795 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:10,796 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:10,796 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:10,796 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:10,797 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:10,918 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:12 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:10,919 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/get_device_url "HTTP/1.1 200 OK"
+2025-06-19 11:23:10,919 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:10,919 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:10,919 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:10,919 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:10,920 - pcloudy-mcp-server - INFO - Device page URL for RID 3594606: https://device.pcloudy.com/device/hkj88cbf8y242c4j8dbnspcf6ffh2wvb68xvhcvw
+2025-06-19 11:23:11,086 - pcloudy-mcp-server - INFO - Opened device page URL in browser: https://device.pcloudy.com/device/hkj88cbf8y242c4j8dbnspcf6ffh2wvb68xvhcvw
+2025-06-19 11:23:11,086 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:11,165 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CC06190>
+2025-06-19 11:23:11,166 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:11,166 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:11,166 - pcloudy-mcp-server - INFO - Tool called: device_control with action=wildnet, rid=3594606
+2025-06-19 11:23:11,167 - pcloudy-mcp-server - INFO - Starting wildnet for device booking ID: 3594606
+2025-06-19 11:23:11,168 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:11,168 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:11,168 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:11,169 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:11,169 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:11,224 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 302, b'Moved Temporarily', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:12 GMT'), (b'Content-Type', b'text/html'), (b'Content-Length', b'138'), (b'Connection', b'keep-alive'), (b'Location', b'404/index.htm'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:11,225 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/api/startwildnet "HTTP/1.1 302 Moved Temporarily"
+2025-06-19 11:23:11,226 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:11,226 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:11,226 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:11,227 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:11,227 - pcloudy-mcp-server - ERROR - Invalid JSON response: <html>
+<head><title>302 Found</title></head>
+<body>
+<center><h1>302 Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+2025-06-19 11:23:11,227 - pcloudy-mcp-server - ERROR - Error in device_control: Invalid JSON response: <html>
+<head><title>302 Found</title></head>
+<body>
+<center><h1>302 Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+2025-06-19 11:23:11,228 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:11,492 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CADB790>
+2025-06-19 11:23:11,493 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:11,493 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:11,494 - pcloudy-mcp-server - INFO - Tool called: file_app_management with action=list_apps, file_path=, filename=, rid=
+2025-06-19 11:23:11,495 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:11,496 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:11,496 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:11,497 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:11,497 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:11,637 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:13 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:11,639 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/drive "HTTP/1.1 200 OK"
+2025-06-19 11:23:11,639 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:11,640 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:11,641 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:11,641 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:11,642 - pcloudy-mcp-server - INFO - Found 5 apps in cloud drive
+2025-06-19 11:23:11,643 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:23:11,781 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000023D0CAB2690>
+2025-06-19 11:23:11,782 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-19 11:23:11,782 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-19 11:23:11,783 - pcloudy-mcp-server - INFO - Tool called: session_analytics with action=list_performance, rid=3594606, filename=
+2025-06-19 11:23:11,783 - pcloudy-mcp-server - INFO - Listing performance data files for RID 3594606
+2025-06-19 11:23:11,785 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:11,786 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-19 11:23:11,786 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-19 11:23:11,787 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-19 11:23:11,787 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-19 11:23:11,866 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Thu, 19 Jun 2025 05:53:13 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-19 11:23:11,867 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/manual_access_files_list "HTTP/1.1 200 OK"
+2025-06-19 11:23:11,867 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-19 11:23:11,868 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-19 11:23:11,868 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-19 11:23:11,869 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-19 11:23:11,869 - pcloudy-mcp-server - INFO - No performance data files found for RID 3594606
+2025-06-19 11:23:11,870 - mcp.server.lowlevel.server - DEBUG - Response sent
