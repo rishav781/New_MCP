@@ -17589,3 +17589,11 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 2025-06-19 13:56:30,811 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
 2025-06-19 13:56:30,811 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListPromptsRequest
 2025-06-19 13:56:30,812 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 14:06:30,609 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000028D6DDCFBF0>
+2025-06-19 14:06:30,612 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-06-19 14:06:30,612 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListResourcesRequest
+2025-06-19 14:06:30,614 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 14:06:30,877 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000028D6DDCFB60>
+2025-06-19 14:06:30,878 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-06-19 14:06:30,879 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListPromptsRequest
+2025-06-19 14:06:30,881 - mcp.server.lowlevel.server - DEBUG - Response sent
