@@ -16065,3 +16065,57 @@ device_filter
 2025-06-19 11:23:11,869 - httpcore.http11 - DEBUG - response_closed.complete
 2025-06-19 11:23:11,869 - pcloudy-mcp-server - INFO - No performance data files found for RID 3594606
 2025-06-19 11:23:11,870 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-19 11:38:48,836 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:38:48,837 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:38:48,838 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:38:48,838 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:38:48,839 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:38:48,840 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:38:48,840 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:38:48,841 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:38:49,864 - pcloudy-mcp-server - INFO - PCloudyAPI initialized (modular)
+2025-06-19 11:39:46,070 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:39:46,070 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:39:46,071 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:39:46,071 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:39:46,072 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:39:46,072 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:39:46,073 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:39:46,073 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:39:46,084 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:39:46,085 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:39:46,086 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:39:46,087 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:39:46,087 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:39:46,088 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:39:46,088 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:39:46,088 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:39:46,102 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:39:46,103 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:39:46,103 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:39:46,103 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:39:46,104 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:39:46,104 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:39:46,105 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:39:46,105 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:39:46,118 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:39:46,119 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:39:46,119 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:39:46,120 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:39:46,120 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:39:46,121 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:39:46,121 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:39:46,122 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:39:46,128 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pcloudy_auth3.0'
+2025-06-19 11:39:46,129 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-06-19 11:39:46,129 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-06-19 11:39:46,130 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-06-19 11:39:46,130 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-06-19 11:39:46,131 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-06-19 11:39:46,131 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-06-19 11:39:46,132 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-06-19 11:39:47,059 - pcloudy-mcp-server - INFO - PCloudyAPI initialized (modular)
+2025-06-19 11:39:47,077 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-19 11:39:47,081 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'streamable-http' on http://0.0.0.0:8000/mcp
+2025-06-19 11:39:47,139 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager started
+2025-06-19 11:40:18,106 - mcp.server.streamable_http_manager - INFO - StreamableHTTP session manager shutting down
