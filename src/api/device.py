@@ -130,7 +130,22 @@ class DeviceMixin:
                         "isError": False
                     }
                 else:
-                    error_msg = result.get("msg", "Unknown error")
+                    # Handle different error response formats from pCloudy API
+                    def find_error(d):
+                        if isinstance(d, dict):
+                            if 'error' in d and d['error']:
+                                return d['error']
+                            for v in d.values():
+                                found = find_error(v)
+                                if found:
+                                    return found
+                        elif isinstance(d, list):
+                            for item in d:
+                                found = find_error(item)
+                                if found:
+                                    return found
+                        return None
+                    error_msg = find_error(result) or result.get('msg') or "Unknown error"
                     logger.error(f"Device release failed: {error_msg}")
                     return {
                         "content": [{"type": "text", "text": f"Device release failed: {error_msg}"}],
