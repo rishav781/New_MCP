@@ -2,9 +2,15 @@
 File & App Management Mixin for pCloudy MCP Server
 
 Provides file and app management operations for the PCloudyAPI class:
-- upload_file: Upload APK/IPA files to cloud
-- download_from_cloud: Download files from cloud
+- upload_file: Upload APK/IPA files to cloud storage
+- download_from_cloud: Download files from cloud storage (APKs, IPAs, etc.)
 - list_cloud_apps: List all apps/files in cloud drive
+
+IMPORTANT: Download Endpoint Usage Context for LLMs:
+- For DEVICE-RELATED files (screenshots, session data, logs, performance data):
+  Use {base_url}/download_manual_access_data (implemented in session.py)
+- For CLOUD STORAGE files (uploaded APKs, IPAs, user files):
+  Use {base_url}/download_file (implemented in this file)
 
 Intended to be used as a mixin in the modular API architecture.
 """
@@ -81,7 +87,12 @@ class FileManagementMixin:
 
     async def download_from_cloud(self, filename: str) -> bytes:
         """
-        Download a file from the pCloudy cloud drive.
+        Download a file from the pCloudy cloud storage (APKs, IPAs, user-uploaded files).
+        
+        IMPORTANT: This is for CLOUD STORAGE files only!
+        For device-related files (screenshots, session data, logs), use the session.py
+        download_session_data method which uses /download_manual_access_data endpoint.
+        
         Returns the file content as bytes.
         """
         await self.check_token_validity()

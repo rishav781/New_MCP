@@ -2,11 +2,15 @@
 File & App Management Tool for pCloudy MCP Server (modular)
 
 Provides file and app management operations as a FastMCP tool, including:
-- upload: Upload APK/IPA files
+- upload: Upload APK/IPA files to cloud storage
 - list_apps: List cloud apps
 - install: Install and launch app on device
 - resign: Resign iOS IPA files
-- download_cloud: Download files from cloud
+- download_cloud: Download files from cloud storage (APKs, IPAs, user files)
+
+IMPORTANT: Download Context for LLMs:
+- download_cloud: For CLOUD STORAGE files only (uses /download_file endpoint)
+- For DEVICE files (screenshots, session data): Use session_analytics_tool with download_session action
 
 This tool is registered with FastMCP and can be called via the MCP server.
 """

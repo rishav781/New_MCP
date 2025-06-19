@@ -2,8 +2,11 @@
 Session Analytics Tool for pCloudy MCP Server (modular)
 
 Provides session data and analytics operations as a FastMCP tool, including:
-- download_session: Download session data files
+- download_session: Download DEVICE-RELATED files (screenshots, session data, logs)
 - list_performance: List performance data files for a device
+
+IMPORTANT: This tool uses /download_manual_access_data endpoint for device files.
+For cloud storage files (APKs, IPAs), use file_app_management_tool instead.
 
 This tool is registered with FastMCP and can be called via the MCP server.
 """
@@ -47,18 +50,23 @@ async def session_analytics(
         if not api.auth_token:
             logger.info("No auth token found, attempting auto-authentication...")
             await api.authenticate()
+        
         if action == "download_session":
             if not rid:
                 return {"content": [{"type": "text", "text": "Please specify a rid parameter for session data download"}], "isError": True}
             if download_dir:
                 try:
                     import os
+                    import tempfile
                     download_dir = os.path.abspath(download_dir)
                     project_root = os.path.abspath(os.getcwd())
-                    if not download_dir.startswith(project_root):
-                        return {"content": [{"type": "text", "text": "Error: Download directory must be within the project directory for security"}], "isError": True}
+                    temp_root = os.path.abspath(tempfile.gettempdir())
+                    # Allow either project directory or temp directory for downloads
+                    if not (download_dir.startswith(project_root) or download_dir.startswith(temp_root)):
+                        return {"content": [{"type": "text", "text": "Error: Download directory must be within the project directory or system temp directory for security"}], "isError": True}
                 except Exception:
                     return {"content": [{"type": "text", "text": "Error: Invalid download directory path"}], "isError": True}
+            # When no download_dir is specified, let session.py use its temp directory default
             result = await api.download_session_data(rid, filename if filename else None, download_dir if download_dir else None)
             return result
         elif action == "list_performance":
