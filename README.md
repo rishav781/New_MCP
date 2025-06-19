@@ -152,7 +152,7 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
    ```
 
 5. **pCloudy API Credentials:**
-   - Copy `env/.env.template` to `env/.env` and fill in your credentials.
+   - Copy `.env.template` to `.env` and fill in your credentials.
    - The server uses a browser-based authentication flow. You'll be prompted to enter your pCloudy `username` and `api_key` when running any tool if not set in `.env`.
 
 ## Running the MCP Server
@@ -220,9 +220,8 @@ The project is organized as follows:
 
 ```text
 Pcloudy/
-├── env/                  # Environment variables and templates
-│   ├── .env              # Your pCloudy credentials (not committed)
-│   └── .env.template     # Example template for .env
+├── .env                  # Your pCloudy credentials (not committed)
+├── .env.template         # Example template for .env
 ├── pcloudy_mcp_server.log # Log file for server activity
 ├── pyproject.toml        # Project metadata and dependencies
 ├── README.md             # Project documentation
@@ -255,7 +254,7 @@ Pcloudy/
 │           └── session_analytics_tool.py     # Session data and analytics
 ```
 
-- **env/**: Store your environment variables here. Use `.env.template` as a starting point.
+- **.env**: Your pCloudy credentials and environment variables. Use `.env.template` as a starting point.
 - **src/api/**: Contains modular mixins for each pCloudy API area (auth, device, file, etc.).
 - **src/mcp_server/tools/**: Each meta-tool (device management, control, etc.) is implemented here.
 - **src/mcp_server/server_main.py**: The main entry point that registers all tools and starts the FastMCP server.
