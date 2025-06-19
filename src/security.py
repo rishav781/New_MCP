@@ -1,9 +1,20 @@
+"""
+Security utilities for the pCloudy MCP server.
+
+- Validates filenames for safe filesystem operations.
+- Extracts package name hints from APK filenames.
+- Logs security-related errors and warnings.
+"""
+
 import re
 import os
-from config import logger
+from src.config import logger
 
 def validate_filename(filename: str) -> bool:
-    """Validate that the filename is safe for saving to the filesystem."""
+    """
+    Validate that the filename is safe for saving to the filesystem.
+    Returns True if the filename is valid, False otherwise.
+    """
     # Remove any path traversal attempts (e.g., ../) and invalid characters
     if not filename or re.search(r'[\\/:*?"<>|]', filename) or ".." in filename:
         logger.error(f"Invalid filename: {filename}")
@@ -14,7 +25,7 @@ def extract_package_name_hint(filename: str) -> str:
     """
     Attempt to extract a likely package name from APK filename.
     This is a fallback method when the API doesn't provide package information.
-    Returns a suggested package name for reference.
+    Returns a suggested package name for reference, or an empty string if not possible.
     """
     if not filename:
         return ""
@@ -42,4 +53,4 @@ def extract_package_name_hint(filename: str) -> str:
     elif cleaned:
         return f"com.app.{cleaned}"
     
-    return "" 
+    return ""

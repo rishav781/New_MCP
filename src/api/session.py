@@ -1,12 +1,26 @@
-from config import logger
-from utils import parse_response
-from security import validate_filename
+"""
+Session Data & Analytics Mixin for pCloudy MCP Server
+
+Provides session data download and analytics for the PCloudyAPI class:
+- download_session_data: Download one or all session files for a device
+- list_performance_data_files: List all performance data files for a device
+
+Intended to be used as a mixin in the modular API architecture.
+"""
+
+from src.config import logger
+from src.utils import parse_response
+from src.security import validate_filename
 import os
 import httpx
 import tempfile
 
 class SessionMixin:
     async def download_session_data(self, rid: str, filename: str = None, download_dir: str = None):
+        """
+        Download session data for a device. If filename is provided, download a single file; otherwise, download all files.
+        Returns a dict with download status and messages.
+        """
         await self.check_token_validity()
         if filename:
             return await self._download_single_file(rid, filename, download_dir)
@@ -14,6 +28,10 @@ class SessionMixin:
             return await self._download_all_files(rid, download_dir)
 
     async def _download_single_file(self, rid: str, filename: str, download_dir: str = None):
+        """
+        Download a single session file for a device.
+        Returns a dict with download status and messages.
+        """
         if not validate_filename(filename):
             logger.error(f"Invalid filename for download: {filename}")
             raise ValueError(f"Invalid filename: {filename}")
@@ -49,11 +67,15 @@ class SessionMixin:
                 f.write(response.content)
             logger.info(f"File '{filename}' downloaded successfully to {local_path}")
             return {
-                "content": [{"type": "text", "text": f"📥 Successfully downloaded '{filename}' to: {local_path}"}],
+                "content": [{"type": "text", "text": f"\ud83d\udce5 Successfully downloaded '{filename}' to: {local_path}"}],
                 "isError": False
             }
 
     async def _download_all_files(self, rid: str, download_dir: str = None):
+        """
+        Download all session files for a device.
+        Returns a dict with download status and messages for all files.
+        """
         logger.info(f"Starting bulk download of all session data for RID {rid}")
         if not download_dir:
             download_dir = os.path.join(tempfile.gettempdir(), "pcloudy_downloads", f"session_{rid}")
@@ -129,11 +151,11 @@ class SessionMixin:
         if success_count > 0:
             response_content.append({
                 "type": "text",
-                "text": f"📥 Successfully downloaded {success_count}/{total_files} files to: {download_dir}"
+                "text": f"\ud83d\udce5 Successfully downloaded {success_count}/{total_files} files to: {download_dir}"
             })
             success_list = []
             for file_info in downloaded_files:
-                success_list.append(f"✅ {file_info['filename']} ({file_info['size']}, {file_info['type']})")
+                success_list.append(f"\u2705 {file_info['filename']} ({file_info['size']}, {file_info['type']})")
             response_content.append({
                 "type": "text",
                 "text": f"Downloaded Files:\n" + "\n".join(success_list)
@@ -141,11 +163,11 @@ class SessionMixin:
         if failure_count > 0:
             response_content.append({
                 "type": "text",
-                "text": f"⚠️ Failed to download {failure_count} files:"
+                "text": f"\u26a0\ufe0f Failed to download {failure_count} files:"
             })
             failure_list = []
             for file_info in failed_files:
-                failure_list.append(f"❌ {file_info['filename']}: {file_info['error']}")
+                failure_list.append(f"\u274c {file_info['filename']}: {file_info['error']}")
             response_content.append({
                 "type": "text",
                 "text": "\n".join(failure_list)
@@ -157,6 +179,10 @@ class SessionMixin:
         }
 
     async def list_performance_data_files(self, rid: str):
+        """
+        List all performance data files for a device.
+        Returns a dict with file info and status.
+        """
         await self.check_token_validity()
         logger.info(f"Listing performance data files for RID {rid}")
         url = f"{self.base_url}/manual_access_files_list"
@@ -176,7 +202,7 @@ class SessionMixin:
                     file_name = file_info.get("file", "Unknown")
                     file_size = file_info.get("size", "Unknown")
                     file_type = file_info.get("type", "Unknown")
-                    file_list.append(f"📁 {file_name} ({file_size}, {file_type})")
+                    file_list.append(f"\ud83d\udcc1 {file_name} ({file_size}, {file_type})")
                 files_text = "\n".join(file_list)
                 logger.info(f"Found {len(files)} performance data files for RID {rid}")
                 return {
@@ -199,4 +225,4 @@ class SessionMixin:
             return {
                 "content": [{"type": "text", "text": f"Failed to list performance data files: {error_msg}"}],
                 "isError": True
-            } 
+            }

@@ -1,9 +1,22 @@
-from config import Config, logger
-from api import PCloudyAPI
+"""
+Device Management Tool for pCloudy MCP Server (modular)
+
+Provides device management operations as a FastMCP tool, including:
+- list: List available devices
+- book: Book a device
+- release: Release a booked device
+- detect_platform: Auto-detect device platform
+- set_location: Set device GPS coordinates
+
+This tool is registered with FastMCP and can be called via the MCP server.
+"""
+
+from src.config import Config, logger
+from src.api import PCloudyAPI
 import asyncio
 
 def get_api():
-    # Helper to get a new API instance (or use a singleton if needed)
+    """Helper to get a new PCloudyAPI instance."""
     return PCloudyAPI()
 
 from fastmcp import FastMCP
@@ -20,7 +33,18 @@ async def device_management(
     auto_start_services: bool = True
 ):
     """
-    Device Management Operations: list, book, release, detect_platform, set_location
+    FastMCP Tool: Device Management
+    
+    Parameters:
+        action: The management action (list, book, release, detect_platform, set_location)
+        platform: Device platform (android/ios)
+        device_name: Name/model of device to book
+        rid: Device booking ID
+        latitude: Latitude for GPS location
+        longitude: Longitude for GPS location
+        auto_start_services: Whether to start logs/perf/session on booking
+    Returns:
+        Dict with operation result and error status
     """
     api = get_api()
     logger.info(f"Tool called: device_management with action={action}, platform={platform}, device_name={device_name}, rid={rid}")
@@ -132,4 +156,4 @@ async def device_management(
         return {
             "content": [{"type": "text", "text": f"Error in device management: {str(e)}"}],
             "isError": True
-        } 
+        }

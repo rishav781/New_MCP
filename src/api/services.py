@@ -1,8 +1,21 @@
-from config import logger
+"""
+Device Services Mixin for pCloudy MCP Server
+
+Provides device service management for the PCloudyAPI class:
+- start_device_services: Start logs, performance data, and session recording for a booked device
+
+Intended to be used as a mixin in the modular API architecture.
+"""
+
+from src.config import logger
 import httpx
 
 class ServicesMixin:
     async def start_device_services(self, rid: str, start_device_logs: bool = True, start_performance_data: bool = True, start_session_recording: bool = True):
+        """
+        Start device services (logs, performance data, session recording) for a booked device.
+        Returns a dict with service status and messages.
+        """
         await self.check_token_validity()
         logger.info(f"Starting device services for RID: {rid}")
         url = f"{self.base_url}/startdeviceservices"
@@ -32,4 +45,4 @@ class ServicesMixin:
                 {"type": "text", "text": f"🔍 Response: {response.status_code} - {response.text[:200]}"}
             ],
             "isError": False
-        } 
+        }

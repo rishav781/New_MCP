@@ -1,10 +1,26 @@
-from config import logger
-from utils import parse_response
+"""
+File & App Management Mixin for pCloudy MCP Server
+
+Provides file and app management operations for the PCloudyAPI class:
+- upload_file: Upload APK/IPA files to cloud
+- download_from_cloud: Download files from cloud
+- list_cloud_apps: List all apps/files in cloud drive
+
+Intended to be used as a mixin in the modular API architecture.
+"""
+
+from src.config import logger
+from src.utils import parse_response
 import os
 import httpx
 
 class FileManagementMixin:
     async def upload_file(self, file_path: str, source_type: str = "raw", filter_type: str = "all", force_upload: bool = False):
+        """
+        Upload a file (APK/IPA) to the pCloudy cloud drive.
+        Checks for duplicates unless force_upload is True.
+        Returns a dict with upload status and messages.
+        """
         await self.check_token_validity()
         file_path = file_path.strip('"').strip("'")
         logger.info(f"Uploading file: {file_path}")
@@ -27,9 +43,9 @@ class FileManagementMixin:
                             logger.warning(f"File '{file_name}' already exists in cloud")
                             return {
                                 "content": [
-                                    {"type": "text", "text": f"⚠️ File '{file_name}' already exists in the cloud drive"},
-                                    {"type": "text", "text": "💡 To upload anyway (replace existing), call: upload_file(file_path=\"" + file_path + "\", force_upload=True)"},
-                                    {"type": "text", "text": "📋 To see all cloud files, use: list_cloud_apps()"}
+                                    {"type": "text", "text": f"\u26a0\ufe0f File '{file_name}' already exists in the cloud drive"},
+                                    {"type": "text", "text": "\ud83d\udca1 To upload anyway (replace existing), call: upload_file(file_path=\"" + file_path + "\", force_upload=True)"},
+                                    {"type": "text", "text": "\ud83d\udccb To see all cloud files, use: list_cloud_apps()"}
                                 ],
                                 "isError": False,
                                 "duplicate_detected": True
@@ -64,6 +80,10 @@ class FileManagementMixin:
             }
 
     async def download_from_cloud(self, filename: str) -> bytes:
+        """
+        Download a file from the pCloudy cloud drive.
+        Returns the file content as bytes.
+        """
         await self.check_token_validity()
         url = f"{self.base_url}/download_file"
         payload = {
@@ -79,6 +99,10 @@ class FileManagementMixin:
         return response.content
 
     async def list_cloud_apps(self, limit: int = 10, filter_type: str = "all"):
+        """
+        List all apps/files in the pCloudy cloud drive.
+        Returns a dict with app names and status.
+        """
         await self.check_token_validity()
         url = f"{self.base_url}/drive"
         payload = {
@@ -96,4 +120,4 @@ class FileManagementMixin:
         return {
             "content": [{"type": "text", "text": f"Apps in cloud drive: {', '.join(app_names) if app_names else 'None found'}"}],
             "isError": False
-        } 
+        }

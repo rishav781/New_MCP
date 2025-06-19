@@ -1,5 +1,5 @@
-from config import logger
-from utils import parse_response
+from src.config import logger
+from src.utils import parse_response
 import httpx
 import webbrowser
 
@@ -133,4 +133,4 @@ class AppManagementMixin:
             "content": [{"type": "text", "text": resign_message}],
             "isError": False,
             "resigned_file": resigned_file
-        } 
+        }

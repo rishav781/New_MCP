@@ -1,10 +1,21 @@
-from config import logger
-from api import PCloudyAPI
+"""
+Session Analytics Tool for pCloudy MCP Server (modular)
+
+Provides session data and analytics operations as a FastMCP tool, including:
+- download_session: Download session data files
+- list_performance: List performance data files for a device
+
+This tool is registered with FastMCP and can be called via the MCP server.
+"""
+
+from src.config import logger
+from src.api import PCloudyAPI
 import asyncio
 from fastmcp import FastMCP
 mcp = FastMCP("pcloudy_auth3.0")
 
 def get_api():
+    """Helper to get a new PCloudyAPI instance."""
     return PCloudyAPI()
 
 @mcp.tool()
@@ -15,7 +26,15 @@ async def session_analytics(
     download_dir: str = ""
 ):
     """
-    Session Data & Analytics Operations: download_session, list_performance
+    FastMCP Tool: Session Data & Analytics
+    
+    Parameters:
+        action: The analytics action (download_session, list_performance)
+        rid: Device booking ID
+        filename: Specific file to download (optional)
+        download_dir: Directory to save downloaded files (optional)
+    Returns:
+        Dict with operation result and error status
     """
     api = get_api()
     logger.info(f"Tool called: session_analytics with action={action}, rid={rid}, filename={filename}")
@@ -46,4 +65,4 @@ async def session_analytics(
             return {"content": [{"type": "text", "text": f"Unknown action: '{action}'. Available actions: download_session, list_performance"}], "isError": True}
     except Exception as e:
         logger.error(f"Error in session_analytics: {str(e)}")
-        return {"content": [{"type": "text", "text": f"Error in session analytics: {str(e)}"}], "isError": True} 
+        return {"content": [{"type": "text", "text": f"Error in session analytics: {str(e)}"}], "isError": True}

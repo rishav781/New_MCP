@@ -1,10 +1,24 @@
-from config import logger
-from api import PCloudyAPI
+"""
+Device Control Tool for pCloudy MCP Server (modular)
+
+Provides device control operations as a FastMCP tool, including:
+- screenshot: Capture device screenshot
+- get_url: Get device page URL
+- start_services: Start device logs, performance data, session recording
+- adb: Run ADB commands on Android devices
+- wildnet: Start wildnet network features
+
+This tool is registered with FastMCP and can be called via the MCP server.
+"""
+
+from src.config import logger
+from src.api import PCloudyAPI
 import asyncio
 from fastmcp import FastMCP
 mcp = FastMCP("pcloudy_auth3.0")
 
 def get_api():
+    """Helper to get a new PCloudyAPI instance."""
     return PCloudyAPI()
 
 @mcp.tool()
@@ -19,7 +33,19 @@ async def device_control(
     start_session_recording: bool = True
 ):
     """
-    Device Control Operations: screenshot, get_url, start_services, adb, wildnet
+    FastMCP Tool: Device Control
+    
+    Parameters:
+        action: The device control action (screenshot, get_url, start_services, adb, wildnet)
+        rid: Device booking ID
+        skin: Whether to include device skin in screenshot
+        adb_command: ADB command to execute (for Android)
+        platform: Device platform (auto/android/ios)
+        start_device_logs: Enable device logs (for start_services)
+        start_performance_data: Enable performance data (for start_services)
+        start_session_recording: Enable session recording (for start_services)
+    Returns:
+        Dict with operation result and error status
     """
     api = get_api()
     logger.info(f"Tool called: device_control with action={action}, rid={rid}")
@@ -51,4 +77,4 @@ async def device_control(
             return {"content": [{"type": "text", "text": f"Unknown action: '{action}'."}], "isError": True}
     except Exception as e:
         logger.error(f"Error in device_control: {str(e)}")
-        return {"content": [{"type": "text", "text": f"Error in device control: {str(e)}"}], "isError": True} 
+        return {"content": [{"type": "text", "text": f"Error in device control: {str(e)}"}], "isError": True}

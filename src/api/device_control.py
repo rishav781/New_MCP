@@ -1,5 +1,5 @@
-from config import logger
-from utils import parse_response
+from src.config import logger
+from src.utils import parse_response
 import httpx
 
 class DeviceControlMixin:
@@ -84,4 +84,4 @@ class DeviceControlMixin:
             return {
                 "content": [{"type": "text", "text": f"Failed to set device location: {error_msg}"}],
                 "isError": True
-            } 
+            }

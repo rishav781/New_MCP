@@ -10,7 +10,7 @@ from .wildnet import WildnetMixin
 from .device_control import DeviceControlMixin
 import os
 import httpx
-from config import Config, logger
+from src.config import Config, logger
 
 class PCloudyAPI(
     AuthMixin,
@@ -50,4 +50,4 @@ class PCloudyAPI(
             await self.client.aclose()
             logger.info("HTTP client closed")
         except Exception as e:
-            logger.error(f"Error closing HTTP client: {str(e)}") 
+            logger.error(f"Error closing HTTP client: {str(e)}")

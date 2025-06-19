@@ -1,10 +1,25 @@
-from config import Config, logger
-from utils import parse_response
+"""
+Device Management Mixin for pCloudy MCP Server
+
+Provides device management operations for the PCloudyAPI class:
+- get_devices_list: List available devices for a platform
+- book_device: Book a device by ID
+- release_device: Release a booked device by RID
+
+Intended to be used as a mixin in the modular API architecture.
+"""
+
+from src.config import Config, logger
+from src.utils import parse_response
 import httpx
 import asyncio
 
 class DeviceMixin:
     async def get_devices_list(self, platform: str = Config.DEFAULT_PLATFORM, duration: int = Config.DEFAULT_DURATION, available_now: bool = True):
+        """
+        List available devices for a given platform and duration.
+        Returns a dict with device models and availability.
+        """
         try:
             platform = platform.lower().strip()
             if platform not in Config.VALID_PLATFORMS:
@@ -33,6 +48,10 @@ class DeviceMixin:
             raise
 
     async def book_device(self, device_id: str, duration: int = Config.DEFAULT_DURATION, auto_start_services: bool = True):
+        """
+        Book a device by its ID. Optionally auto-starts device services.
+        Returns booking info and optionally enhanced content.
+        """
         try:
             await self.check_token_validity()
             logger.info(f"Booking device with ID {device_id}")
@@ -49,7 +68,7 @@ class DeviceMixin:
             rid = result.get('rid')
             logger.info(f"Device booked successfully. RID: {rid}")
             response_content = [
-                {"type": "text", "text": f"✅ Device booked successfully. RID: {rid}"}
+                {"type": "text", "text": f"\u2705 Device booked successfully. RID: {rid}"}
             ]
             if auto_start_services and rid:
                 try:
@@ -62,22 +81,22 @@ class DeviceMixin:
                     else:
                         response_content.append({
                             "type": "text", 
-                            "text": "⚠️ Device services failed to start automatically, but device is booked successfully"
+                            "text": "\u26a0\ufe0f Device services failed to start automatically, but device is booked successfully"
                         })
                         response_content.append({
                             "type": "text", 
-                            "text": "💡 You can manually start services with: start_device_services(rid=\"" + str(rid) + "\")"
+                            "text": "\ud83d\udca1 You can manually start services with: start_device_services(rid=\"" + str(rid) + "\")"
                         })
                         logger.warning(f"Failed to auto-start device services: {services_result}")
                 except Exception as service_error:
                     logger.warning(f"Failed to auto-start device services: {str(service_error)}")
                     response_content.append({
                         "type": "text", 
-                        "text": "⚠️ Device services failed to start automatically, but device is booked successfully"
+                        "text": "\u26a0\ufe0f Device services failed to start automatically, but device is booked successfully"
                     })
                     response_content.append({
                         "type": "text", 
-                        "text": "💡 You can manually start services with: start_device_services(rid=\"" + str(rid) + "\")"
+                        "text": "\ud83d\udca1 You can manually start services with: start_device_services(rid=\"" + str(rid) + "\")"
                     })
             enhanced_result = result.copy()
             enhanced_result["enhanced_content"] = response_content
@@ -90,6 +109,10 @@ class DeviceMixin:
             raise
 
     async def release_device(self, rid: str, auto_download: bool = False):
+        """
+        Release a booked device by its RID. Optionally auto-downloads session data.
+        Returns a dict with release status and messages.
+        """
         try:
             await self.check_token_validity()
             logger.info(f"Releasing device with RID: {rid} (this may take 10-20 seconds)")
@@ -103,7 +126,7 @@ class DeviceMixin:
                 if result.get("code") == 200 and result.get("msg") == "success":
                     logger.info(f"Device {rid} released successfully")
                     return {
-                        "content": [{"type": "text", "text": f"✅ Device {rid} released successfully"}],
+                        "content": [{"type": "text", "text": f"\u2705 Device {rid} released successfully"}],
                         "isError": False
                     }
                 else:
@@ -124,4 +147,4 @@ class DeviceMixin:
             return {
                 "content": [{"type": "text", "text": f"Error releasing device: {str(e)}"}],
                 "isError": True
-            } 
+            }

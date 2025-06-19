@@ -1,4 +1,4 @@
-from config import logger
+from src.config import logger
 import httpx
 import json
 
@@ -75,4 +75,4 @@ class AdbMixin:
                     "error": f"Unexpected response format: {type(raw_data)}",
                     "command": adb_command,
                     "rid": rid
-                } 
+                }

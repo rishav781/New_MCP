@@ -1,5 +1,5 @@
-from config import logger
-from utils import parse_response
+from src.config import logger
+from src.utils import parse_response
 
 class WildnetMixin:
     async def start_wildnet(self, rid: str):
@@ -28,4 +28,4 @@ class WildnetMixin:
             return {
                 "content": [{"type": "text", "text": f"Failed to start wildnet: {error_msg}"}],
                 "isError": True
-            } 
+            }

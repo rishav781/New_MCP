@@ -1,8 +1,21 @@
-from config import logger
-from utils import parse_response
+"""
+Platform Detection Mixin for pCloudy MCP Server
+
+Provides platform detection for the PCloudyAPI class:
+- detect_device_platform: Heuristically determines if a booked device is Android or iOS
+
+Intended to be used as a mixin in the modular API architecture.
+"""
+
+from src.config import logger
+from src.utils import parse_response
 
 class PlatformMixin:
     async def detect_device_platform(self, rid: str):
+        """
+        Heuristically detect the platform (Android/iOS) of a booked device using device info and log files.
+        Returns a dict with detected platform and hints.
+        """
         await self.check_token_validity()
         logger.info(f"Detecting platform for device RID: {rid}")
         url = f"{self.base_url}/get_device_url"
@@ -50,4 +63,4 @@ class PlatformMixin:
             ],
             "isError": False,
             "platform": platform
-        } 
+        }

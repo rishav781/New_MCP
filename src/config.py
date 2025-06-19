@@ -1,3 +1,11 @@
+"""
+Configuration and logging setup for the pCloudy MCP server.
+
+- Loads environment variables from the .env file.
+- Configures logging to both file and console.
+- Defines the Config class for global constants.
+"""
+
 import logging
 import os
 from dotenv import load_dotenv
@@ -20,6 +28,9 @@ logging.basicConfig(
 logger = logging.getLogger("pcloudy-mcp-server")
 
 class Config:
+    """
+    Global configuration constants for the MCP server.
+    """
     PCLOUDY_BASE_URL = "https://device.pcloudy.com/api"
     REQUEST_TIMEOUT = 60  # Increase timeout to 60 seconds (or higher as needed)
     TOKEN_REFRESH_THRESHOLD = 3600

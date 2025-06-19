@@ -1,8 +1,20 @@
+"""
+FastMCP Server Main Entry Point (modular)
+
+This script initializes the FastMCP server and registers all modular tool fragments:
+- Device Management
+- Device Control
+- File & App Management
+- Session Analytics
+
+To start the server, run this file as the main module.
+"""
+
 from fastmcp import FastMCP
 import os
 import asyncio
-from config import logger
-from api import PCloudyAPI
+from src.config import logger
+from src.api import PCloudyAPI
 
 # Import all tool fragments to register them
 from .tools.device_management_tool import *
@@ -22,4 +34,4 @@ if __name__ == "__main__":
             host="0.0.0.0"
         )
     finally:
-        asyncio.get_event_loop().run_until_complete(api.close()) 
+        asyncio.get_event_loop().run_until_complete(api.close())

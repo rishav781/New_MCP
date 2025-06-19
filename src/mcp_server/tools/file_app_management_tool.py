@@ -1,11 +1,25 @@
-from config import logger
-from api import PCloudyAPI
+"""
+File & App Management Tool for pCloudy MCP Server (modular)
+
+Provides file and app management operations as a FastMCP tool, including:
+- upload: Upload APK/IPA files
+- list_apps: List cloud apps
+- install: Install and launch app on device
+- resign: Resign iOS IPA files
+- download_cloud: Download files from cloud
+
+This tool is registered with FastMCP and can be called via the MCP server.
+"""
+
+from src.config import logger
+from src.api import PCloudyAPI
 import asyncio
 import os
 from fastmcp import FastMCP
 mcp = FastMCP("pcloudy_auth3.0")
 
 def get_api():
+    """Helper to get a new PCloudyAPI instance."""
     return PCloudyAPI()
 
 @mcp.tool()
@@ -23,7 +37,22 @@ async def file_app_management(
     force_resign: bool = False
 ):
     """
-    File and App Management Operations: upload, list_apps, install, resign, download_cloud
+    FastMCP Tool: File & App Management
+    
+    Parameters:
+        action: The management action (upload, list_apps, install, resign, download_cloud)
+        file_path: Path to file for upload
+        filename: Name of file for install/resign/download
+        rid: Device booking ID
+        force_upload: Force upload even if file exists
+        limit: Limit for list_apps
+        filter_type: Filter for list_apps
+        grant_all_permissions: Grant all permissions on install
+        platform: Device platform (android/ios)
+        app_package_name: App package name (optional)
+        force_resign: Force resign IPA (iOS)
+    Returns:
+        Dict with operation result and error status
     """
     api = get_api()
     logger.info(f"Tool called: file_app_management with action={action}, file_path={file_path}, filename={filename}, rid={rid}")
@@ -67,4 +96,4 @@ async def file_app_management(
             return {"content": [{"type": "text", "text": f"Unknown action: '{action}'. Available actions: upload, list_apps, install, resign, download_cloud"}], "isError": True}
     except Exception as e:
         logger.error(f"Error in file_app_management: {str(e)}")
-        return {"content": [{"type": "text", "text": f"Error in file and app management: {str(e)}"}], "isError": True} 
+        return {"content": [{"type": "text", "text": f"Error in file and app management: {str(e)}"}], "isError": True}

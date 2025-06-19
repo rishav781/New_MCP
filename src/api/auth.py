@@ -1,6 +1,16 @@
+"""
+Authentication Mixin for pCloudy MCP Server
+
+Provides authentication and token management for the PCloudyAPI class.
+- authenticate: Authenticates with pCloudy using username and API key.
+- check_token_validity: Ensures the token is valid and refreshes if expired.
+
+Intended to be used as a mixin in the modular API architecture.
+"""
+
 import time
-from utils import encode_auth, parse_response
-from config import Config, logger
+from src.utils import encode_auth, parse_response
+from src.config import Config, logger
 import httpx
 
 class AuthMixin:
@@ -13,6 +23,10 @@ class AuthMixin:
         self.client = None
 
     async def authenticate(self) -> str:
+        """
+        Authenticate with the pCloudy API and store the token.
+        Raises ValueError if credentials are missing or authentication fails.
+        """
         try:
             if not self.username or not self.api_key:
                 logger.error("PCLOUDY_USERNAME or PCLOUDY_API_KEY environment variable not set.")
@@ -39,10 +53,14 @@ class AuthMixin:
             raise
 
     async def check_token_validity(self) -> str:
+        """
+        Ensure the authentication token is valid, refreshing if expired.
+        Raises ValueError if not authenticated.
+        """
         if not self.auth_token:
             logger.error("Not authenticated. Please call authorize tool first.")
             raise ValueError("Not authenticated. Please call authorize tool first.")
         if self.token_timestamp and (time.time() - self.token_timestamp) > Config.TOKEN_REFRESH_THRESHOLD:
             logger.info("Token expired, refreshing...")
             await self.authenticate()
-        return self.auth_token 
+        return self.auth_token
