@@ -78,6 +78,10 @@ async def device_control(
             if not rid:
                 return {"content": [{"type": "text", "text": "Please specify a rid parameter for wildnet"}], "isError": True}
             return await api.start_wildnet(rid)
+        elif action == "start_performance_data":
+            if not rid:
+                return {"content": [{"type": "text", "text": "Please specify a rid parameter for starting performance data"}], "isError": True}
+            return await api.start_performance_data(rid)
         else:
             return {"content": [{"type": "text", "text": f"Unknown action: '{action}'."}], "isError": True}
     except Exception as e:

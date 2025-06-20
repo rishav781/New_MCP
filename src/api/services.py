@@ -47,3 +47,38 @@ class ServicesMixin:
             ],
             "isError": False
         }
+
+    async def start_performance_data(self, rid: str):
+        """
+        Start performance data collection for a booked device using the /api/start_performance_data endpoint.
+        Returns a dict with the status and response.
+        """
+        await self.check_token_validity()
+        logger.info(f"Starting performance data for RID: {rid}")
+        url = f"{self.base_url}/start_performance_data"
+        payload = {
+            "token": self.auth_token,
+            "rid": rid
+        }
+        headers = {"Content-Type": "application/json"}
+        try:
+            async with httpx.AsyncClient(timeout=60) as client:
+                response = await client.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            logger.info(f"Performance data response: {response.status_code}")
+            logger.info(f"Performance data response text: {response.text}")
+            return {
+                "content": [
+                    {"type": "text", "text": f"✅ Performance data request sent for RID {rid}"},
+                    {"type": "text", "text": f"🔍 Response: {response.status_code} - {response.text[:200]}"}
+                ],
+                "isError": False
+            }
+        except Exception as e:
+            logger.error(f"Error starting performance data: {str(e)}")
+            return {
+                "content": [
+                    {"type": "text", "text": f"❌ Error starting performance data for RID {rid}: {str(e)}"}
+                ],
+                "isError": True
+            }
