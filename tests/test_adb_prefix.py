@@ -29,9 +29,9 @@ def test_strip_adb_prefix():
             # Should strip 'adb ' prefix
             command = 'adb shell getprop ro.build.version.release'
             result = await adb.execute_adb_command('dummy_rid', command)
-            assert result['command'] == 'shell getprop ro.build.version.release'
+            assert result['command'] == 'adb shell getprop ro.build.version.release'
             # Should not strip if no prefix
             command2 = 'shell getprop ro.build.version.release'
             result2 = await adb.execute_adb_command('dummy_rid', command2)
-            assert result2['command'] == 'shell getprop ro.build.version.release'
+            assert result2['command'] == 'adb shell getprop ro.build.version.release'
     asyncio.run(run())

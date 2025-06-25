@@ -31802,3 +31802,53 @@ pydantic_core._pydantic_core.PydanticSerializationError: Error serializing to JS
 2025-06-26 00:39:58,587 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
 2025-06-26 00:39:58,587 - pcloudy-mcp-server - INFO - Tool called: appium_capabilities (raw boilerplate) with language=python
 2025-06-26 00:39:58,605 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-26 01:07:40,588 - pcloudy-mcp-server - INFO - PCloudyAPI initialized (modular)
+2025-06-26 01:07:40,598 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-06-26 01:07:40,602 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'pcloudy_auth3.0' with transport 'stdio'
+2025-06-26 01:07:40,627 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2025-06-26 01:07:40,692 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001FC8B280D00>
+2025-06-26 01:07:40,693 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-06-26 01:07:40,693 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2025-06-26 01:07:40,694 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-26 01:07:40,727 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001FC8B237FD0>
+2025-06-26 01:07:40,728 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-06-26 01:07:40,728 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2025-06-26 01:07:40,729 - mcp.server.lowlevel.server - DEBUG - Response sent
+2025-06-26 01:07:47,836 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001FC8B2803D0>
+2025-06-26 01:07:47,837 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-06-26 01:07:47,837 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2025-06-26 01:07:47,865 - pcloudy-mcp-server - INFO - PCloudyAPI initialized (modular)
+2025-06-26 01:07:47,866 - pcloudy-mcp-server - INFO - Tool called: device_management with action=list, platform=android, device_name=, rid=
+2025-06-26 01:07:47,867 - pcloudy-mcp-server - INFO - No auth token found, attempting auto-authentication...
+2025-06-26 01:07:47,868 - pcloudy-mcp-server - INFO - Authenticating with pCloudy
+2025-06-26 01:07:47,869 - httpcore.connection - DEBUG - connect_tcp.started host='device.pcloudy.com' port=443 local_address=None timeout=60 socket_options=None
+2025-06-26 01:07:48,016 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001FC8B281DE0>
+2025-06-26 01:07:48,016 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001FC8B1AFBC0> server_hostname='device.pcloudy.com' timeout=60
+2025-06-26 01:07:48,081 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001FC8B281A50>
+2025-06-26 01:07:48,081 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-06-26 01:07:48,081 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-26 01:07:48,081 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-06-26 01:07:48,081 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-26 01:07:48,095 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Wed, 25 Jun 2025 19:37:48 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-26 01:07:48,166 - httpx - INFO - HTTP Request: GET https://device.pcloudy.com/api/access "HTTP/1.1 200 OK"
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-26 01:07:48,166 - pcloudy-mcp-server - INFO - Authentication successful
+2025-06-26 01:07:48,166 - pcloudy-mcp-server - INFO - Getting device list for platform android
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-06-26 01:07:48,166 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-06-26 01:07:48,178 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-06-26 01:07:48,179 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-06-26 01:07:48,179 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-06-26 01:07:48,614 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'nginx'), (b'Date', b'Wed, 25 Jun 2025 19:37:48 GMT'), (b'Content-Type', b'text/html; charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; preload'), (b'X-Forwarded-Host', b'disable'), (b'X-Content-Type-Options', b'nosniff'), (b'X-XSS-Protection', b'1; mode=block')])
+2025-06-26 01:07:48,614 - httpx - INFO - HTTP Request: POST https://device.pcloudy.com/api/devices "HTTP/1.1 200 OK"
+2025-06-26 01:07:48,615 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-06-26 01:07:48,615 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-06-26 01:07:48,615 - httpcore.http11 - DEBUG - response_closed.started
+2025-06-26 01:07:48,615 - httpcore.http11 - DEBUG - response_closed.complete
+2025-06-26 01:07:48,615 - pcloudy-mcp-server - INFO - Retrieved 14 devices for android
+2025-06-26 01:07:48,615 - pcloudy-mcp-server - INFO - Found 14 available android devices
+2025-06-26 01:07:48,615 - mcp.server.lowlevel.server - DEBUG - Response sent
