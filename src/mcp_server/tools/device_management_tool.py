@@ -68,17 +68,18 @@ async def device_management(
                 }
             devices_response = await api.get_devices_list(platform=platform)
             devices = devices_response.get("models", [])
-            available = [d["model"] for d in devices if d["available"]]
+            available = [d for d in devices if d["available"]]
             if not available:
                 logger.info(f"No {platform} devices available")
                 return {
                     "content": [{"type": "text", "text": f"No {platform} devices available."}],
                     "isError": True
                 }
-            device_list = ", ".join(available)
-            logger.info(f"Found {len(available)} available {platform} devices")
+            # Return only the full name (full_name) for each available device
+            full_names = [d["full_name"] for d in available]
+            logger.info(f"Found {len(full_names)} available {platform} devices")
             return {
-                "content": [{"type": "text", "text": f"Available {platform} devices: {device_list}"}],
+                "content": [{"type": "text", "text": f"Available {platform} devices: {', '.join(full_names)}"}],
                 "isError": False
             }
         elif action == "book":
@@ -96,7 +97,8 @@ async def device_management(
             devices_response = await api.get_devices_list(platform=platform)
             devices = devices_response.get("models", [])
             device_name_lower = device_name.lower().strip()
-            selected = next((d for d in devices if d["available"] and device_name_lower in d["model"].lower()), None)
+            # Match by full_name instead of model
+            selected = next((d for d in devices if d["available"] and device_name_lower == d["full_name"].lower().strip()), None)
             if not selected:
                 return {
                     "content": [{"type": "text", "text": f"No available {platform} device found matching '{device_name}'"}],
@@ -111,15 +113,15 @@ async def device_management(
                 }
             enhanced_content = booking.get("enhanced_content")
             if enhanced_content:
-                logger.info(f"Device '{selected['model']}' booked successfully with enhanced features. RID: {api.rid}")
+                logger.info(f"Device '{selected['full_name']}' booked successfully with enhanced features. RID: {api.rid}")
                 return {
                     "content": enhanced_content,
                     "isError": False
                 }
             else:
-                logger.info(f"Device '{selected['model']}' booked successfully. RID: {api.rid}")
+                logger.info(f"Device '{selected['full_name']}' booked successfully. RID: {api.rid}")
                 return {
-                    "content": [{"type": "text", "text": f"Device '{selected['model']}' booked successfully. RID: {api.rid}"}],
+                    "content": [{"type": "text", "text": f"Device '{selected['full_name']}' booked successfully. RID: {api.rid}"}],
                     "isError": False
                 }
         elif action == "release":
