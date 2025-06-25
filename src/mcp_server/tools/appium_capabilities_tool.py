@@ -6,39 +6,26 @@ Provides a FastMCP tool to generate and display Appium capabilities for Android 
 
 from config import logger
 from api import PCloudyAPI
-from mcp_server.shared_mcp import mcp
+from shared_mcp import mcp
 
 @mcp.tool()
-async def appium_capabilities(rid: str, platform: str = "android", language: str = ""):
+async def appium_capabilities(language: str = ""):
     """
-    FastMCP Tool: Appium Capabilities Boilerplate
+    FastMCP Tool: Appium Capabilities Boilerplate (Raw)
     
     Parameters:
-        rid: Device booking ID
-        platform: Device platform (android/ios)
         language: Preferred programming language for the code snippet (e.g., 'java', 'python', 'js').
     Returns:
-        Dict with Appium boilerplate code and error status
+        Dict with Appium boilerplate code and error status, and hints for filling in real values.
     """
-    api = PCloudyAPI()
-    logger.info(f"Tool called: appium_capabilities with rid={rid}, platform={platform}, language={language}")
+    logger.info(f"Tool called: appium_capabilities (raw boilerplate) with language={language}")
     try:
         if not language:
             return {
                 "content": [{"type": "text", "text": "Please specify your preferred programming language (e.g., 'java', 'python', 'js')."}],
                 "isError": True
             }
-        if not api.auth_token:
-            logger.info("No auth token found, attempting auto-authentication...")
-            await api.authenticate()
-        if not rid:
-            return {
-                "content": [{"type": "text", "text": "Please specify a rid (device booking ID) parameter."}],
-                "isError": True
-            }
-        # Optimized Appium capabilities boilerplate generator
         lang = language.lower()
-        plat = platform.lower()
         placeholders = {
             "pCloudy_Username": "<YOUR_EMAIL>",
             "pCloudy_ApiKey": "<YOUR_API_KEY>",
@@ -52,17 +39,11 @@ async def appium_capabilities(rid: str, platform: str = "android", language: str
             "appActivity": "<APP_ACTIVITY>",
             "bundleId": "<BUNDLE_ID>"
         }
-        # Platform-specific
-        if plat == "ios":
-            automation = {"java": "XCUITest", "python": "XCUITest", "js": "XCUITest", "javascript": "XCUITest"}
-            platform_name = "iOS"
-            extra_caps = {"bundleId": placeholders["bundleId"]}
-            driver = {"java": "IOSDriver", "python": "webdriver.Remote", "js": "wdio.remote", "javascript": "wdio.remote"}
-        else:
-            automation = {"java": "uiautomator2", "python": "uiautomator2", "js": "uiautomator2", "javascript": "uiautomator2"}
-            platform_name = "Android"
-            extra_caps = {"appPackage": placeholders["appPackage"]}
-            driver = {"java": "AndroidDriver", "python": "webdriver.Remote", "js": "wdio.remote", "javascript": "wdio.remote"}
+        # Platform-specific (default to Android, user can edit)
+        plat = "android"
+        automation = {"java": "uiautomator2", "python": "uiautomator2", "js": "uiautomator2", "javascript": "uiautomator2"}
+        platform_name = "Android"
+        driver = {"java": "AndroidDriver", "python": "webdriver.Remote", "js": "wdio.remote", "javascript": "wdio.remote"}
         # Templates
         templates = {
             "java": '''public void prepareTest() throws IOException, InterruptedException {{
@@ -79,7 +60,7 @@ async def appium_capabilities(rid: str, platform: str = "android", language: str
     capabilities.setCapability("platformName", "{platformName}");
     capabilities.setCapability("newCommandTimeout", 600);
     capabilities.setCapability("launchTimeout", 90000);
-    {extra}
+    //capabilities.setCapability("appPackage", "{appPackage}");
     driver = new {driver}(new URL("https://device.pcloudy.com/appiumcloud/wd/hub"), capabilities);
 }}''',
             "python": '''from appium import webdriver
@@ -97,7 +78,7 @@ desired_caps = {{
     "platformName": "{platformName}",
     "newCommandTimeout": 600,
     "launchTimeout": 90000,
-    {extra}
+    # "appPackage": "{appPackage}",
 }}
 driver = webdriver.Remote("https://device.pcloudy.com/appiumcloud/wd/hub", desired_caps)
 ''',
@@ -121,7 +102,7 @@ const opts = {{
         platformName: '{platformName}',
         newCommandTimeout: 600,
         launchTimeout: 90000,
-        {extra}
+        // appPackage: '{appPackage}',
     }}
 }};
 const client = await wdio.remote(opts);
@@ -146,18 +127,12 @@ const opts = {{
         platformName: '{platformName}',
         newCommandTimeout: 600,
         launchTimeout: 90000,
-        {extra}
+        // appPackage: '{appPackage}',
     }}
 }};
 const client = await wdio.remote(opts);
 '''
         }
-        # Compose extra caps
-        if plat == "ios":
-            extra = 'capabilities.setCapability("bundleId", "{bundleId}");' if lang == "java" else '"bundleId": "{bundleId}"'
-        else:
-            extra = 'capabilities.setCapability("appPackage", "{appPackage}");' if lang == "java" else '"appPackage": "{appPackage}"'
-        # Format template
         template_key = lang if lang in templates else None
         if template_key:
             code = templates[template_key].format(
@@ -171,14 +146,15 @@ const client = await wdio.remote(opts);
                 automationName=automation[lang],
                 platformVersion=placeholders["platformVersion"],
                 platformName=platform_name,
-                extra=extra.format(**placeholders),
                 driver=driver[lang]
             )
-            # Add helpful prompt for next steps
             helper_text = (
-                "Tip: Use the 'list_devices' tool to get available devices, "
-                "and the 'file_management' tool to upload or list your application files. "
-                "Refer to the documentation or tool list for more details."
+                "This is a raw Appium capabilities boilerplate.\n"
+                "To fill in real values, use the following tools:\n"
+                "- 'device_management' or 'list_devices' to get available device names and details\n"
+                "- 'file_app_management' to upload or list your application files\n"
+                "- 'platform' or 'detect_platform' to determine the platform if unsure\n"
+                "Replace all <...> placeholders with actual values from these tools."
             )
             return {
                 "content": [

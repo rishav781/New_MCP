@@ -26,6 +26,7 @@ import tools.device_management_tool
 import tools.device_control_tool
 import tools.file_app_management_tool
 import tools.session_analytics_tool
+import tools.appium_capabilities_tool
 
 api = PCloudyAPI()
 

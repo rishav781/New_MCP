@@ -8,16 +8,19 @@ class AdbMixin:
         await self.check_token_validity()
         if not adb_command.strip():
             raise ValueError("ADB command cannot be empty")
-        adb_command = adb_command.strip().strip('"').strip("'")
-        # Handle 'adb' prefix if present
-        if adb_command.lower().startswith('adb '):
-            adb_command = adb_command[4:].strip()
-        logger.info(f"Executing ADB command on RID {rid}: {adb_command}")
+        original_command = adb_command.strip().strip('"').strip("'")
+        # Ensure 'adb ' prefix is present for backend compatibility
+        if not original_command.lower().startswith('adb '):
+            send_command = f'adb {original_command}'
+            logger.info(f"Added 'adb' prefix: sending '{send_command}' to backend.")
+        else:
+            send_command = original_command
+        logger.info(f"Executing ADB command on RID {rid}: {send_command}")
         url = f"{self.base_url}/execute_adb"
         payload = {
             "token": self.auth_token,
             "rid": rid,
-            "adbCommand": adb_command
+            "adbCommand": send_command
         }
         headers = {"Content-Type": "application/json"}
         timeout_config = httpx.Timeout(connect=30.0, read=120.0, write=30.0, pool=30.0)
@@ -55,7 +58,7 @@ class AdbMixin:
                     return {
                         "success": True,
                         "output": formatted_output,
-                        "command": adb_command,
+                        "command": send_command,
                         "rid": rid,
                         "status_code": status_code,
                         "message": message,
@@ -67,7 +70,7 @@ class AdbMixin:
                     return {
                         "success": False,
                         "error": error_msg,
-                        "command": adb_command,
+                        "command": send_command,
                         "rid": rid,
                         "status_code": status_code,
                         "raw_response": raw_data
@@ -77,6 +80,6 @@ class AdbMixin:
                 return {
                     "success": False,
                     "error": f"Unexpected response format: {type(raw_data)}",
-                    "command": adb_command,
+                    "command": send_command,
                     "rid": rid
                 }
