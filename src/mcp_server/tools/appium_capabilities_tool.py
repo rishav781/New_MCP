@@ -60,7 +60,7 @@ async def appium_capabilities(language: str = ""):
     capabilities.setCapability("platformName", "{platformName}");
     capabilities.setCapability("newCommandTimeout", 600);
     capabilities.setCapability("launchTimeout", 90000);
-    //capabilities.setCapability("appPackage", "{appPackage}");
+    //capabilities.setCapability("appPackage", "{{appPackage}}");
     driver = new {driver}(new URL("https://device.pcloudy.com/appiumcloud/wd/hub"), capabilities);
 }}''',
             "python": '''from appium import webdriver
@@ -78,7 +78,7 @@ desired_caps = {{
     "platformName": "{platformName}",
     "newCommandTimeout": 600,
     "launchTimeout": 90000,
-    # "appPackage": "{appPackage}",
+    # "appPackage": "{{appPackage}}",
 }}
 driver = webdriver.Remote("https://device.pcloudy.com/appiumcloud/wd/hub", desired_caps)
 ''',
@@ -102,7 +102,7 @@ const opts = {{
         platformName: '{platformName}',
         newCommandTimeout: 600,
         launchTimeout: 90000,
-        // appPackage: '{appPackage}',
+        // appPackage: '{{appPackage}}',
     }}
 }};
 const client = await wdio.remote(opts);
@@ -127,7 +127,7 @@ const opts = {{
         platformName: '{platformName}',
         newCommandTimeout: 600,
         launchTimeout: 90000,
-        // appPackage: '{appPackage}',
+        // appPackage: '{{appPackage}}',
     }}
 }};
 const client = await wdio.remote(opts);

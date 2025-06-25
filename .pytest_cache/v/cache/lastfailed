@@ -1,0 +1,18 @@
+{
+  "tests/test_appium_capabilities.py::test_appium_capabilities_success": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_java_android": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_java_ios": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_python_android": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_python_ios": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_js_android": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_js_ios": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_no_rid": true,
+  "tests/test_appium_capabilities.py::test_appium_capabilities_no_caps": true,
+  "tests/test_adb_prefix.py::test_strip_adb_prefix": true,
+  "tests/test_authenticate.py::test_authenticate": true,
+  "tests/test_book_device.py::test_book_device": true,
+  "tests/test_get_devices_list.py::test_get_devices_list": true,
+  "tests/test_release_device.py::test_release_device": true,
+  "tests/test_services_mixin.py::test_services_mixin": true,
+  "tests/test_start_performance_data.py::test_start_performance_data": true
+}
