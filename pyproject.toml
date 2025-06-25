@@ -1,7 +1,7 @@
 [project]
 name = "pcloudy"
 version = "0.1.0"
-description = "pCloudy MCP Server: Category-based FastMCP tools for device, app, session, and automation management."
+description = "pCloudy MCP Server: Category-based FastMCP tools for device, app, session, Appium automation, and analytics management."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -11,8 +11,9 @@ dependencies = [
     "httpx>=0.27.0",
     "pytest>=8.0.0",
     "python-dotenv>=1.0.1",
+    "appium-python-client>=3.1.0",  # For Appium capabilities tool
 ]
 
 [tool.pytest.ini_options]
-addopts = "-ra -q"
+addopts = "-ra -q --tb=short --disable-warnings"
 testpaths = ["tests"]

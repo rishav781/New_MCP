@@ -7,6 +7,7 @@ Provides a FastMCP tool to generate and display Appium capabilities for Android 
 from config import logger
 from api import PCloudyAPI
 from shared_mcp import mcp
+import os
 
 @mcp.tool()
 async def appium_capabilities(language: str = ""):
@@ -26,9 +27,12 @@ async def appium_capabilities(language: str = ""):
                 "isError": True
             }
         lang = language.lower()
+        # Fetch username and api key from environment if available
+        env_username = os.environ.get("PCLOUDY_USERNAME")
+        env_apikey = os.environ.get("PCLOUDY_API_KEY")
         placeholders = {
-            "pCloudy_Username": "<YOUR_EMAIL>",
-            "pCloudy_ApiKey": "<YOUR_API_KEY>",
+            "pCloudy_Username": env_username if env_username else "<YOUR_EMAIL>",
+            "pCloudy_ApiKey": env_apikey if env_apikey else "<YOUR_API_KEY>",
             "pCloudy_ApplicationName": "<APP_FILE_NAME>",
             "pCloudy_DurationInMinutes": "<DURATION_MINUTES>",
             "pCloudy_DeviceManafacturer": "<DEVICE_MANUFACTURER>",
@@ -151,9 +155,10 @@ const client = await wdio.remote(opts);
             helper_text = (
                 "This is a raw Appium capabilities boilerplate.\n"
                 "To fill in real values, use the following tools:\n"
-                "- 'device_management' or 'list_devices' to get available device names and details\n"
-                "- 'file_app_management' to upload or list your application files\n"
-                "- 'platform' or 'detect_platform' to determine the platform if unsure\n"
+                "- Use 'device_management' with action='list' to find available devices.\n"
+                "- Use 'file_app_management' with action='list_apps' to list uploaded applications.\n"
+                "- Use 'file_app_management' with action='upload' to upload a new application if required.\n"
+                "- Use 'device_management' with action='detect_platform' if unsure about the platform.\n"
                 "Replace all <...> placeholders with actual values from these tools."
             )
             return {

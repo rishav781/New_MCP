@@ -1,6 +1,6 @@
 # pCloudy MCP Server (Category-Based Architecture)
 
-This project implements a streamlined MCP server for managing Android and iOS devices on the pCloudy platform. It features a **category-based tool architecture** with 4 meta-tools that intelligently route operations, replacing the previous 17 individual tools for a cleaner, more intuitive interface.
+This project implements a streamlined MCP server for managing Android and iOS devices on the pCloudy platform. It features a **category-based tool architecture** with 4 meta-tools that intelligently route operations, replacing the previous 17 individual tools for a cleaner, more intuitive interface. It also includes Appium capabilities code generation for seamless integration with automated testing frameworks.
 
 **Author**: Rishav Raj
 
@@ -10,37 +10,53 @@ This project implements a streamlined MCP server for managing Android and iOS de
 
 **Actions**: `list`, `book`, `release`, `detect_platform`, `set_location`
 
-- **list**: List available devices (platform="android"/"ios")
-- **book**: Book device (device_name="GalaxyS10", platform="android", auto_start_services=True)
-- **release**: Release device (rid="device_id")
-- **detect_platform**: Auto-detect device platform (rid="device_id")
-- **set_location**: Set GPS coordinates (rid="device_id", latitude=48.8566, longitude=2.3522)
+- **list**: List available devices (`platform="android"`/`"ios"`)
+- **book**: Book device (`device_name="GalaxyS10"`, `platform="android"`, `auto_start_services=True`)
+- **release**: Release device (`rid="device_id"`)
+- **detect_platform**: Auto-detect device platform (`rid="device_id"`)
+- **set_location**: Set GPS coordinates (`rid="device_id"`, `latitude=48.8566`, `longitude=2.3522`)
 
 ### 📸 Device Control & Monitoring (`device_control`)
 
 **Actions**: `screenshot`, `get_url`, `start_services`, `adb`
 
-- **screenshot**: Capture device screenshot (rid="device_id", skin=True)
-- **get_url**: Get device page URL and open in browser (rid="device_id")
-- **start_services**: Start device services (rid="device_id", start_device_logs=True, start_performance_data=True, start_session_recording=True)
-- **adb**: Execute ADB command on Android (rid="device_id", adb_command="logcat", platform="auto")
+- **screenshot**: Capture device screenshot (`rid="device_id"`, `skin=True`)
+- **get_url**: Get device page URL and open in browser (`rid="device_id"`)
+- **start_services**: Start device services (`rid="device_id"`, `start_device_logs=True`, `start_performance_data=True`, `start_session_recording=True`)
+- **adb**: Execute ADB command on Android (`rid="device_id"`, `adb_command="logcat"`, `platform="auto"`)
 
 ### 📦 File & App Management (`file_app_management`)
 
 **Actions**: `upload`, `list_apps`, `install`, `resign`, `download_cloud`
 
-- **upload**: Upload APK/IPA file (file_path="/path/to/app.apk", force_upload=False)
-- **list_apps**: List cloud apps (limit=10, filter_type="all")
-- **install**: Install and launch app (rid="device_id", filename="app.apk", grant_all_permissions=True, platform="android", app_package_name="com.example.app")
-- **resign**: Resign iOS IPA file (filename="app.ipa", force_resign=False)
-- **download_cloud**: Download file from cloud (filename="app.apk")
+- **upload**: Upload APK/IPA file (`file_path="/path/to/app.apk"`, `force_upload=False`)
+- **list_apps**: List cloud apps (`limit=10`, `filter_type="all"`)
+- **install**: Install and launch app (`rid="device_id"`, `filename="app.apk"`, `grant_all_permissions=True`, `platform="android"`, `app_package_name="com.example.app"`)
+- **resign**: Resign iOS IPA file (`filename="app.ipa"`, `force_resign=False`)
+- **download_cloud**: Download file from cloud (`filename="app.apk"`)
 
 ### 📊 Session Data & Analytics (`session_analytics`)
 
 **Actions**: `download_session`, `list_performance`
 
-- **download_session**: Download session data (rid="device_id", filename="optional_specific_file", download_dir="optional_directory")
-- **list_performance**: List performance data files (rid="device_id")
+- **download_session**: Download session data (`rid="device_id"`, `filename="optional_specific_file"`, `download_dir="optional_directory"`)
+- **list_performance**: List performance data files (`rid="device_id"`)
+
+### 🤖 Appium Capabilities Code Generation (`appium_capabilities`)
+
+**Action**: `generate` (parameter: `language`)
+
+- **generate**: Produces Appium capabilities boilerplate code for Android/iOS in your preferred language (`java`, `python`, `js`).
+    - Returns a code snippet with placeholders for all required values (username, API key, app name, device details, etc.).
+    - Includes helper text on how to fill in real values using other tools (e.g., `device_management`, `file_app_management`).
+    - Example usage:
+
+```python
+# Generate Appium capabilities for Python
+appium_capabilities(language="python")
+```
+
+- The tool does not fetch real device/app data but provides a template and instructions for integration with your automation scripts.
 
 ## 📋 Usage Examples
 
@@ -101,32 +117,39 @@ session_analytics(action="list_performance", rid="123")
 session_analytics(action="download_session", rid="123", filename="specific_log.txt")
 ```
 
+### 🤖 Appium Capabilities Generation
+
+```python
+# Generate Appium capabilities for a booked device and uploaded app
+appium_capabilities(language="python")
+```
+
 ## Setup
 
 1. **Clone the repository:**
 
-   ```bash
+   ```powershell
    git clone <repository_url>
    cd <repository_directory>
    ```
 
 2. **Create a virtual environment:**
 
-   ```bash
+   ```powershell
    python3.13 -m venv .venv
    ```
 
 3. **Activate the virtual environment:**
+   - **Windows (PowerShell):**
+
+     ```powershell
+     .venv\Scripts\Activate.ps1
+     ```
+
    - **Linux/macOS:**
 
      ```bash
      source .venv/bin/activate
-     ```
-
-   - **Windows:**
-
-     ```powershell
-     .venv\Scripts\activate
      ```
 
 4. **Install dependencies:**
@@ -138,13 +161,13 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
 
    Install them using pip:
 
-   ```bash
+   ```powershell
    pip install aiofiles fastapi fastmcp python-dotenv
    ```
 
    Or, if you use Poetry or uv:
 
-   ```bash
+   ```powershell
    poetry install
    # OR
    uv sync
@@ -160,20 +183,13 @@ You can start the MCP server in multiple ways:
 
 - **Using FastMCP (development mode):**
 
-  ```bash
+  ```powershell
   fastmcp dev src/mcp_server/server_main.py
   ```
 
 - **Directly with Python:**
 
-  ```bash
-  python src/mcp_server/server_main.py
-  ```
-
-- **On Windows (PowerShell):**
-
   ```powershell
-  cd "C:\path\to\Pcloudy"
   python src/mcp_server/server_main.py
   ```
 
@@ -204,6 +220,7 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **iOS App Resigning**: Automatic IPA resigning for iOS deployment
 - **Performance Monitoring**: Real-time performance data collection during app testing
 - **ADB Command Execution**: Full Android debugging capabilities with safety checks
+- **Appium Capabilities Generation**: Instantly generate Appium capabilities for your automation scripts
 
 ### 🛡️ Security & Validation
 
@@ -271,10 +288,8 @@ This structure keeps configuration, API logic, and tool implementations modular 
   ```
 
 - **Logs**: Log messages are saved in `pcloudy_mcp_server.log`. Check this file for detailed error messages if issues occur.
-- **Environment**: Place your `.env` file in the `env/` directory. Use `env/.env.template` as a starting point.
-
+- **Environment**: Place your `.env` file in the project root. Use `.env.template` as a starting point.
 - **Security**: Ensure you secure your credentials. The server runs a local HTTP server on `localhost` for authentication, which shuts down after use. For production, consider using HTTPS and additional security measures.
-
 - **Troubleshooting**:
   - **Import Errors**: If you encounter "ModuleNotFoundError", ensure you're running the server from the project root directory.
   - **Python Path Issues**: The project includes automatic path resolution for module imports.
@@ -310,7 +325,7 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
-## 🔄 Recent Updates (June 19, 2025)
+## 🔄 Recent Updates (June 26, 2025)
 
 ### ✅ Bug Fixes & Improvements
 
@@ -328,6 +343,6 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
-## Updated: June 19, 2025
+## Updated: June 26, 2025
 
 Streamlined with category-based architecture, intelligent routing, enhanced automation, and resolved import issues for seamless deployment.
