@@ -6,7 +6,6 @@ from .app_management import AppManagementMixin
 from .session import SessionMixin
 from .adb import AdbMixin
 from .platform import PlatformMixin
-from .wildnet import WildnetMixin
 from .device_control import DeviceControlMixin
 import os
 import httpx
@@ -21,7 +20,6 @@ class PCloudyAPI(
     SessionMixin,
     AdbMixin,
     PlatformMixin,
-    WildnetMixin,
     DeviceControlMixin
 ):
     def __init__(self, base_url=None):
@@ -33,7 +31,6 @@ class PCloudyAPI(
         SessionMixin.__init__(self)
         AdbMixin.__init__(self)
         PlatformMixin.__init__(self)
-        WildnetMixin.__init__(self)
         DeviceControlMixin.__init__(self)
         self.username = os.environ.get("PCLOUDY_USERNAME")
         self.api_key = os.environ.get("PCLOUDY_API_KEY")

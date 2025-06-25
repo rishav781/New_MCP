@@ -18,13 +18,12 @@ This project implements a streamlined MCP server for managing Android and iOS de
 
 ### 📸 Device Control & Monitoring (`device_control`)
 
-**Actions**: `screenshot`, `get_url`, `start_services`, `adb`, `wildnet`
+**Actions**: `screenshot`, `get_url`, `start_services`, `adb`
 
 - **screenshot**: Capture device screenshot (rid="device_id", skin=True)
 - **get_url**: Get device page URL and open in browser (rid="device_id")
 - **start_services**: Start device services (rid="device_id", start_device_logs=True, start_performance_data=True, start_session_recording=True)
 - **adb**: Execute ADB command on Android (rid="device_id", adb_command="logcat", platform="auto")
-- **wildnet**: Start wildnet features (rid="device_id")
 
 ### 📦 File & App Management (`file_app_management`)
 
@@ -205,7 +204,6 @@ The server will listen on `http://localhost:8000` by default (port can be change
 - **iOS App Resigning**: Automatic IPA resigning for iOS deployment
 - **Performance Monitoring**: Real-time performance data collection during app testing
 - **ADB Command Execution**: Full Android debugging capabilities with safety checks
-- **Wildnet Integration**: Enhanced network testing capabilities
 
 ### 🛡️ Security & Validation
 
@@ -241,8 +239,7 @@ Pcloudy/
 │   │   ├── file_management.py # File upload/download
 │   │   ├── platform.py   # Platform detection
 │   │   ├── services.py   # Device services management
-│   │   ├── session.py    # Session data handling
-│   │   └── wildnet.py    # Wildnet network features
+│   │   └── session.py    # Session data handling
 │   └── mcp_server/       # Main server and tool definitions
 │       ├── __init__.py   # MCP server package initialization
 │       ├── server_main.py    # Main entry point for FastMCP server
@@ -251,7 +248,8 @@ Pcloudy/
 │           ├── device_management_tool.py     # Device management operations
 │           ├── device_control_tool.py        # Device control and monitoring
 │           ├── file_app_management_tool.py   # File and app management
-│           └── session_analytics_tool.py     # Session data and analytics
+│           ├── session_analytics_tool.py     # Session data and analytics
+│           └── appium_capabilities_tool.py   # Appium capabilities code generation
 ```
 
 - **.env**: Your pCloudy credentials and environment variables. Use `.env.template` as a starting point.

@@ -6,7 +6,6 @@ Provides device control operations as a FastMCP tool, including:
 - get_url: Get device page URL
 - start_services: Start device logs, performance data, session recording
 - adb: Run ADB commands on Android devices
-- wildnet: Start wildnet network features
 
 This tool is registered with FastMCP and can be called via the MCP server.
 """
@@ -41,7 +40,7 @@ async def device_control(
     FastMCP Tool: Device Control
     
     Parameters:
-        action: The device control action (screenshot, get_url, start_services, adb, wildnet)
+        action: The device control action (screenshot, get_url, start_services, adb)
         rid: Device booking ID
         skin: Whether to include device skin in screenshot
         adb_command: ADB command to execute (for Android)
@@ -74,14 +73,6 @@ async def device_control(
             if not rid or not adb_command:
                 return {"content": [{"type": "text", "text": "Please specify both rid and adb_command parameters"}], "isError": True}
             return await api.execute_adb_command(rid, adb_command)
-        elif action == "wildnet":
-            if not rid:
-                return {"content": [{"type": "text", "text": "Please specify a rid parameter for wildnet"}], "isError": True}
-            return await api.start_wildnet(rid)
-        elif action == "start_performance_data":
-            if not rid:
-                return {"content": [{"type": "text", "text": "Please specify a rid parameter for starting performance data"}], "isError": True}
-            return await api.start_performance_data(rid)
         else:
             return {"content": [{"type": "text", "text": f"Unknown action: '{action}'."}], "isError": True}
     except Exception as e:

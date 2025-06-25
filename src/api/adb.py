@@ -9,6 +9,9 @@ class AdbMixin:
         if not adb_command.strip():
             raise ValueError("ADB command cannot be empty")
         adb_command = adb_command.strip().strip('"').strip("'")
+        # Handle 'adb' prefix if present
+        if adb_command.lower().startswith('adb '):
+            adb_command = adb_command[4:].strip()
         logger.info(f"Executing ADB command on RID {rid}: {adb_command}")
         url = f"{self.base_url}/execute_adb"
         payload = {
