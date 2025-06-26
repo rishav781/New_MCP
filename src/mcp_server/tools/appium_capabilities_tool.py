@@ -10,16 +10,17 @@ from shared_mcp import mcp
 import os
 
 @mcp.tool()
-async def appium_capabilities(language: str = ""):
+async def appium_capabilities(language: str = "", device_name: str = ""):
     """
     FastMCP Tool: Appium Capabilities Boilerplate (Raw)
     
     Parameters:
         language: Preferred programming language for the code snippet (e.g., 'java', 'python', 'js').
+        device_name: Optional device name to use in the capabilities (if known).
     Returns:
         Dict with Appium boilerplate code and error status, and hints for filling in real values.
     """
-    logger.info(f"Tool called: appium_capabilities (raw boilerplate) with language={language}")
+    logger.info(f"Tool called: appium_capabilities (raw boilerplate) with language={language}, device_name={device_name}")
     try:
         if not language:
             return {
@@ -31,8 +32,8 @@ async def appium_capabilities(language: str = ""):
         env_username = os.environ.get("PCLOUDY_USERNAME")
         env_apikey = os.environ.get("PCLOUDY_API_KEY")
         placeholders = {
-            "pCloudy_Username": env_username if env_username else "<YOUR_EMAIL>",
-            "pCloudy_ApiKey": env_apikey if env_apikey else "<YOUR_API_KEY>",
+            "pCloudy_Username": env_username if env_username else os.environ.get("USER", "<YOUR_EMAIL>"),
+            "pCloudy_ApiKey": env_apikey if env_apikey else os.environ.get("API_KEY", "<YOUR_API_KEY>"),
             "pCloudy_ApplicationName": "<APP_FILE_NAME>",
             "pCloudy_DurationInMinutes": "<DURATION_MINUTES>",
             "pCloudy_DeviceManafacturer": "<DEVICE_MANUFACTURER>",
@@ -168,9 +169,58 @@ const client = await wdio.remote(opts);
                 ],
                 "isError": False
             }
+        # List available devices and prompt user to choose one by name (never book a device)
+        if 'device_name' not in locals() or not device_name:
+            # List devices using PCloudyAPI (async context)
+            api = PCloudyAPI()
+            try:
+                devices_result = await api.get_devices_list()
+                device_names = [d.get('display_name', d.get('model', 'Unknown')) for d in devices_result.get('models', [])]
+                if not device_names:
+                    return {
+                        "content": [{"type": "text", "text": "No devices available. Please check your device pool or try again later."}],
+                        "isError": True
+                    }
+                device_list_text = "Available devices:\n" + "\n".join(f"- {d}" for d in device_names)
+                return {
+                    "content": [
+                        {"type": "text", "text": device_list_text},
+                        {"type": "text", "text": "Please specify the device name you want to use from the above list as 'device_name' argument to this tool. The tool will use the selected device name in the boilerplate, but will never book a device for you."}
+                    ],
+                    "isError": False
+                }
+            finally:
+                await api.close()
+        # If a device name is provided, use it in the boilerplate (do not book the device)
+        placeholders["pCloudy_DeviceFullName"] = device_name
+        code = templates[template_key].format(
+            pCloudy_Username=placeholders["pCloudy_Username"],
+            pCloudy_ApiKey=placeholders["pCloudy_ApiKey"],
+            pCloudy_ApplicationName=placeholders["pCloudy_ApplicationName"],
+            pCloudy_DurationInMinutes=placeholders["pCloudy_DurationInMinutes"],
+            pCloudy_DeviceManafacturer=placeholders["pCloudy_DeviceManafacturer"],
+            pCloudy_DeviceVersion=placeholders["pCloudy_DeviceVersion"],
+            pCloudy_DeviceFullName=placeholders["pCloudy_DeviceFullName"],
+            automationName=automation[lang],
+            platformVersion=placeholders["platformVersion"],
+            platformName=platform_name,
+            driver=driver[lang]
+        )
+        helper_text = (
+            "This is a raw Appium capabilities boilerplate.\n"
+            "To fill in real values, use the following tools:\n"
+            "- Use 'device_management' with action='list' to find available devices.\n"
+            "- Use 'file_app_management' with action='list_apps' to list uploaded applications.\n"
+            "- Use 'file_app_management' with action='upload' to upload a new application if required.\n"
+            "- Use 'device_management' with action='detect_platform' if unsure about the platform.\n"
+            "Replace all <...> placeholders with actual values from these tools."
+        )
         return {
-            "content": [{"type": "text", "text": f"Boilerplate for language '{language}' is not yet supported. Please specify 'java' or contact support."}],
-            "isError": True
+            "content": [
+                {"type": "code", "language": lang if lang != "js" else "javascript", "code": code},
+                {"type": "text", "text": helper_text}
+            ],
+            "isError": False
         }
     except Exception as e:
         logger.error(f"Error in appium_capabilities: {str(e)}")
