@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from config import logger
 from api import PCloudyAPI
 import asyncio
-from shared_mcp import mcp
+from mcp_server.shared_mcp import mcp
 
 def get_api():
     """Helper to get a new PCloudyAPI instance."""

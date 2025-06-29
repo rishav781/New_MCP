@@ -1,10 +1,10 @@
 # pCloudy MCP Server (Category-Based Architecture)
 
-This project implements a streamlined MCP server for managing Android and iOS devices on the pCloudy platform. It features a **category-based tool architecture** with 4 meta-tools that intelligently route operations, replacing the previous 17 individual tools for a cleaner, more intuitive interface. It also includes Appium capabilities code generation for seamless integration with automated testing frameworks.
+This project implements a streamlined MCP server for managing Android and iOS devices on the pCloudy platform. It features a **category-based tool architecture** with 5 meta-tools that intelligently route operations, replacing the previous 17 individual tools for a cleaner, more intuitive interface. It also includes Appium capabilities code generation and QPilot automation for seamless integration with automated testing frameworks.
 
 **Author**: Rishav Raj
 
-## 🎯 Category-Based Tool Architecture (4 Meta-Tools)
+## 🎯 Category-Based Tool Architecture (5 Meta-Tools)
 
 ### 📱 Device Management (`device_management`)
 
@@ -57,6 +57,38 @@ appium_capabilities(language="python")
 ```
 
 - The tool does not fetch real device/app data but provides a template and instructions for integration with your automation scripts.
+
+### 🤖 QPilot Automation (`qpilot`)
+
+**Actions**: `get_credits`, `project_list`, `create_project`, `get_test_suites`, `create_test_suite`, `create_test_case`, `get_tests`, `start_wda`, `start_appium`, `generate_code`, `create_script`
+
+- **get_credits**: Check available QPilot credits
+- **project_list**: List QPilot projects (`getShared=True`)
+- **create_project**: Create new QPilot project (`name="Project Name"`)
+- **get_test_suites**: List available test suites
+- **create_test_suite**: Create new test suite (`name="Suite Name"`)
+- **create_test_case**: Create test case (`testSuiteId="suite_id"`, `testCaseName="Test Name"`, `platform="Android"`)
+- **get_tests**: List available tests (`getShared=True`)
+- **start_wda**: Start WebDriverAgent on device (`qpilotRid="device_id"`)
+- **start_appium**: Start Appium server (`qpilotRid="device_id"`, `platform="Android"`, `appName="app.apk"`)
+- **generate_code**: Generate automation code (`qpilotRid="device_id"`, `feature="login"`, `testcaseid="test_id"`, `testSuiteId="suite_id"`, `appPackage="com.example.app"`, `appName="app.apk"`, `appActivity=".MainActivity"`, `steps="Click login button"`, `projectId="project_id"`, `testdata={"username": "test"}`)
+- **create_script**: Create test script (`testcaseid="test_id"`, `testSuiteId="suite_id"`)
+
+Example usage:
+
+```python
+# Check QPilot credits
+qpilot(action="get_credits")
+
+# Create a new project
+qpilot(action="create_project", name="My Test Project")
+
+# Generate automation code for login feature
+qpilot(action="generate_code", qpilotRid="123", feature="login", testcaseid="test_001", 
+       testSuiteId="suite_001", appPackage="com.example.app", appName="MyApp.apk", 
+       appActivity=".MainActivity", steps="Enter username and password, click login", 
+       projectId="project_001", testdata={"username": "testuser", "password": "testpass"})
+```
 
 ## 📋 Usage Examples
 
@@ -124,6 +156,31 @@ session_analytics(action="download_session", rid="123", filename="specific_log.t
 appium_capabilities(language="python")
 ```
 
+### 🤖 QPilot Automation Workflow
+
+```python
+# 1. Check QPilot credits
+qpilot(action="get_credits")
+
+# 2. Create a new project
+qpilot(action="create_project", name="My Test Project")
+
+# 3. Create a test suite
+qpilot(action="create_test_suite", name="Login Test Suite")
+
+# 4. Create a test case
+qpilot(action="create_test_case", testSuiteId="suite_001", testCaseName="Login Test", platform="Android")
+
+# 5. Generate automation code for login feature
+qpilot(action="generate_code", qpilotRid="123", feature="login", testcaseid="test_001", 
+       testSuiteId="suite_001", appPackage="com.example.app", appName="MyApp.apk", 
+       appActivity=".MainActivity", steps="Enter username and password, click login", 
+       projectId="project_001", testdata={"username": "testuser", "password": "testpass"})
+
+# 6. Create test script
+qpilot(action="create_script", testcaseid="test_001", testSuiteId="suite_001")
+```
+
 ## Setup
 
 1. **Clone the repository:**
@@ -181,6 +238,12 @@ appium_capabilities(language="python")
 
 You can start the MCP server in multiple ways:
 
+- **Using the startup script (recommended):**
+
+  ```powershell
+  .\start_mcp_server.ps1
+  ```
+
 - **Using FastMCP (development mode):**
 
   ```powershell
@@ -195,11 +258,23 @@ You can start the MCP server in multiple ways:
 
 The server will listen on `http://localhost:8000` by default (port can be changed via the `PORT` environment variable).
 
+## Claude Desktop Integration
+
+To use this MCP server with Claude Desktop:
+
+1. **Copy the MCP Configuration**: Copy the `mcp.json` file to your Claude Desktop configuration directory (usually `~/.claude/` or similar)
+
+2. **Start the Server**: Use one of the startup methods above to start the MCP server
+
+3. **Connect from Claude Desktop**: Claude Desktop will automatically detect and connect to the running server
+
+The server provides 5 category-based tools for comprehensive pCloudy device and automation management.
+
 ## ✅ Enhanced Features
 
 ### 🎯 Category-Based Architecture Benefits
 
-- **Simplified Interface**: 4 meta-tools instead of 17 individual tools
+- **Simplified Interface**: 5 meta-tools instead of 17 individual tools
 - **Logical Grouping**: Related operations organized under single tools
 - **Intelligent Routing**: System automatically selects correct method based on action
 - **Cleaner Documentation**: Easier to understand and maintain
@@ -236,7 +311,9 @@ The project is organized as follows:
 ```text
 Pcloudy/
 ├── .env                  # Your pCloudy credentials (not committed)
-├── .env.template         # Example template for .env
+├── env.template          # Example template for .env
+├── mcp.json             # MCP configuration for Claude Desktop
+├── start_mcp_server.ps1 # PowerShell startup script
 ├── pcloudy_mcp_server.log # Log file for server activity
 ├── pyproject.toml        # Project metadata and dependencies
 ├── README.md             # Project documentation
@@ -256,7 +333,13 @@ Pcloudy/
 │   │   ├── file_management.py # File upload/download
 │   │   ├── platform.py   # Platform detection
 │   │   ├── services.py   # Device services management
-│   │   └── session.py    # Session data handling
+│   │   ├── session.py    # Session data handling
+│   │   ├── qpilot_credits.py # QPilot credits management
+│   │   ├── qpilot_project.py # QPilot project management
+│   │   ├── qpilot_device_service.py # QPilot device services
+│   │   ├── qpilot_test_case.py # QPilot test case management
+│   │   ├── qpilot_test_suite.py # QPilot test suite management
+│   │   └── qpilot_code_script.py # QPilot code generation
 │   └── mcp_server/       # Main server and tool definitions
 │       ├── __init__.py   # MCP server package initialization
 │       ├── server_main.py    # Main entry point for FastMCP server
@@ -266,12 +349,15 @@ Pcloudy/
 │           ├── device_control_tool.py        # Device control and monitoring
 │           ├── file_app_management_tool.py   # File and app management
 │           ├── session_analytics_tool.py     # Session data and analytics
-│           └── appium_capabilities_tool.py   # Appium capabilities code generation
+│           ├── appium_capabilities_tool.py   # Appium capabilities code generation
+│           └── qpilot_tool.py                # QPilot automation and testing
 ```
 
 - **.env**: Your pCloudy credentials and environment variables. Use `.env.template` as a starting point.
-- **src/api/**: Contains modular mixins for each pCloudy API area (auth, device, file, etc.).
-- **src/mcp_server/tools/**: Each meta-tool (device management, control, etc.) is implemented here.
+- **mcp.json**: MCP configuration file for Claude Desktop integration.
+- **start_mcp_server.ps1**: Convenient PowerShell script for starting the server.
+- **src/api/**: Contains modular mixins for each pCloudy API area (auth, device, file, qpilot, etc.).
+- **src/mcp_server/tools/**: Each meta-tool (device management, control, qpilot, etc.) is implemented here.
 - **src/mcp_server/server_main.py**: The main entry point that registers all tools and starts the FastMCP server.
 - **config.py, utils.py, security.py**: Shared configuration, utility, and security logic.
 - **pcloudy_mcp_server.log**: All logs are written here for debugging and audit.
@@ -325,7 +411,7 @@ The new approach provides the same functionality with a cleaner, more organized 
 
 ---
 
-## 🔄 Recent Updates (June 26, 2025)
+## 🔄 Recent Updates (June 29, 2025)
 
 ### ✅ Bug Fixes & Improvements
 
@@ -334,15 +420,24 @@ The new approach provides the same functionality with a cleaner, more organized 
 - **Cross-Platform Support**: Better Windows PowerShell compatibility
 - **Path Resolution**: Automatic module path resolution for all tool components
 - **Dependencies**: Added python-dotenv for better environment variable handling
+- **QPilot Tool Integration**: Added comprehensive QPilot automation tool with 11 actions
 
 ### 🏗️ Architecture Enhancements
 
 - **Modular Design**: Clean separation between API logic and MCP tools
 - **Robust Import System**: Automatic path management for nested module structure
 - **Improved Logging**: Better error tracking and debugging capabilities
+- **Category-Based Tools**: Expanded from 4 to 5 meta-tools with QPilot integration
+
+### 🆕 New Features
+
+- **QPilot Automation**: Complete test automation workflow with project management, test suites, test cases, and code generation
+- **Startup Script**: Added `start_mcp_server.ps1` for convenient server startup
+- **MCP Configuration**: Added `mcp.json` for Claude Desktop integration
+- **Enhanced Documentation**: Updated README with comprehensive QPilot examples and usage workflows
 
 ---
 
-## Updated: June 26, 2025
+## Updated: June 29, 2025
 
-Streamlined with category-based architecture, intelligent routing, enhanced automation, and resolved import issues for seamless deployment.
+Streamlined with category-based architecture, intelligent routing, enhanced automation, QPilot integration, and resolved import issues for seamless deployment.

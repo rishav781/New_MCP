@@ -6,27 +6,31 @@ This script initializes the FastMCP server and registers all modular tool fragme
 - Device Control
 - File & App Management
 - Session Analytics
+- QPilot Automation
 
 To start the server, run this file as the main module.
 """
 
-from shared_mcp import mcp
 import os
-import asyncio
 import sys
+import asyncio
 
-# Add the parent directory to the path to find the config module
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+# Always add the src directory to sys.path
+src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if src_path not in sys.path:
+    sys.path.insert(0, src_path)
 
+from mcp_server.shared_mcp import mcp
 from config import logger
 from api import PCloudyAPI
 
 # Import all tool fragments to register them with the shared mcp instance
-import tools.device_management_tool
-import tools.device_control_tool
-import tools.file_app_management_tool
-import tools.session_analytics_tool
-import tools.appium_capabilities_tool
+from mcp_server.tools import device_management_tool
+from mcp_server.tools import device_control_tool
+from mcp_server.tools import file_app_management_tool
+from mcp_server.tools import session_analytics_tool
+from mcp_server.tools import appium_capabilities_tool
+from mcp_server.tools import qpilot_tool
 
 api = PCloudyAPI()
 

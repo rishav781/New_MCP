@@ -26,7 +26,7 @@ def get_api():
     return PCloudyAPI()
 
 # Import the shared FastMCP instance
-from shared_mcp import mcp
+from mcp_server.shared_mcp import mcp
 
 @mcp.tool()
 async def device_management(
