@@ -47,9 +47,9 @@ This project implements a streamlined MCP server for managing Android and iOS de
 **Action**: `generate` (parameter: `language`)
 
 - **generate**: Produces Appium capabilities boilerplate code for Android/iOS in your preferred language (`java`, `python`, `js`).
-    - Returns a code snippet with placeholders for all required values (username, API key, app name, device details, etc.).
-    - Includes helper text on how to fill in real values using other tools (e.g., `device_management`, `file_app_management`).
-    - Example usage:
+  - Returns a code snippet with placeholders for all required values (username, API key, app name, device details, etc.).
+  - Includes helper text on how to fill in real values using other tools (e.g., `device_management`, `file_app_management`).
+  - Example usage:
 
 ```python
 # Generate Appium capabilities for Python
@@ -89,6 +89,77 @@ qpilot(action="generate_code", qpilotRid="123", feature="login", testcaseid="tes
        appActivity=".MainActivity", steps="Enter username and password, click login", 
        projectId="project_001", testdata={"username": "testuser", "password": "testpass"})
 ```
+
+## 🤖 LLM & Developer Context
+
+This project now includes detailed, LLM-friendly docstrings and inline comments in all major tools and API methods. These provide:
+- **Parameter explanations** (including mapping to Postman or API variables)
+- **Required headers and authentication**
+- **Example request/response structures**
+- **Notes for LLMs and automation**
+
+### Example Docstring Style
+```python
+async def get_test_cases(self, getShared: bool = True):
+    """
+    Fetch all QPilot test cases for the authenticated user.
+
+    Context for LLMs and developers:
+    - getShared: Whether to include shared test cases (True) or only owned (False).
+    - Requires authentication: QPilot token (qPilottoken).
+    - Headers: 'token', 'Origin', 'Content-Type: application/json'.
+    - Request body: {"getShared": true}
+    - Response: Dict with test suites and test cases.
+    - Used by: qpilot tool, Postman, automation scripts.
+    """
+```
+
+### Tool Context Summaries
+
+#### 📱 Device Management (`device_management`)
+- **Parameters:**
+  - `action`: One of 'list', 'book', 'release', 'detect_platform', 'set_location'.
+  - `platform`: Device platform (e.g., 'android', 'ios').
+  - `device_name`: Name/model of device to book.
+  - `rid`: Device booking ID.
+  - `latitude`, `longitude`: For GPS location.
+  - `auto_start_services`: Whether to start logs/perf/session on booking.
+- **Headers:**
+  - `Content-Type: application/json`
+  - `token`: pCloudy auth token (from environment)
+- **Authentication:**
+  - Uses environment variables `PCLOUDY_USERNAME` and `PCLOUDY_API_KEY`.
+- **Example request:**
+  ```python
+  device_management(action="list", platform="android")
+  ```
+- **Example response:**
+  ```json
+  { "content": [{"type": "text", "text": "Available android devices: ..."}], "isError": false }
+  ```
+- **LLM Note:**
+  - All parameters map directly to API or UI fields. Use the docstrings in `src/api/device.py` for full details.
+
+#### 🤖 QPilot Automation (`qpilot`)
+- **Parameters:**
+  - `action`: QPilot action (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', ...)
+  - Other parameters map directly to QPilot API endpoints (see code docstrings for mapping).
+- **Headers:**
+  - `token`: QPilot auth token (from environment)
+  - `Origin`: pCloudy host
+  - `Content-Type: application/json`
+- **Authentication:**
+  - Uses environment variables `PCLOUDY_USERNAME` and `PCLOUDY_API_KEY`.
+- **Example request:**
+  ```python
+  qpilot(action="get_tests", getShared=True)
+  ```
+- **Example response:**
+  ```json
+  { "data": { "testcases": { "owned": [ ... ], "shared": [ ... ] } }, ... }
+  ```
+- **LLM Note:**
+  - The qpilot tool is a single entrypoint for all QPilot automation. See the docstrings in `src/mcp_server/tools/qpilot_tool.py` for full context and parameter mapping.
 
 ## 📋 Usage Examples
 
