@@ -9,23 +9,14 @@ class QpilotTestCaseMixin:
     async def create_test_case(self, testSuiteId: str, testCaseName: str, platform: str):
         """
         Create a new QPilot test case in the specified test suite.
-        Required headers: 'token' (auth token), 'Origin' (pCloudy host).
-        Payload:
-            {
-                "testSuiteId": <str>,
-                "testCaseName": <str>,
-                "platform": <str>
-            }
+
+        Parameters:
+            testSuiteId (str): ID of the test suite to add the test case to.
+            testCaseName (str): Name of the new test case.
+            platform (str): Platform for the test case (e.g., 'android').
+        
         Returns:
-            dict: API response containing the created test case info.
-        Example output:
-            {
-                "requestId": "...",
-                "statusCode": 200,
-                "status": "success",
-                "message": "Successfully created test case",
-                "data": { ... }
-            }
+            dict: API response containing the created test case info or error details.
         """
         url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/create-test-case"
         headers = {"token": self.auth_token, "Origin": Config.get_origin()}
@@ -41,44 +32,13 @@ class QpilotTestCaseMixin:
 
     async def get_test_cases(self, getShared: bool = True):
         """
-        Fetch all QPilot test cases for the authenticated user.
+        Fetch all QPilot test cases for the authenticated user, grouped by test suite.
 
-        Context for LLMs and developers:
-        - This method retrieves all test cases grouped by test suite for the current authenticated user.
-        - The 'getShared' parameter determines whether to include test cases shared with the user (True) or only those owned by the user (False).
-        - The 'token' header must be set to the user's QPilot authentication token (same as qPilottoken in Postman collections).
-        - The 'Origin' header must be set to the pCloudy host (same as bookingHost in Postman collections).
-        - The 'Content-Type' header must be 'application/json' for strict API compatibility.
-        - The request body is a JSON object: {"getShared": <bool>}.
-        - The response contains a dictionary with test suites and their associated test cases, e.g.:
-            {
-                "requestId": "...",
-                "statusCode": 200,
-                "status": "success",
-                "message": "Successfully retrieved all tests",
-                "data": {
-                    "testcases": {
-                        "owned": [
-                            {
-                                "testSuiteId": "...",
-                                "testSuiteName": "...",
-                                ...,
-                                "testcases": [
-                                    {
-                                        "testCaseId": "...",
-                                        "testCaseName": "...",
-                                        ...
-                                    },
-                                    ...
-                                ]
-                            },
-                            ...
-                        ],
-                        "shared": [ ... ]
-                    }
-                }
-            }
-        - This method is used by the MCP QPilot tool for the 'get_tests' action.
+        Parameters:
+            getShared (bool): Whether to include shared test cases (default: True).
+        
+        Returns:
+            dict: API response containing test cases grouped by suite, or error details.
         """
         url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/get-tests"
         # Headers required for QPilot API authentication and CORS

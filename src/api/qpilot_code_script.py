@@ -8,9 +8,26 @@ from config import logger, Config
 class QpilotCodeScriptMixin:
     async def generate_code(self, rid: str = None, description: str = None, testId: str = None, suiteId: str = None, appPackage: str = None, appName: str = None, appActivity: str = None, steps: str = None, projectId: str = None, testdata: dict = None, strict: bool = True, platform: str = None):
         """
-        If strict=True (default), require all parameters to be provided explicitly by the user and do not auto-fill from self attributes.
-        If strict=False, auto-fill missing parameters from self attributes as fallback.
-        Before generating code, start Appium if all required data is present.
+        Generate automation code for a given test case and device booking.
+        
+        Parameters:
+            rid (str): Device booking ID.
+            description (str): Description of the test or feature.
+            testId (str): Test case ID.
+            suiteId (str): Test suite ID.
+            appPackage (str): App package name.
+            appName (str): App name or APK file name.
+            appActivity (str): Main activity of the app.
+            steps (str): Steps to automate.
+            projectId (str): Project ID.
+            testdata (dict): Test data for the automation.
+            strict (bool): If True, require all parameters explicitly; if False, auto-fill from self attributes.
+            platform (str): Platform (e.g., 'android').
+        
+        Returns:
+            dict: Result of code generation or error details.
+        
+        This function will also attempt to start Appium and open the device URL in a browser if possible.
         """
         missing = []
         # Strict mode: always prompt for missing
@@ -96,6 +113,17 @@ class QpilotCodeScriptMixin:
             return {"error": str(e)}
 
     async def create_script(self, testCaseId: str = None, testSuiteId: str = None, scriptType: str = "pcloudy_appium-js"):
+        """
+        Create a test script for a given test case and suite.
+        
+        Parameters:
+            testCaseId (str): Test case ID.
+            testSuiteId (str): Test suite ID.
+            scriptType (str): Type of script to generate (default: 'pcloudy_appium-js').
+        
+        Returns:
+            dict: Result of script creation or error details.
+        """
         # Interconnect with previous API values if available
         testCaseId = testCaseId or getattr(self, 'testCaseId', None)
         testSuiteId = testSuiteId or getattr(self, 'testSuiteId', None)

@@ -12,7 +12,7 @@ class QpilotTestSuiteMixin:
         This endpoint requires only headers: 'token' (auth token) and 'Origin' (pCloudy host).
         No payload/body is required for this request.
         Returns:
-            dict: API response containing test suites.
+            dict: API response containing test suites or error details.
         Example output:
             {
                 "requestId": "...",
@@ -39,6 +39,15 @@ class QpilotTestSuiteMixin:
             return {"error": str(e)}
 
     async def create_test_suite(self, testSuiteName: str):
+        """
+        Create a new QPilot test suite with the given name.
+
+        Parameters:
+            testSuiteName (str): Name of the new test suite.
+        
+        Returns:
+            dict: API response containing the created test suite info or error details.
+        """
         url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/create-test-suite"
         headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"testSuiteName": testSuiteName}

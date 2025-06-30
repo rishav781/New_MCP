@@ -7,6 +7,15 @@ from config import logger, Config
 
 class QpilotProjectMixin:
     async def project_list(self, getShared: bool = True):
+        """
+        Fetch the list of QPilot projects for the authenticated user.
+
+        Parameters:
+            getShared (bool): Whether to include shared projects (default: True).
+        
+        Returns:
+            dict: API response containing the list of projects or error details.
+        """
         url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/project/fetch"
         headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"getShared": getShared}
@@ -26,6 +35,15 @@ class QpilotProjectMixin:
             return {"error": str(e)}
 
     async def create_project(self, name: str):
+        """
+        Create a new QPilot project with the given name.
+
+        Parameters:
+            name (str): Name of the new project.
+        
+        Returns:
+            dict: API response containing the created project info or error details.
+        """
         url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/project/create"
         headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"name": name}

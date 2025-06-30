@@ -10,9 +10,10 @@ from config import logger, Config
 class QpilotCreditsMixin:
     async def get_qpilot_credits(self):
         """
-        Get QPilot credits left for the user.
+        Get the number of QPilot credits left for the authenticated user.
+
         Returns:
-            Dict with credits info or error
+            dict: API response containing the number of credits left or error details.
         """
         # Ensure token is valid before making the request
         await self.check_token_validity()
