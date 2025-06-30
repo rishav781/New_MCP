@@ -7,9 +7,8 @@ from config import logger, Config
 
 class QpilotDeviceServiceMixin:
     async def start_wda(self, rid: str, action: str = "start", os: str = "ios"):
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v2/qpilot/wda/control"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v2/qpilot/wda/control"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"rid": rid, "action": action, "os": os}
         try:
             async with httpx.AsyncClient() as client:
@@ -21,9 +20,8 @@ class QpilotDeviceServiceMixin:
             return {"error": str(e)}
 
     async def start_appium(self, rid: str, os: str, appName: str, action: str = "start"):
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v2/qpilot/appium/control"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v2/qpilot/appium/control"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"rid": rid, "action": action, "os": os, "appName": appName}
         try:
             async with httpx.AsyncClient() as client:

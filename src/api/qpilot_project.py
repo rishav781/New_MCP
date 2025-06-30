@@ -7,9 +7,8 @@ from config import logger, Config
 
 class QpilotProjectMixin:
     async def project_list(self, getShared: bool = True):
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/project/fetch"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/project/fetch"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"getShared": getShared}
         try:
             async with httpx.AsyncClient() as client:
@@ -21,9 +20,8 @@ class QpilotProjectMixin:
             return {"error": str(e)}
 
     async def create_project(self, name: str):
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/project/create"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/project/create"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"name": name}
         try:
             async with httpx.AsyncClient() as client:

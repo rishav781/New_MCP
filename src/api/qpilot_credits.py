@@ -14,17 +14,17 @@ class QpilotCreditsMixin:
         Returns:
             Dict with credits info or error
         """
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/get-qpilot-credits-left"
-        headers = {
-            "token": self.auth_token,
-            "Origin": f"https://{hostname}"
-        }
+        # Ensure token is valid before making the request
+        await self.check_token_validity()
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/get-qpilot-credits-left"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url, headers=headers)
                 response.raise_for_status()
-                return response.json()
+                data = response.json()
+                # Normalize the return value
+                return data
         except Exception as e:
             logger.error(f"Error fetching QPilot credits: {str(e)}")
             return {"error": str(e)}

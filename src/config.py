@@ -32,6 +32,12 @@ class Config:
     Global configuration constants for the MCP server.
     """
     PCLOUDY_BASE_URL = "https://device.pcloudy.com/api"
+    @staticmethod
+    def get_origin():
+        # Remove trailing '/api' if present for Origin header
+        if Config.PCLOUDY_BASE_URL.endswith("/api"):
+            return Config.PCLOUDY_BASE_URL[:-4]
+        return Config.PCLOUDY_BASE_URL
     QPILOT_BASE_HOSTNAME = "prod-backend.qpilot.pcloudy.com"  # Add this for QPilot
     REQUEST_TIMEOUT = 60  # Increase timeout to 60 seconds (or higher as needed)
     TOKEN_REFRESH_THRESHOLD = 3600

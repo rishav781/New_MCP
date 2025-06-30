@@ -22,9 +22,8 @@ class QpilotCodeScriptMixin:
         testdata = testdata or getattr(self, 'testdata', None)
         steps = steps or getattr(self, 'steps', None)
         description = description or getattr(self, 'description', None)
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v2/qpilot/generate-code"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v2/qpilot/generate-code"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {
             "rid": rid,
             "description": description,
@@ -51,9 +50,8 @@ class QpilotCodeScriptMixin:
         testCaseId = testCaseId or getattr(self, 'testCaseId', None)
         testSuiteId = testSuiteId or getattr(self, 'testSuiteId', None)
         scriptType = scriptType or getattr(self, 'scriptType', "pcloudy_appium-js")
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/create-script"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/create-script"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"testCaseId": testCaseId, "testSuiteId": testSuiteId, "scriptType": scriptType}
         try:
             async with httpx.AsyncClient() as client:

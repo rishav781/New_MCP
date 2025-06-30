@@ -7,9 +7,28 @@ from config import logger, Config
 
 class QpilotTestSuiteMixin:
     async def get_test_suites(self):
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/get-test-suites"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        """
+        Fetch all QPilot test suites for the authenticated user.
+        This endpoint requires only headers: 'token' (auth token) and 'Origin' (pCloudy host).
+        No payload/body is required for this request.
+        Returns:
+            dict: API response containing test suites.
+        Example output:
+            {
+                "requestId": "...",
+                "statusCode": 200,
+                "status": "success",
+                "message": "Successfully retrieved all testSuites",
+                "data": {
+                    "testSuites": {
+                        "owned": [...],
+                        "shared": [...]
+                    }
+                }
+            }
+        """
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/get-test-suites"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.post(url, headers=headers)
@@ -20,9 +39,8 @@ class QpilotTestSuiteMixin:
             return {"error": str(e)}
 
     async def create_test_suite(self, testSuiteName: str):
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/create-test-suite"
-        headers = {"token": self.auth_token, "Origin": f"https://{hostname}"}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/create-test-suite"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"testSuiteName": testSuiteName}
         try:
             async with httpx.AsyncClient() as client:

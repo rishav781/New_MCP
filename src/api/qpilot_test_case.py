@@ -27,9 +27,8 @@ class QpilotTestCaseMixin:
                 "data": { ... }
             }
         """
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/create-test-case"
-        headers = {"token": self.auth_token, "Origin": Config.PCLOUDY_BASE_HOST}
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/create-test-case"
+        headers = {"token": self.auth_token, "Origin": Config.get_origin()}
         payload = {"testSuiteId": testSuiteId, "testCaseName": testCaseName, "platform": platform}
         try:
             async with httpx.AsyncClient() as client:
@@ -81,12 +80,11 @@ class QpilotTestCaseMixin:
             }
         - This method is used by the MCP QPilot tool for the 'get_tests' action.
         """
-        hostname = Config.QPILOT_BASE_HOSTNAME
-        url = f"https://{hostname}/api/v1/qpilot/get-tests"
+        url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v1/qpilot/get-tests"
         # Headers required for QPilot API authentication and CORS
         headers = {
             "token": self.auth_token,  # QPilot authentication token
-            "Origin": Config.PCLOUDY_BASE_HOST,  # pCloudy host
+            "Origin": Config.get_origin(),  # pCloudy host
             "Content-Type": "application/json"  # Ensure JSON body is accepted
         }
         payload = {"getShared": getShared}
