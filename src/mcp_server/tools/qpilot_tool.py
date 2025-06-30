@@ -60,7 +60,7 @@ async def qpilot(
 
     Context for LLMs and developers:
     - This tool acts as a single entrypoint for all QPilot-related actions (credits, projects, test suites, test cases, code generation, etc.).
-    - 'action': The QPilot action to perform (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', 'start_wda', 'start_appium', 'generate_code', 'create_script').
+    - 'action': The QPilot action to perform (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', 'get_test_cases', 'start_wda', 'start_appium', 'generate_code', 'create_script').
     - Other parameters are mapped directly to the corresponding QPilot API endpoints. For example:
         - 'platform', 'feature', 'rid', 'testcaseid', 'testSuiteId', 'testCaseName', 'projectId', 'appName', 'appPackage', 'appActivity', 'steps', 'testdata', 'name', 'getShared'.
     - Authentication: Uses QPilot token (from environment variables PCLOUDY_USERNAME and PCLOUDY_API_KEY).
@@ -68,6 +68,7 @@ async def qpilot(
     - Returns: Dict with API result or error, matching the structure of the underlying QPilot API response.
     - Example usage: qpilot(action='get_tests', getShared=True) will list all test cases for the authenticated user.
     - This tool is used by the MCP server to expose QPilot automation to LLMs and users.
+    - If an action name is a common typo or variant (e.g., 'get_testcase', 'get_testcase', 'get_testcasez'), the LLM should map it to the correct function (e.g., 'get_test_cases').
     """
     api = QpilotAPI()
     await api.authenticate()
@@ -84,6 +85,21 @@ async def qpilot(
             except Exception as e:
                 logger.error(f"Error checking QPilot credits: {str(e)}")
                 return {"error": f"Error checking QPilot credits: {str(e)}"}
+        # Map common typos or variants to the correct action
+        typo_map = {
+            "get_testcase": "get_test_cases",
+            "get_testcasez": "get_test_cases",
+            "get_testcasess": "get_test_cases",
+            "get_test": "get_test_cases",
+            "gettests": "get_test_cases",
+            "gettestcases": "get_test_cases",
+            "get_test_suites": "get_test_suites",
+            "gettestsuites": "get_test_suites",
+            "gettestsuite": "get_test_suites",
+            "get_test_suite": "get_test_suites"
+        }
+        if action in typo_map:
+            action = typo_map[action]
         if action == "get_credits":
             return await api.get_qpilot_credits()
         elif action == "project_list":
@@ -99,6 +115,8 @@ async def qpilot(
             return await api.create_test_suite(name)
         elif action == "create_test_case":
             return await api.create_test_case(testSuiteId, testCaseName, platform)
+        elif action == "get_test_cases":
+            return await api.get_test_cases(getShared)
         elif action == "get_tests":
             return await api.get_test_cases(getShared)
         elif action == "start_wda":
