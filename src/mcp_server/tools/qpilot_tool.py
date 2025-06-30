@@ -14,6 +14,7 @@ from api.qpilot_code_script import QpilotCodeScriptMixin
 import httpx
 from mcp_server.shared_mcp import mcp
 import os
+from mcp_server.tools.qpilot_run_script_params import get_missing_params, get_param_prompt, REQUIRED_PARAMS
 
 class QpilotAPI(AuthMixin, QpilotCreditsMixin, QpilotProjectMixin, QpilotTestCaseMixin, QpilotTestSuiteMixin, QpilotCodeScriptMixin):
     def __init__(self, base_url=None):
@@ -56,14 +57,16 @@ async def qpilot(
     testdata: dict = None,
     name: str = "",
     getShared: bool = True,
-    strict: bool = True
+    strict: bool = True,
+    suiteId: str = "",
+    testId: str = ""
 ):
     """
     QPilot Tool: Houses all QPilot API functions.
 
     Context for LLMs and developers:
     - This tool acts as a single entrypoint for all QPilot-related actions (credits, projects, test suites, test cases, code generation, etc.).
-    - 'action': The QPilot action to perform (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', 'get_test_cases', 'start_wda', 'start_appium', 'generate_code', 'create_script').
+    - 'action': The QPilot action to perform (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', 'get_test_cases', 'start_wda', 'start_appium', 'run_script', 'create_script').
     - Other parameters are mapped directly to the corresponding QPilot API endpoints. For example:
         - 'platform', 'description', 'rid', 'testcaseid', 'testSuiteId', 'testCaseName', 'projectId', 'appName', 'appPackage', 'appActivity', 'steps', 'testdata', 'name', 'getShared'.
     - 'strict': If True, require all parameters explicitly for code generation; if False, auto-fill from context.
@@ -98,7 +101,7 @@ async def qpilot(
             "gettestsuites": "get_test_suites",
             "gettestsuite": "get_test_suites",
             "get_test_suite": "get_test_suites",
-            "generate_code": "generate_code"
+            "generate_code": "run_script"
         }
         if action in typo_map:
             action = typo_map[action]
@@ -125,77 +128,128 @@ async def qpilot(
             return await api.start_wda(rid)
         elif action == "start_appium":
             return await api.start_appium(rid, platform, appName)
-        elif action == "generate_code":
-            # Step-by-step prompt for each required parameter
-            missing = []
-            param_hints = {
-                'rid': "Device booking ID. Use the 'book_device' tool to fetch this.",
-                'description': "Test/feature description. Provide a summary of the scenario.",
-                'testcaseid': "Test case ID. Use the 'create_test_case' or 'get_test_cases' tool to fetch this.",
-                'testSuiteId': "Test suite ID. Use the 'create_test_suite' or 'get_test_suites' tool to fetch this.",
-                'appPackage': "App package name. Use the 'get_app_details' or similar tool to fetch this.",
-                'appName': "App file name (e.g., APK/IPA). Use the 'upload_app' or 'get_app_list' tool to fetch this.",
-                'appActivity': "Main activity (Android) or entry point (iOS). Use the 'get_app_details' tool to fetch this.",
-                'steps': "Automation steps. Provide a step-by-step description.",
-                'projectId': "Project ID. Use the 'project_list' tool to fetch this.",
+        elif action == "run_script":
+            # Always use qpilot_run_script_params to collect/validate parameters
+            params = {
+                "projectId": projectId,
+                "suiteId": testSuiteId or suiteId,
+                "testId": testcaseid or testId,
+                "appName": appName,
+                "appPackage": appPackage,
+                "appActivity": appActivity,
+                "description": description,
+                "steps": steps,
+                "rid": rid
             }
-            param_values = {
-                'rid': rid,
-                'description': description,
-                'testcaseid': testcaseid,
-                'testSuiteId': testSuiteId,
-                'appPackage': appPackage,
-                'appName': appName,
-                'appActivity': appActivity,
-                'steps': steps,
-                'projectId': projectId,
-            }
-            for key, value in param_values.items():
-                if not value:
-                    missing.append(f"{key}: {param_hints[key]}")
-            if missing:
-                return {
-                    "error": "Missing required parameters for code generation.",
-                    "missing": missing,
-                    "hint": "Provide the missing values or use the suggested tool(s) to fetch them. Repeat this process for each parameter."
-                }
-            # Auto-detect platform
             detected_platform = None
             if appName:
                 if appName.lower().endswith(".apk"):
                     detected_platform = "Android"
                 elif appName.lower().endswith(".ipa"):
                     detected_platform = "iOS"
-            platform_final = detected_platform or "Android"
-            # Start Appium before generating code
-            appium_result = await api.start_appium(rid, platform_final, appName)
-            if appium_result and appium_result.get('error'):
-                return {"error": f"Failed to start Appium: {appium_result['error']}"}
-            # Open device URL in browser if available
-            device_url = None
-            if hasattr(api, 'get_device_url') and callable(getattr(api, 'get_device_url')):
-                device_url = await api.get_device_url(rid)
-                if device_url and isinstance(device_url, dict) and device_url.get('url'):
-                    try:
-                        import webbrowser
-                        webbrowser.open(device_url['url'], new=2)
-                    except Exception as e:
-                        logger.warning(f"Could not open browser for device URL: {str(e)}")
-            result = await api.generate_code(rid, description, testcaseid, testSuiteId, appPackage, appName, appActivity, steps, projectId, testdata, True, platform_final)
-            if device_url:
-                result['device_url'] = device_url
-            return result
-        elif action == "create_script":
-            return await api.create_script(testcaseid, testSuiteId)
-        # Add stubs for other QPilot actions here, e.g.:
-        # elif action == "some_other_action":
-        #     ...
+            platform_final = platform or detected_platform or "Android"
+            missing = get_missing_params(params, required_keys=["rid", "description", "testId", "suiteId", "appPackage", "appName", "appActivity", "steps", "projectId", "testdata"])
+            if missing:
+                # Build hints for each missing param
+                hints = {}
+                for key in missing:
+                    if key == "rid":
+                        hints[key] = (
+                            "You can use the device_management tool to list available devices (action='list'), "
+                            "or book a device (action='book'). If you already have a booked device, you can use its ID. "
+                            "Would you like to use a currently booked device or see a list to book one?"
+                        )
+                    else:
+                        hints[key] = f"Use the appropriate tool to fetch this parameter. For example, use 'project_list' for projectId, 'get_test_suites' for suiteId, etc."
+                return {
+                    "error": "Missing required parameters for LCA code generation.",
+                    "prompt": (
+                        "To help you create an LCA (Low Code Automation) test, I need a bit more information specific to your environment:\n"
+                        "- Application under test (appName): APK/IPA file or cloud app name.\n"
+                        "- Test case: Provide a scenario or say 'sample' for a generated one.\n"
+                        "- Test management: Are you using BrowserStack Test Management, or do you want local code/scripts (Playwright, Selenium, etc.)?\n"
+                        "- Project/folder: If using BrowserStack, do you have a project and folder set up, or should I help you create them?\n"
+                        "- Device: Do you want to use a specific device, or should I list available ones for you?\n"
+                        f"\nMissing: {', '.join(missing)}\nPlease provide these details so I can proceed with your LCA code generation."
+                    ),
+                    "missing": missing,
+                    "hints": hints
+                }
+            # All parameters present: proceed with strict sequence
+            # 1. Start Appium with correct payload
+            appium_payload = {
+                "rid": rid,
+                "action": "start",
+                "os": platform_final,
+                "appName": appName
+            }
+            appium_result = await api.start_appium(**appium_payload)
+            if not appium_result or (isinstance(appium_result, dict) and appium_result.get('status') != 200):
+                return {"error": f"Failed to start Appium: {appium_result.get('error', appium_result)}"}
+            # 2. Run Script with new parameter names
+            script_result = await api.run_script(
+                rid=rid,
+                description=description,
+                testId=params["testId"],
+                suiteId=params["suiteId"],
+                appPackage=appPackage,
+                appName=appName,
+                appActivity=appActivity,
+                steps=steps,
+                projectId=projectId,
+                testdata=testdata or {},
+                strict=True,
+                platform=platform_final
+            )
+            if not script_result or (isinstance(script_result, dict) and script_result.get('status') != 200):
+                return {"error": f"Failed to run script: {script_result.get('error', script_result)}"}
+            # 3. Create Script with correct payload
+            script_type = "pcloudy_appium-js"  # You may want to make this dynamic or configurable
+            create_result = await api.create_script(testCaseId=params["testId"], testSuiteId=params["suiteId"], scriptType=script_type)
+            if not create_result or (isinstance(create_result, dict) and create_result.get('status') != 200):
+                return {"error": f"Failed to create script: {create_result.get('error', create_result)}"}
+            return {
+                "appium_result": appium_result,
+                "script_result": script_result,
+                "create_result": create_result
+            }
         else:
-            logger.error(f"Unknown or unimplemented QPilot action: {action}")
-            return {"error": f"Unknown or unimplemented QPilot action: {action}"}
-    except httpx.RequestError as e:
-        logger.error(f"Network error in QPilot tool: {str(e)}")
-        return {"error": f"Network error: {str(e)}"}
+            # Default action handling
+            action_map = {
+                "get_credits": api.get_qpilot_credits,
+                "project_list": api.project_list,
+                "create_project": api.create_project,
+                "get_test_suites": api.get_test_suites,
+                "create_test_suite": api.create_test_suite,
+                "create_test_case": api.create_test_case,
+                "get_test_cases": api.get_test_cases,
+                "get_tests": api.get_test_cases,
+                "start_wda": api.start_wda,
+                "start_appium": api.start_appium,
+                "run_script": api.run_script
+            }
+            if action in action_map:
+                func = action_map[action]
+                # Call the mapped function with the appropriate parameters
+                return await func(
+                    projectId=projectId,
+                    testSuiteId=testSuiteId,
+                    testcaseid=testcaseid,
+                    appName=appName,
+                    appPackage=appPackage,
+                    appActivity=appActivity,
+                    description=description,
+                    steps=steps,
+                    rid=rid,
+                    getShared=getShared,
+                    name=name,
+                    strict=strict
+                )
+            else:
+                logger.error(f"Unknown action: {action}")
+                return {"error": f"Unknown action: {action}"}
     except Exception as e:
-        logger.error(f"Unexpected error in QPilot tool: {str(e)}")
-        return {"error": f"Unexpected error: {str(e)}"}
+        logger.error(f"Error in qpilot function: {str(e)}")
+        return {"error": f"Error in qpilot function: {str(e)}"}
+    finally:
+        await api.close()

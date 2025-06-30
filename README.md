@@ -60,7 +60,7 @@ appium_capabilities(language="python")
 
 ### 🤖 QPilot Automation (`qpilot`)
 
-**Actions**: `get_credits`, `project_list`, `create_project`, `get_test_suites`, `create_test_suite`, `create_test_case`, `get_tests`, `start_wda`, `start_appium`, `generate_code`, `create_script`
+**Actions**: `get_credits`, `project_list`, `create_project`, `get_test_suites`, `create_test_suite`, `create_test_case`, `get_tests`, `start_wda`, `start_appium`, `run_script`, `create_script`
 
 - **get_credits**: Check available QPilot credits
 - **project_list**: List QPilot projects (`getShared=True`)
@@ -71,7 +71,7 @@ appium_capabilities(language="python")
 - **get_tests**: List available tests (`getShared=True`)
 - **start_wda**: Start WebDriverAgent on device (`qpilotRid="device_id"`)
 - **start_appium**: Start Appium server (`qpilotRid="device_id"`, `platform="Android"`, `appName="app.apk"`)
-- **generate_code**: Generate automation code (`qpilotRid="device_id"`, `feature="login"`, `testcaseid="test_id"`, `testSuiteId="suite_id"`, `appPackage="com.example.app"`, `appName="app.apk"`, `appActivity=".MainActivity"`, `steps="Click login button"`, `projectId="project_id"`, `testdata={"username": "test"}`)
+- **run_script**: Generate automation code/script for a test case and device booking (`rid="device_id"`, `description="login"`, `testcaseid="test_id"`, `testSuiteId="suite_id"`, `appPackage="com.example.app"`, `appName="app.apk"`, `appActivity=".MainActivity"`, `steps="Click login button"`, `projectId="project_id"`, `testdata={"username": "test"}`)
 - **create_script**: Create test script (`testcaseid="test_id"`, `testSuiteId="suite_id"`)
 
 Example usage:
@@ -83,8 +83,8 @@ qpilot(action="get_credits")
 # Create a new project
 qpilot(action="create_project", name="My Test Project")
 
-# Generate automation code for login feature
-qpilot(action="generate_code", qpilotRid="123", feature="login", testcaseid="test_001", 
+# Generate automation code/script for login feature
+qpilot(action="run_script", rid="123", description="login", testcaseid="test_001", 
        testSuiteId="suite_001", appPackage="com.example.app", appName="MyApp.apk", 
        appActivity=".MainActivity", steps="Enter username and password, click login", 
        projectId="project_001", testdata={"username": "testuser", "password": "testpass"})
@@ -93,12 +93,14 @@ qpilot(action="generate_code", qpilotRid="123", feature="login", testcaseid="tes
 ## 🤖 LLM & Developer Context
 
 This project now includes detailed, LLM-friendly docstrings and inline comments in all major tools and API methods. These provide:
+
 - **Parameter explanations** (including mapping to Postman or API variables)
 - **Required headers and authentication**
 - **Example request/response structures**
 - **Notes for LLMs and automation**
 
 ### Example Docstring Style
+
 ```python
 async def get_test_cases(self, getShared: bool = True):
     """
@@ -116,7 +118,8 @@ async def get_test_cases(self, getShared: bool = True):
 
 ### Tool Context Summaries
 
-#### 📱 Device Management (`device_management`)
+#### 📱 Device Management (`device_management`) (API Reference)
+
 - **Parameters:**
   - `action`: One of 'list', 'book', 'release', 'detect_platform', 'set_location'.
   - `platform`: Device platform (e.g., 'android', 'ios').
@@ -130,17 +133,22 @@ async def get_test_cases(self, getShared: bool = True):
 - **Authentication:**
   - Uses environment variables `PCLOUDY_USERNAME` and `PCLOUDY_API_KEY`.
 - **Example request:**
+
   ```python
   device_management(action="list", platform="android")
   ```
+
 - **Example response:**
+
   ```json
   { "content": [{"type": "text", "text": "Available android devices: ..."}], "isError": false }
   ```
+
 - **LLM Note:**
   - All parameters map directly to API or UI fields. Use the docstrings in `src/api/device.py` for full details.
 
-#### 🤖 QPilot Automation (`qpilot`)
+#### 🤖 QPilot Automation Parameters & API (`qpilot`)
+
 - **Parameters:**
   - `action`: QPilot action (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', ...)
   - Other parameters map directly to QPilot API endpoints (see code docstrings for mapping).
@@ -151,13 +159,17 @@ async def get_test_cases(self, getShared: bool = True):
 - **Authentication:**
   - Uses environment variables `PCLOUDY_USERNAME` and `PCLOUDY_API_KEY`.
 - **Example request:**
+
   ```python
   qpilot(action="get_tests", getShared=True)
   ```
+
 - **Example response:**
+
   ```json
   { "data": { "testcases": { "owned": [ ... ], "shared": [ ... ] } }, ... }
   ```
+
 - **LLM Note:**
   - The qpilot tool is a single entrypoint for all QPilot automation. See the docstrings in `src/mcp_server/tools/qpilot_tool.py` for full context and parameter mapping.
 
@@ -242,8 +254,8 @@ qpilot(action="create_test_suite", name="Login Test Suite")
 # 4. Create a test case
 qpilot(action="create_test_case", testSuiteId="suite_001", testCaseName="Login Test", platform="Android")
 
-# 5. Generate automation code for login feature
-qpilot(action="generate_code", qpilotRid="123", feature="login", testcaseid="test_001", 
+# 5. Generate automation code/script for login feature
+qpilot(action="run_script", rid="123", description="login", testcaseid="test_001", 
        testSuiteId="suite_001", appPackage="com.example.app", appName="MyApp.apk", 
        appActivity=".MainActivity", steps="Enter username and password, click login", 
        projectId="project_001", testdata={"username": "testuser", "password": "testpass"})

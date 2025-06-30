@@ -27,7 +27,18 @@ class QpilotDeviceServiceMixin:
             async with httpx.AsyncClient() as client:
                 response = await client.post(url, headers=headers, json=payload)
                 response.raise_for_status()
-                return response.json()
+                result = response.json()
+                # After successful Appium start, get device URL and open in browser
+                if result.get('status') == 200:
+                    try:
+                        device_url = await self.get_device_url(rid)
+                        if device_url and isinstance(device_url, dict) and device_url.get('url'):
+                            import webbrowser
+                            webbrowser.open(device_url['url'], new=2)
+                            result['device_url'] = device_url['url']
+                    except Exception as e:
+                        logger.warning(f"Could not open browser for device URL: {str(e)}")
+                return result
         except Exception as e:
             logger.error(f"Error starting Appium: {str(e)}")
             return {"error": str(e)}
