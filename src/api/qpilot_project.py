@@ -14,7 +14,13 @@ class QpilotProjectMixin:
             async with httpx.AsyncClient() as client:
                 response = await client.post(url, headers=headers, json=payload)
                 response.raise_for_status()
-                return response.json()
+                data = response.json()
+                # Hide 'id' field in each project (if present)
+                if data and 'data' in data and 'projects' in data['data']:
+                    for project in data['data']['projects']:
+                        if 'id' in project:
+                            project.pop('id')
+                return data
         except Exception as e:
             logger.error(f"Error fetching QPilot project list: {str(e)}")
             return {"error": str(e)}
