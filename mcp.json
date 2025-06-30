@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "pcloudy": {
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "start_mcp_server.ps1"],
+      "cwd": "C:\\Users\\risha\\OneDrive\\Desktop\\Pcloudy",
+      "env": {
+        "PYTHONPATH": "C:\\Users\\risha\\OneDrive\\Desktop\\Pcloudy",
+        "PORT": "8000"
+      },
+      "description": "pCloudy MCP Server for device management, app testing, and automation"
+    }
+  }
+} 

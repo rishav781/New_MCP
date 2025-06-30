@@ -18,7 +18,16 @@ class DeviceMixin:
     async def get_devices_list(self, platform: str = Config.DEFAULT_PLATFORM, duration: int = Config.DEFAULT_DURATION, available_now: bool = True):
         """
         List available devices for a given platform and duration.
-        Returns a dict with device models and availability.
+
+        Context for LLMs and developers:
+        - platform: Device platform to filter (e.g., 'android', 'ios'). Must be in Config.VALID_PLATFORMS.
+        - duration: Booking duration in minutes.
+        - available_now: If True, only list currently available devices.
+        - Requires authentication: self.auth_token must be set.
+        - Sends POST to {self.base_url}/devices with JSON body and Content-Type: application/json.
+        - Returns a dict with device models and their availability, e.g.:
+            { 'models': [ { 'full_name': ..., 'available': ... }, ... ] }
+        - Used by device_management tool for 'list' action.
         """
         try:
             platform = platform.lower().strip()
@@ -50,7 +59,16 @@ class DeviceMixin:
     async def book_device(self, device_id: str, duration: int = Config.DEFAULT_DURATION, auto_start_services: bool = True):
         """
         Book a device by its ID. Optionally auto-starts device services.
-        Returns booking info and optionally enhanced content.
+
+        Context for LLMs and developers:
+        - device_id: The unique ID of the device to book (from get_devices_list).
+        - duration: Booking duration in minutes.
+        - auto_start_services: If True, automatically start logs, performance, and session recording after booking.
+        - Requires authentication: self.auth_token must be set.
+        - Sends POST to {self.base_url}/book_device with JSON body and Content-Type: application/json.
+        - Returns booking info and optionally enhanced content, e.g.:
+            { 'rid': ..., 'enhanced_content': [ ... ] }
+        - Used by device_management tool for 'book' action.
         """
         try:
             await self.check_token_validity()
@@ -111,7 +129,15 @@ class DeviceMixin:
     async def release_device(self, rid: str, auto_download: bool = False):
         """
         Release a booked device by its RID. Optionally auto-downloads session data.
-        Returns a dict with release status and messages.
+
+        Context for LLMs and developers:
+        - rid: The booking ID (RID) of the device to release (from book_device).
+        - auto_download: If True, automatically download session data after release.
+        - Requires authentication: self.auth_token must be set.
+        - Sends POST to {self.base_url}/release_device with JSON body and Content-Type: application/json.
+        - Returns a dict with release status and messages, e.g.:
+            { 'content': [ ... ], 'isError': False }
+        - Used by device_management tool for 'release' action.
         """
         try:
             await self.check_token_validity()
@@ -154,7 +180,7 @@ class DeviceMixin:
         except httpx.TimeoutException:
             logger.error(f"Release device request timed out after 30 seconds for RID: {rid}")
             return {
-                "content": [{"type": "text", "text": f"Release device request timed out. The device may still be released, but the server was slow to respond. Please check device status."}],
+                "content": [{"type": "text", "text": "Release device request timed out. The device may still be released, but the server was slow to respond. Please check device status."}],
                 "isError": True
             }
         except Exception as e:

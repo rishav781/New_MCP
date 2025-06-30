@@ -6,7 +6,7 @@ Provides a FastMCP tool to generate and display Appium capabilities for Android 
 
 from config import logger
 from api import PCloudyAPI
-from shared_mcp import mcp
+from mcp_server.shared_mcp import mcp
 import os
 
 @mcp.tool()
