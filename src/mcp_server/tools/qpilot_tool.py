@@ -10,17 +10,19 @@ from api.qpilot_project import QpilotProjectMixin
 from api.auth import AuthMixin
 from api.qpilot_test_case import QpilotTestCaseMixin
 from api.qpilot_test_suite import QpilotTestSuiteMixin
+from api.qpilot_code_script import QpilotCodeScriptMixin
 import httpx
 from mcp_server.shared_mcp import mcp
 import os
 
-class QpilotAPI(AuthMixin, QpilotCreditsMixin, QpilotProjectMixin, QpilotTestCaseMixin, QpilotTestSuiteMixin):
+class QpilotAPI(AuthMixin, QpilotCreditsMixin, QpilotProjectMixin, QpilotTestCaseMixin, QpilotTestSuiteMixin, QpilotCodeScriptMixin):
     def __init__(self, base_url=None):
         AuthMixin.__init__(self)
         QpilotCreditsMixin.__init__(self)
         QpilotProjectMixin.__init__(self)
         QpilotTestCaseMixin.__init__(self)
         QpilotTestSuiteMixin.__init__(self)
+        QpilotCodeScriptMixin.__init__(self)
         self.username = os.environ.get("PCLOUDY_USERNAME") or os.environ.get("PLOUDY_USERNAME")
         self.api_key = os.environ.get("PCLOUDY_API_KEY") or os.environ.get("PLOUDY_API_KEY")
         if not self.username or not self.api_key:
@@ -41,7 +43,7 @@ class QpilotAPI(AuthMixin, QpilotCreditsMixin, QpilotProjectMixin, QpilotTestCas
 async def qpilot(
     action: str,
     platform: str = "Android",
-    feature: str = "",
+    description: str = "",  # Renamed from 'feature' for clarity
     rid: str = "",
     testcaseid: str = "",
     testSuiteId: str = "",
@@ -53,7 +55,8 @@ async def qpilot(
     steps: str = "",
     testdata: dict = None,
     name: str = "",
-    getShared: bool = True
+    getShared: bool = True,
+    strict: bool = True
 ):
     """
     QPilot Tool: Houses all QPilot API functions.
@@ -62,18 +65,16 @@ async def qpilot(
     - This tool acts as a single entrypoint for all QPilot-related actions (credits, projects, test suites, test cases, code generation, etc.).
     - 'action': The QPilot action to perform (e.g., 'get_credits', 'project_list', 'create_project', 'get_test_suites', 'create_test_suite', 'create_test_case', 'get_tests', 'get_test_cases', 'start_wda', 'start_appium', 'generate_code', 'create_script').
     - Other parameters are mapped directly to the corresponding QPilot API endpoints. For example:
-        - 'platform', 'feature', 'rid', 'testcaseid', 'testSuiteId', 'testCaseName', 'projectId', 'appName', 'appPackage', 'appActivity', 'steps', 'testdata', 'name', 'getShared'.
+        - 'platform', 'description', 'rid', 'testcaseid', 'testSuiteId', 'testCaseName', 'projectId', 'appName', 'appPackage', 'appActivity', 'steps', 'testdata', 'name', 'getShared'.
+    - 'strict': If True, require all parameters explicitly for code generation; if False, auto-fill from context.
     - Authentication: Uses QPilot token (from environment variables PCLOUDY_USERNAME and PCLOUDY_API_KEY).
-    - Headers: Sets 'token', 'Origin', and 'Content-Type' as required by QPilot APIs.
     - Returns: Dict with API result or error, matching the structure of the underlying QPilot API response.
     - Example usage: qpilot(action='get_tests', getShared=True) will list all test cases for the authenticated user.
     - This tool is used by the MCP server to expose QPilot automation to LLMs and users.
-    - If an action name is a common typo or variant (e.g., 'get_testcase', 'get_testcase', 'get_testcasez'), the LLM should map it to the correct function (e.g., 'get_test_cases').
+    - If an action name is a common typo or variant (e.g., 'get_testcase', 'get_testcasez'), the LLM should map it to the correct function (e.g., 'get_test_cases').
     """
     api = QpilotAPI()
     await api.authenticate()
-    # Use duration from config
-    duration = getattr(Config, 'QPILOT_DEFAULT_DURATION', 30)
     try:
         # Check QPilot credits before any action except get_credits
         if action != "get_credits":
@@ -96,7 +97,8 @@ async def qpilot(
             "get_test_suites": "get_test_suites",
             "gettestsuites": "get_test_suites",
             "gettestsuite": "get_test_suites",
-            "get_test_suite": "get_test_suites"
+            "get_test_suite": "get_test_suites",
+            "generate_code": "generate_code"
         }
         if action in typo_map:
             action = typo_map[action]
@@ -124,7 +126,65 @@ async def qpilot(
         elif action == "start_appium":
             return await api.start_appium(rid, platform, appName)
         elif action == "generate_code":
-            return await api.generate_code(rid, feature, testcaseid, testSuiteId, appPackage, appName, appActivity, steps, projectId, testdata)
+            # Step-by-step prompt for each required parameter
+            missing = []
+            param_hints = {
+                'rid': "Device booking ID. Use the 'book_device' tool to fetch this.",
+                'description': "Test/feature description. Provide a summary of the scenario.",
+                'testcaseid': "Test case ID. Use the 'create_test_case' or 'get_test_cases' tool to fetch this.",
+                'testSuiteId': "Test suite ID. Use the 'create_test_suite' or 'get_test_suites' tool to fetch this.",
+                'appPackage': "App package name. Use the 'get_app_details' or similar tool to fetch this.",
+                'appName': "App file name (e.g., APK/IPA). Use the 'upload_app' or 'get_app_list' tool to fetch this.",
+                'appActivity': "Main activity (Android) or entry point (iOS). Use the 'get_app_details' tool to fetch this.",
+                'steps': "Automation steps. Provide a step-by-step description.",
+                'projectId': "Project ID. Use the 'project_list' tool to fetch this.",
+            }
+            param_values = {
+                'rid': rid,
+                'description': description,
+                'testcaseid': testcaseid,
+                'testSuiteId': testSuiteId,
+                'appPackage': appPackage,
+                'appName': appName,
+                'appActivity': appActivity,
+                'steps': steps,
+                'projectId': projectId,
+            }
+            for key, value in param_values.items():
+                if not value:
+                    missing.append(f"{key}: {param_hints[key]}")
+            if missing:
+                return {
+                    "error": "Missing required parameters for code generation.",
+                    "missing": missing,
+                    "hint": "Provide the missing values or use the suggested tool(s) to fetch them. Repeat this process for each parameter."
+                }
+            # Auto-detect platform
+            detected_platform = None
+            if appName:
+                if appName.lower().endswith(".apk"):
+                    detected_platform = "Android"
+                elif appName.lower().endswith(".ipa"):
+                    detected_platform = "iOS"
+            platform_final = detected_platform or "Android"
+            # Start Appium before generating code
+            appium_result = await api.start_appium(rid, platform_final, appName)
+            if appium_result and appium_result.get('error'):
+                return {"error": f"Failed to start Appium: {appium_result['error']}"}
+            # Open device URL in browser if available
+            device_url = None
+            if hasattr(api, 'get_device_url') and callable(getattr(api, 'get_device_url')):
+                device_url = await api.get_device_url(rid)
+                if device_url and isinstance(device_url, dict) and device_url.get('url'):
+                    try:
+                        import webbrowser
+                        webbrowser.open(device_url['url'], new=2)
+                    except Exception as e:
+                        logger.warning(f"Could not open browser for device URL: {str(e)}")
+            result = await api.generate_code(rid, description, testcaseid, testSuiteId, appPackage, appName, appActivity, steps, projectId, testdata, True, platform_final)
+            if device_url:
+                result['device_url'] = device_url
+            return result
         elif action == "create_script":
             return await api.create_script(testcaseid, testSuiteId)
         # Add stubs for other QPilot actions here, e.g.:

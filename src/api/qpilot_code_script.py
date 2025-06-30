@@ -66,22 +66,8 @@ class QpilotCodeScriptMixin:
                     "error": "Some required parameters are still missing after fallback. Please provide them explicitly.",
                     "hint": "Use the relevant tools or methods to fetch these values if needed."
                 }
-        # Start Appium before generating code
+        # Parameter checks and API call only; Appium and device URL are handled in the tool layer
         device_url = None
-        if hasattr(self, 'start_appium') and callable(getattr(self, 'start_appium')):
-            appium_result = await self.start_appium(rid, platform, appName)
-            if appium_result and appium_result.get('error'):
-                return {"error": f"Failed to start Appium: {appium_result['error']}"}
-            # After Appium starts, get device URL and open browser for real-time viewing
-            if hasattr(self, 'get_device_url') and callable(getattr(self, 'get_device_url')):
-                device_url = await self.get_device_url(rid)
-                if device_url and isinstance(device_url, dict) and device_url.get('url'):
-                    # Optionally, force open browser (implementation depends on your environment)
-                    try:
-                        import webbrowser
-                        webbrowser.open(device_url['url'], new=2)
-                    except Exception as e:
-                        logger.warning(f"Could not open browser for device URL: {str(e)}")
         url = f"https://{Config.QPILOT_BASE_HOSTNAME}/api/v2/qpilot/generate-code"
         cookies = {"PYPCLOUDY": self.auth_token}
         payload = {
@@ -105,8 +91,7 @@ class QpilotCodeScriptMixin:
                 if result and result.get('status', '').lower() == 'success' and testId and suiteId:
                     script_result = await self.create_script(testId, suiteId)
                     result['create_script'] = script_result
-                if device_url:
-                    result['device_url'] = device_url
+                # device_url is handled in the tool layer
                 return result
         except Exception as e:
             logger.error(f"Error generating code: {str(e)}")
