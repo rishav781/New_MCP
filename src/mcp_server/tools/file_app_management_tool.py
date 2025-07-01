@@ -22,6 +22,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from config import logger
+from config import Config
 from api import PCloudyAPI
 import asyncio
 from shared_mcp import mcp
@@ -65,7 +66,7 @@ async def file_app_management(
     api = get_api()
     logger.info(f"Tool called: file_app_management with action={action}, file_path={file_path}, filename={filename}, rid={rid}")
     try:
-        if not api.auth_token:
+        if not Config.auth_token:
             logger.info("No auth token found, attempting auto-authentication...")
             await api.authenticate()
         if action == "upload":

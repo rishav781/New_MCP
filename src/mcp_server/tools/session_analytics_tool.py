@@ -18,6 +18,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from config import logger
+from config import Config
 from api import PCloudyAPI
 import asyncio
 from shared_mcp import mcp
@@ -47,7 +48,7 @@ async def session_analytics(
     api = get_api()
     logger.info(f"Tool called: session_analytics with action={action}, rid={rid}, filename={filename}")
     try:
-        if not api.auth_token:
+        if not Config.auth_token:
             logger.info("No auth token found, attempting auto-authentication...")
             await api.authenticate()
         

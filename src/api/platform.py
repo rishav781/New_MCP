@@ -16,11 +16,10 @@ class PlatformMixin:
         Heuristically detect the platform (Android/iOS) of a booked device using device info and log files.
         Returns a dict with detected platform and hints.
         """
-        await self.check_token_validity()
         logger.info(f"Detecting platform for device RID: {rid}")
         url = f"{self.base_url}/get_device_url"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid
         }
         headers = {"Content-Type": "application/json"}

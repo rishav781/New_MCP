@@ -55,7 +55,7 @@ async def device_management(
     api = get_api()
     logger.info(f"Tool called: device_management with action={action}, platform={platform}, device_name={device_name}, rid={rid}")
     try:
-        if not api.auth_token:
+        if not Config.auth_token:
             logger.info("No auth token found, attempting auto-authentication...")
             await api.authenticate()
         if action == "list":
