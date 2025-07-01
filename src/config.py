@@ -37,3 +37,5 @@ class Config:
     DEFAULT_PLATFORM = "android"
     DEFAULT_DURATION = 30
     VALID_PLATFORMS = ["android", "ios"]
+    HOSTNAME = "https://prod-backend.qpilot.pcloudy.com"
+    Bookinghost ="https://device.pcloudy.com"

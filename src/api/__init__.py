@@ -7,6 +7,13 @@ from .session import SessionMixin
 from .adb import AdbMixin
 from .platform import PlatformMixin
 from .device_control import DeviceControlMixin
+from .qpilot_credits import QPilotCreditsMixin
+from .qpilot_project import QPilotProjectMixin
+from .qpilot_test_suite import QPilotTestSuiteMixin
+from .qpilot_test_case import QPilotTestCaseMixin
+from .qpilot_steps import QPilotStepsMixin
+from .qpilot_appium_control import QPilotAppiumControlMixin
+from .qpilot_script import QPilotScriptMixin
 import os
 import httpx
 from config import Config, logger
@@ -25,7 +32,14 @@ class PCloudyAPI(
     SessionMixin,
     AdbMixin,
     PlatformMixin,
-    DeviceControlMixin
+    DeviceControlMixin,
+    QPilotCreditsMixin,
+    QPilotProjectMixin,
+    QPilotTestSuiteMixin,
+    QPilotTestCaseMixin,
+    QPilotStepsMixin,
+    QPilotAppiumControlMixin,
+    QPilotScriptMixin
 ):
     def __init__(self, base_url=None):
         AuthMixin.__init__(self)
@@ -37,7 +51,13 @@ class PCloudyAPI(
         AdbMixin.__init__(self)
         PlatformMixin.__init__(self)
         DeviceControlMixin.__init__(self)
-        # Fix: Use correct env var names and fallback
+        QPilotCreditsMixin.__init__(self)
+        QPilotProjectMixin.__init__(self)
+        QPilotTestSuiteMixin.__init__(self)
+        QPilotTestCaseMixin.__init__(self)
+        QPilotStepsMixin.__init__(self)
+        QPilotAppiumControlMixin.__init__(self)
+        QPilotScriptMixin.__init__(self)
         self.username = os.environ.get("PCLOUDY_USERNAME") or os.environ.get("PLOUDY_USERNAME")
         self.api_key = os.environ.get("PCLOUDY_API_KEY") or os.environ.get("PLOUDY_API_KEY")
         if not self.username or not self.api_key:
