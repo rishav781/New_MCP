@@ -1,5 +1,5 @@
 """
-Parameter definitions and validation for QPilot run_script action.
+Parameter definitions and validation for QPilot run_natural_script action.
 """
 
 from typing import List, Dict, Any

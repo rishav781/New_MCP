@@ -60,7 +60,7 @@ appium_capabilities(language="python")
 
 ### 🤖 QPilot Automation (`qpilot`)
 
-**Actions**: `get_credits`, `project_list`, `create_project`, `get_test_suites`, `create_test_suite`, `create_test_case`, `get_tests`, `start_wda`, `start_appium`, `run_script`, `create_script`
+**Actions**: `get_credits`, `project_list`, `create_project`, `get_test_suites`, `create_test_suite`, `create_test_case`, `get_tests`, `start_wda`, `start_appium`, `run_natural_script`, `create_script`
 
 - **get_credits**: Check available QPilot credits
 - **project_list**: List QPilot projects (`getShared=True`)
@@ -71,7 +71,7 @@ appium_capabilities(language="python")
 - **get_tests**: List available tests (`getShared=True`)
 - **start_wda**: Start WebDriverAgent on device (`qpilotRid="device_id"`)
 - **start_appium**: Start Appium server (`qpilotRid="device_id"`, `platform="Android"`, `appName="app.apk"`)
-- **run_script**: Generate automation code/script for a test case and device booking (`rid="device_id"`, `description="login"`, `testcaseid="test_id"`, `testSuiteId="suite_id"`, `appPackage="com.example.app"`, `appName="app.apk"`, `appActivity=".MainActivity"`, `steps="Click login button"`, `projectId="project_id"`, `testdata={"username": "test"}`)
+- **run_natural_script**: Generate automation code/script for a test case and device booking (`rid="device_id"`, `description="login"`, `testcaseid="test_id"`, `testSuiteId="suite_id"`, `appPackage="com.example.app"`, `appName="app.apk"`, `appActivity=".MainActivity"`, `steps="Click login button"`, `projectId="project_id"`, `testdata={"username": "test"}`)
 - **create_script**: Create test script (`testcaseid="test_id"`, `testSuiteId="suite_id"`)
 
 Example usage:
@@ -84,7 +84,7 @@ qpilot(action="get_credits")
 qpilot(action="create_project", name="My Test Project")
 
 # Generate automation code/script for login feature
-qpilot(action="run_script", rid="123", description="login", testcaseid="test_001", 
+qpilot(action="run_natural_script", rid="123", description="login", testcaseid="test_001", 
        testSuiteId="suite_001", appPackage="com.example.app", appName="MyApp.apk", 
        appActivity=".MainActivity", steps="Enter username and password, click login", 
        projectId="project_001", testdata={"username": "testuser", "password": "testpass"})
@@ -255,7 +255,7 @@ qpilot(action="create_test_suite", name="Login Test Suite")
 qpilot(action="create_test_case", testSuiteId="suite_001", testCaseName="Login Test", platform="Android")
 
 # 5. Generate automation code/script for login feature
-qpilot(action="run_script", rid="123", description="login", testcaseid="test_001", 
+qpilot(action="run_natural_script", rid="123", description="login", testcaseid="test_001", 
        testSuiteId="suite_001", appPackage="com.example.app", appName="MyApp.apk", 
        appActivity=".MainActivity", steps="Enter username and password, click login", 
        projectId="project_001", testdata={"username": "testuser", "password": "testpass"})

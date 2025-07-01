@@ -101,7 +101,7 @@ async def qpilot(
             "gettestsuites": "get_test_suites",
             "gettestsuite": "get_test_suites",
             "get_test_suite": "get_test_suites",
-            "generate_code": "run_script"
+            "generate_code": "run_natural_script"
         }
         if action in typo_map:
             action = typo_map[action]
@@ -128,7 +128,7 @@ async def qpilot(
             return await api.start_wda(rid)
         elif action == "start_appium":
             return await api.start_appium(rid, platform, appName)
-        elif action == "run_script":
+        elif action == "run_natural_script":
             # Always use qpilot_run_script_params to collect/validate parameters
             params = {
                 "projectId": projectId,
@@ -187,7 +187,7 @@ async def qpilot(
             if not appium_result or (isinstance(appium_result, dict) and appium_result.get('status') != 200):
                 return {"error": f"Failed to start Appium: {appium_result.get('error', appium_result)}"}
             # 2. Run Script with new parameter names
-            script_result = await api.run_script(
+            script_result = await api.run_natural_script(
                 rid=rid,
                 description=description,
                 testId=params["testId"],
@@ -226,7 +226,7 @@ async def qpilot(
                 "get_tests": api.get_test_cases,
                 "start_wda": api.start_wda,
                 "start_appium": api.start_appium,
-                "run_script": api.run_script
+                "run_natural_script": api.run_natural_script
             }
             if action in action_map:
                 func = action_map[action]

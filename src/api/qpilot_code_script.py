@@ -6,10 +6,10 @@ import httpx
 from config import logger, Config
 
 class QpilotCodeScriptMixin:
-    async def run_script(self, rid: str = None, description: str = None, testId: str = None, suiteId: str = None, appPackage: str = None, appName: str = None, appActivity: str = None, steps: str = None, projectId: str = None, testdata: dict = None, strict: bool = True, platform: str = None):
+    async def run_natural_script(self, rid: str = None, description: str = None, testId: str = None, suiteId: str = None, appPackage: str = None, appName: str = None, appActivity: str = None, steps: str = None, projectId: str = None, testdata: dict = None, strict: bool = True, platform: str = None):
         """
         Generate automation code for a given test case and device booking.
-        (Renamed from generate_code to run_script)
+        (Renamed from generate_code to run_natural_script)
         
         Parameters:
             rid (str): Device booking ID.
@@ -30,7 +30,7 @@ class QpilotCodeScriptMixin:
         
         Note:
         - This method only calls the code generation endpoint. It does NOT start Appium or create the script; those are handled in the tool layer.
-        - The tool layer is responsible for calling start_appium and create_script in the correct sequence.
+        - The tool layer is responsible for calling start_appium and run_natural_script in the correct sequence.
         """
         missing = []
         # Strict mode: always prompt for missing
