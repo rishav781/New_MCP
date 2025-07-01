@@ -33,9 +33,9 @@ class Config:
     """
     PCLOUDY_BASE_URL = "https://device.pcloudy.com/api"
     REQUEST_TIMEOUT = 60  # Increase timeout to 60 seconds (or higher as needed)
-    TOKEN_REFRESH_THRESHOLD = 3600
     DEFAULT_PLATFORM = "android"
     DEFAULT_DURATION = 30
     VALID_PLATFORMS = ["android", "ios"]
+    auth_token ="yhnnvnzxfkws97r4sjcn7ycx"
     HOSTNAME = "https://prod-backend.qpilot.pcloudy.com"
     Bookinghost ="https://device.pcloudy.com"

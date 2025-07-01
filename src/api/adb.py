@@ -5,7 +5,6 @@ from utils import encode_auth, parse_response
 
 class AdbMixin:
     async def execute_adb_command(self, rid: str, adb_command: str):
-        await self.check_token_validity()
         if not adb_command.strip():
             raise ValueError("ADB command cannot be empty")
         original_command = adb_command.strip().strip('"').strip("'")
@@ -18,7 +17,7 @@ class AdbMixin:
         logger.info(f"Executing ADB command on RID {rid}: {send_command}")
         url = f"{self.base_url}/execute_adb"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid,
             "adbCommand": send_command
         }

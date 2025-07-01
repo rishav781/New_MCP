@@ -5,10 +5,9 @@ import webbrowser
 
 class AppManagementMixin:
     async def install_and_launch_app(self, rid: str, filename: str, grant_all_permissions: bool = True, app_package_name: str = None):
-        await self.check_token_validity()
         url = f"{self.base_url}/install_app"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid,
             "filename": filename,
             "grant_all_permissions": grant_all_permissions
@@ -53,7 +52,6 @@ class AppManagementMixin:
             }
 
     async def resign_ipa(self, filename: str, force_resign: bool = False):
-        await self.check_token_validity()
         from security import extract_package_name_hint
         if not force_resign:
             logger.info(f"Checking if resigned version of '{filename}' already exists...")
@@ -89,7 +87,7 @@ class AppManagementMixin:
                 logger.warning(f"Could not check for existing resigned files: {str(check_error)}")
         headers = {"Content-Type": "application/json"}
         url_initiate = f"{self.base_url}/resign/initiate"
-        payload_initiate = {"token": self.auth_token, "filename": filename}
+        payload_initiate = {"token": Config.auth_token, "filename": filename}
         response = await self.client.post(url_initiate, json=payload_initiate, headers=headers)
         response.raise_for_status()
         result = parse_response(response)
@@ -101,7 +99,7 @@ class AppManagementMixin:
         url_progress = f"{self.base_url}/resign/progress"
         for _ in range(30):
             payload_progress = {
-                "token": self.auth_token,
+                "token": Config.auth_token,
                 "resign_token": resign_token,
                 "filename": filename
             }
@@ -115,7 +113,7 @@ class AppManagementMixin:
             await asyncio.sleep(2)
         url_download = f"{self.base_url}/resign/download"
         payload_download = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "resign_token": resign_token,
             "filename": filename
         }

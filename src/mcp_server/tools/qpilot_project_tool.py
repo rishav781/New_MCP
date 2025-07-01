@@ -5,9 +5,11 @@ Supports both FastMCP tool usage and command-line usage for create and list oper
 import os
 import sys
 import asyncio
+from dotenv import load_dotenv
 # Add the parent directory to the path to find the config module
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 
 from api import PCloudyAPI
 from shared_mcp import mcp
@@ -19,20 +21,17 @@ def get_api():
 @mcp.tool()
 async def qpilot_project_management(
     action: str,
-    auth_token: str,
     project_name: str = ""
-):
+) -> dict:
     """
     FastMCP Tool: Manage QPilot projects (create or list).
     Parameters:
         action: 'create' or 'list'
-        auth_token: Authentication token (string)
         project_name: Name of the project to create (string, required for 'create')
     Returns:
         dict: The API response data for the action performed.
     """
     api = get_api()
-    api.auth_token = auth_token
     try:
         if action == "create":
             if not project_name:
@@ -41,20 +40,20 @@ async def qpilot_project_management(
         elif action == "list":
             result = await api.fetch_qpilot_projects()
         else:
-            raise ValueError("Unknown action. Use 'create' or 'list'.")
+            raise ValueError("Invalid action. Use 'create' or 'list'.")
         return result
     finally:
         await api.close()
 
 # CLI entry point (standardized like other tools)
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python qpilot_project_tool.py <create|list> <auth_token> [project_name]")
+    if len(sys.argv) < 2:
+        print("Usage: python qpilot_project_tool.py <create|list> [project_name]")
         sys.exit(1)
-    _, action, auth_token, *args = sys.argv
+    _, action, *args = sys.argv
     project_name = args[0] if args else ""
     try:
-        result = asyncio.run(qpilot_project_management(action, auth_token, project_name))
+        result = asyncio.run(qpilot_project_management(action, project_name))
         if action == "create":
             print(f"QPilot project created: {result}")
         elif action == "list":

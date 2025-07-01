@@ -19,24 +19,24 @@ def get_api():
 
 @mcp.tool()
 async def qpilot_steps_management(
-    booking_host: str,
-    rid: str,
+    rid: int,
     description: str,
-    testId: str,
-    suiteId: str,
+    #testId: str,
+    #suiteId: str,
     appPackage: str,
     appName: str,
     appActivity: str,
     steps: str,
-    projectId: str,
+    #projectId: str,
     platform: str,
-    auth_token: str,
-    testdata: dict = None
-):
+    testdata: dict = {}):
     """
+    FIrst need to start appium then generate QPilot code steps.
+    This function uses the PCloudyAPI to generate QPilot code steps after ensuring Appium is started successfully.
+    Parameters:
+      rid, "start", platform, appName
     FastMCP Tool: Generate QPilot code steps, but only after Appium is started successfully.
     Parameters:
-        booking_host: The booking host to use in the URL.
         rid: QPilot RID
         description: Feature description
         testId: Test case ID
@@ -54,33 +54,38 @@ async def qpilot_steps_management(
     """
     api = get_api()
     # Start Appium first
+    """
     appium_control = QPilotAppiumControlMixin()
     appium_result = await appium_control.control_qpilot_appium(
-        booking_host, auth_token, rid, "start", platform, appName
-    )
-    if appium_result.get("statusCode") == 200:
-        payload = {
+         rid, "start", platform, appName
+         """
+    
+    
+   #if appium_result.get("statusCode") == 200:
+    payload = {
             "rid": rid,
             "description": description,
-            "testId": testId,
-            "suiteId": suiteId,
+            "testId": "1d271e6f-638a-4902-8adc-2401532516a1",
+            "suiteId": "e4902c91-170f-480d-ba00-1e60d21cd26f",
             "appPackage": appPackage,
             "appName": appName,
             "appActivity": appActivity,
             "steps": steps,
-            "projectId": projectId,
+            "platform": "Android",
+            "projectId": "b022b45b-7d9d-4212-8a68-5cbeee44667b",
             "testdata": testdata or {}
         }
-        try:
-            result = await api.generate_qpilot_code_steps(booking_host, payload)
-            return result
-        finally:
-            await api.close()
-    else:
-        await api.close()
-        return appium_result
 
-if __name__ == "__main__":
+    try:
+            result = await api.execute_qpilot_code_steps(payload)
+            return result
+    finally:
+            await api.close()
+   # else:
+        #await api.close()
+        #return appium_result
+
+#if __name__ == "__main__":
     # Prompt user for all required parameters
     print("Enter the following parameters for QPilot code step generation:")
     booking_host = input("Booking Host (e.g. https://prod-backend.qpilot.pcloudy.com): ").strip()

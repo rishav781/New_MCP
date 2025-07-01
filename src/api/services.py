@@ -17,11 +17,10 @@ class ServicesMixin:
         Start device services (logs, performance data, session recording) for a booked device.
         Returns a dict with service status and messages.
         """
-        await self.check_token_validity()
         logger.info(f"Starting device services for RID: {rid}")
         url = f"{self.base_url}/startdeviceservices"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid,
             "startDeviceLogs": str(start_device_logs).lower(),
             "startPerformanceData": str(start_performance_data).lower(),
@@ -53,11 +52,10 @@ class ServicesMixin:
         Start performance data collection for a booked device using the /api/start_performance_data endpoint.
         Returns a dict with the status and response.
         """
-        await self.check_token_validity()
         logger.info(f"Starting performance data for RID: {rid}")
         url = f"{self.base_url}/start_performance_data"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid
         }
         headers = {"Content-Type": "application/json"}

@@ -27,7 +27,6 @@ class FileManagementMixin:
         Checks for duplicates unless force_upload is True.
         Returns a dict with upload status and messages.
         """
-        await self.check_token_validity()
         file_path = file_path.strip('"').strip("'")
         logger.info(f"Uploading file: {file_path}")
         if not os.path.isfile(file_path):
@@ -63,7 +62,7 @@ class FileManagementMixin:
             files = {"file": (file_name, f)}
             data = {
                 "source_type": source_type,
-                "token": self.auth_token,
+                "token": Config.auth_token,
                 "filter": filter_type
             }
             response = await self.client.post(url, files=files, data=data)
@@ -95,10 +94,9 @@ class FileManagementMixin:
         
         Returns the file content as bytes.
         """
-        await self.check_token_validity()
         url = f"{self.base_url}/download_file"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "filename": filename,
             "dir": "data"
         }
@@ -114,10 +112,9 @@ class FileManagementMixin:
         List all apps/files in the pCloudy cloud drive.
         Returns a dict with app names and status.
         """
-        await self.check_token_validity()
         url = f"{self.base_url}/drive"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "limit": limit,
             "filter": filter_type
         }

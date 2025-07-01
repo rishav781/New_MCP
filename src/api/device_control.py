@@ -4,11 +4,10 @@ import httpx
 
 class DeviceControlMixin:
     async def capture_screenshot(self, rid: str, skin: bool = True):
-        await self.check_token_validity()
         logger.info(f"Capturing screenshot for RID: {rid}")
         url = f"{self.base_url}/capture_device_screenshot"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid,
             "skin": str(skin).lower()
         }
@@ -30,11 +29,10 @@ class DeviceControlMixin:
         }
 
     async def get_device_page_url(self, rid: str):
-        await self.check_token_validity()
         logger.info(f"Getting device page URL for RID: {rid}")
         url = f"{self.base_url}/get_device_url"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid
         }
         headers = {"Content-Type": "application/json"}
@@ -56,11 +54,10 @@ class DeviceControlMixin:
         }
 
     async def set_device_location(self, rid: str, latitude: float, longitude: float):
-        await self.check_token_validity()
         logger.info(f"Setting device location for RID {rid}: lat={latitude}, lon={longitude}")
         url = f"{self.base_url}/set_deviceLocation"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid,
             "latitude": latitude,
             "longitude": longitude

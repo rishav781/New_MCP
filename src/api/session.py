@@ -21,7 +21,6 @@ class SessionMixin:
         Download session data for a device. If filename is provided, download a single file; otherwise, download all files.
         Returns a dict with download status and messages.
         """
-        await self.check_token_validity()
         if filename:
             return await self._download_single_file(rid, filename, download_dir)
         else:
@@ -40,7 +39,7 @@ class SessionMixin:
         os.makedirs(download_dir, exist_ok=True)
         url = f"{self.base_url}/download_manual_access_data"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid,
             "filename": filename
         }
@@ -82,7 +81,7 @@ class SessionMixin:
         os.makedirs(download_dir, exist_ok=True)
         url = f"{self.base_url}/manual_access_files_list"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid
         }
         headers = {"Content-Type": "application/json"}
@@ -116,7 +115,7 @@ class SessionMixin:
                 logger.info(f"Downloading file {i}/{total_files}: {filename}")
                 url = f"{self.base_url}/download_manual_access_data"
                 payload = {
-                    "token": self.auth_token,
+                    "token": Config.auth_token,
                     "rid": rid,
                     "filename": filename
                 }
@@ -183,11 +182,10 @@ class SessionMixin:
         List all performance data files for a device.
         Returns a dict with file info and status.
         """
-        await self.check_token_validity()
         logger.info(f"Listing performance data files for RID {rid}")
         url = f"{self.base_url}/manual_access_files_list"
         payload = {
-            "token": self.auth_token,
+            "token": Config.auth_token,
             "rid": rid
         }
         headers = {"Content-Type": "application/json"}

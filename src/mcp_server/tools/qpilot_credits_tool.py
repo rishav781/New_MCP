@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from api import PCloudyAPI
 from shared_mcp import mcp
+from config import Config
 
 def get_api():
     return PCloudyAPI()
@@ -24,7 +25,7 @@ async def qpilot_credits_tool(auth_token: str):
         dict: The API response data for credits left.
     """
     api = get_api()
-    api.auth_token = auth_token
+    Config.auth_token = auth_token
     try:
         credits = await api.get_qpilot_credits_left()
         return credits

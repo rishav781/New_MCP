@@ -25,11 +25,10 @@ class DeviceMixin:
             if platform not in Config.VALID_PLATFORMS:
                 logger.error(f"Invalid platform: {platform}. Must be one of {Config.VALID_PLATFORMS}")
                 raise ValueError(f"Invalid platform: {platform}. Must be one of {Config.VALID_PLATFORMS}")
-            await self.check_token_validity()
             logger.info(f"Getting device list for platform {platform}")
             url = f"{self.base_url}/devices"
             payload = {
-                "token": self.auth_token,
+                "token": Config.auth_token,
                 "platform": platform,
                 "duration": duration,
                 "available_now": str(available_now).lower()
@@ -53,11 +52,10 @@ class DeviceMixin:
         Returns booking info and optionally enhanced content.
         """
         try:
-            await self.check_token_validity()
             logger.info(f"Booking device with ID {device_id}")
             url = f"{self.base_url}/book_device"
             payload = {
-                "token": self.auth_token,
+                "token": Config.auth_token,
                 "id": device_id,
                 "duration": duration
             }
@@ -114,10 +112,9 @@ class DeviceMixin:
         Returns a dict with release status and messages.
         """
         try:
-            await self.check_token_validity()
             logger.info(f"Releasing device with RID: {rid} (this may take 10-20 seconds)")
             url = f"{self.base_url}/release_device"
-            payload = {"token": self.auth_token, "rid": int(rid)}
+            payload = {"token": Config.auth_token, "rid": int(rid)}
             headers = {"Content-Type": "application/json"}
             async with httpx.AsyncClient(timeout=30.0) as release_client:
                 response = await release_client.post(url, json=payload, headers=headers)

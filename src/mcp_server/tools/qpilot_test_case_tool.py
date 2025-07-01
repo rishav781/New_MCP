@@ -18,7 +18,6 @@ def get_api():
 @mcp.tool()
 async def qpilot_test_case_management(
     action: str,
-    auth_token: str,
     testSuiteId: str = "",
     testCaseName: str = "",
     platform: str = ""
@@ -39,9 +38,9 @@ async def qpilot_test_case_management(
         if action == "create":
             if not (testSuiteId and testCaseName and platform):
                 raise ValueError("testSuiteId, testCaseName, and platform are required for create action.")
-            result = await api.create_qpilot_test_case(auth_token, testSuiteId, testCaseName, platform)
+            result = await api.create_qpilot_test_case(testSuiteId, testCaseName, platform)
         elif action == "list":
-            result = await api.get_qpilot_test_cases(auth_token)
+            result = await api.get_qpilot_test_cases()
         else:
             raise ValueError("Unknown action. Use 'create' or 'list'.")
         return result
@@ -57,7 +56,7 @@ if __name__ == "__main__":
     testCaseName = args[1] if len(args) > 1 else ""
     platform = args[2] if len(args) > 2 else ""
     try:
-        result = asyncio.run(qpilot_test_case_management(action, auth_token, testSuiteId, testCaseName, platform))
+        result = asyncio.run(qpilot_test_case_management(action,testSuiteId, testCaseName, platform))
         if action == "create":
             print(f"QPilot test case created: {result}")
         elif action == "list":
